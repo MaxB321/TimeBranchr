@@ -18,19 +18,19 @@ Each sub-category can have its own sub-category.
 
 Each level of this hierarchy has its own time count. For example:
 
-    - Studying: 100 Hours
+- Studying: 100 Hours
 
-        - Computer Science: 50 Hours
+  - Computer Science: 50 Hours
 
-            - Operating Systems: 30 Hours
+    - Operating Systems: 30 Hours
 
-            - DSA: 20 Hours
+    - DSA: 20 Hours
 
-        - Math: 50 Hours
+  - Math: 50 Hours
 
-            - Linear Algebra: 30 Hours
+    - Linear Algebra: 30 Hours
 
-            - Calculus I: 20 Hours
+    - Calculus I: 20 Hours
 
 
 
@@ -38,9 +38,9 @@ The maximum number of hierarchy levels is 3 as shown above.
 
 
 
-\## License
+## License
 
-This project is licensed under the \*\*GNU General Public License v3.0 (GPL-3.0)\*\*.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
 
 
@@ -50,7 +50,7 @@ If you distribute a modified version, you must also make the source code availab
 
 
 
-\## Commercial Use
+## Commercial Use
 
 Official pre-built binaries or convenience distributions of this application may be offered for a small fee.
 
