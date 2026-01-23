@@ -23,7 +23,15 @@
          <widget class="QTreeWidget" name="treeWidget">
           <column>
            <property name="text">
-            <string notr="true">1</string>
+            <string notr="true">Categories</string>
+           </property>
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="textAlignment">
+            <set>AlignCenter</set>
            </property>
           </column>
          </widget>

@@ -59,8 +59,12 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QGridLayout(self.page)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.treeWidget = QTreeWidget(self.page)
+        font = QFont()
+        font.setBold(True)
         __qtreewidgetitem = QTreeWidgetItem()
-        __qtreewidgetitem.setText(0, u"1");
+        __qtreewidgetitem.setText(0, u"Categories");
+        __qtreewidgetitem.setTextAlignment(0, Qt.AlignCenter);
+        __qtreewidgetitem.setFont(0, font);
         self.treeWidget.setHeaderItem(__qtreewidgetitem)
         self.treeWidget.setObjectName(u"treeWidget")
 
