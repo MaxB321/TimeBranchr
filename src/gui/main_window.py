@@ -2,6 +2,7 @@
 Handles The Main GUI Window 
 """
 
+from dataclasses import asdict
 import sys
 from pathlib import Path
 from PySide6.QtWidgets import (
@@ -18,6 +19,8 @@ from PySide6.QtWidgets import (
     QMenu,
     QWidgetAction,
     QTabWidget,
+    QTreeWidget,
+    QTreeWidgetItem,
     QGridLayout,
     QHBoxLayout,
     QVBoxLayout,
@@ -52,7 +55,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         refresh_button = QAction(QIcon(":/icons/arrow-circle-315.png"), "Refresh", self)
         refresh_button.setStatusTip("Refreshes app")
         refresh_button.triggered.connect(self.refresh_btn_clicked)
-
+        
         new_category_button = QAction(QIcon(":/icons/plus.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.refresh_btn_clicked)
@@ -65,6 +68,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.toolBar.addAction(refresh_button)
         self.toolBar.addAction(new_category_button)
         self.toolBar.addAction(delete_category_button)
+        
 
 
     def refresh_btn_clicked(self, s) -> None:
