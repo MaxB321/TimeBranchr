@@ -51,6 +51,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setGeometry(300, 150, 1280, 720)
+        self.setIconSize(QSize(25, 25))
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -86,6 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.toggle()
 
     
+    # toolbar functions
     def new_cat_btn_clicked(self, s) -> None:
         child_item = QTreeWidgetItem(self.treeWidget)
         child_item.setText(0, "Hello World!")
@@ -113,6 +115,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print(s)
     
 
+    # menu functions  
     def quit_menu_clicked(self):
         sys.exit()
 
