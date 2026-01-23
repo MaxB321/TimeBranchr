@@ -65,10 +65,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         delete_category_button.triggered.connect(self.refresh_btn_clicked)
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.toolBar.setMovable(False)
         self.toolBar.addAction(refresh_button)
         self.toolBar.addAction(new_category_button)
         self.toolBar.addAction(delete_category_button)
         
+        self.actionQuit.triggered.connect(self.quit_menu_clicked)
 
 
     def refresh_btn_clicked(self, s) -> None:
@@ -81,6 +83,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def delete_cat_btn_clicked(self, s) -> None:
         print(s)
+    
+
+    def quit_menu_clicked(self):
+        sys.exit()
 
 
 def load_base_ui() -> None:
