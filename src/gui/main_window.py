@@ -82,13 +82,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         self.actionQuit.triggered.connect(self.quit_menu_clicked)
 
+        
+
     
     def new_cat_btn_clicked(self, s) -> None:
-        print(s)
+        child_item = QTreeWidgetItem(self.treeWidget)
+        child_item.setText(0, "Hello World!")
 
 
     def delete_cat_btn_clicked(self, s) -> None:
-        print(s)
+        cur_item = self.treeWidget.currentItem()
+        if cur_item:
+            parent = cur_item.parent()
+            if parent:
+                parent.removeChild(cur_item)
+            else:
+                self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(cur_item))
 
     
     def start_btn_clicked(self, s) -> None:
