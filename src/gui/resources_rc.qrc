@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
+        <!-- PNGs -->
         <file alias="arrow-180.png">icons/arrow-180.png</file>
         <file alias="arrow-circle-225-left.png">icons/arrow-circle-225-left.png</file>
         <file alias="arrow-circle-315.png">icons/arrow-circle-315.png</file>
@@ -8,7 +9,10 @@
         <file alias="minus.png">icons/minus.png</file>
         <file alias="minus-circle.png">icons/minus-circle.png</file>
         <file alias="minus-octagon.png">icons/minus-octagon.png</file>
+        <file alias="pause.png">icons/pause.png</file>
+        <file alias="play.png">icons/play.png</file>
         <file alias="plus.png">icons/plus.png</file>
+        <file alias="stop.png">icons/stop.png</file>
         <file alias="tick-button.png">icons/tick-button.png</file>
         <file alias="tick-circle.png">icons/tick-circle.png</file>
         <file alias="tick-octagon.png">icons/tick-octagon.png</file>
