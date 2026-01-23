@@ -81,8 +81,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.toolBar.addAction(stop_button)
         
         self.actionQuit.triggered.connect(self.quit_menu_clicked)
-
-        
+        self.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
+        self.actionShow_Toolbar.setCheckable(True)
+        self.actionShow_Toolbar.toggle()
 
     
     def new_cat_btn_clicked(self, s) -> None:
@@ -114,6 +115,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def quit_menu_clicked(self):
         sys.exit()
+
+
+    def show_toolbar_menu_clicked(self):
+        if self.actionShow_Toolbar.isChecked():
+            self.toolBar.show()
+        else:
+            self.toolBar.hide()
 
 
 def load_base_ui() -> None:

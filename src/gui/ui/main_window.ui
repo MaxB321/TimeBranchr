@@ -82,6 +82,7 @@
     </property>
     <addaction name="actionDark_Mode_2"/>
     <addaction name="actionShow_Subcategory_Totals"/>
+    <addaction name="actionShow_Toolbar"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -167,6 +168,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionShow_Toolbar">
+   <property name="text">
+    <string>Show Toolbar</string>
    </property>
   </action>
  </widget>
