@@ -51,15 +51,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setGeometry(300, 150, 1280, 720)
-        refresh_button = QAction(QIcon(":/icons/arrow-circle-315.png"), "Refresh", self)
-        refresh_button.setStatusTip("Refreshes app")
-        refresh_button.triggered.connect(self.refresh_btn_clicked)
         
-        new_category_button = QAction(QIcon(":/icons/plus.png"), "New Category", self)
+        new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.new_cat_btn_clicked)
 
-        delete_category_button = QAction(QIcon(":/icons/minus.png"), "Delete Category", self)
+        delete_category_button = QAction(QIcon(":/icons/minus32.png"), "Delete Category", self)
         delete_category_button.setStatusTip("Deletes Selected Category")
         delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
 
@@ -77,7 +74,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.toolBar.setMovable(False)
-        self.toolBar.addAction(refresh_button)
         self.toolBar.addAction(new_category_button)
         self.toolBar.addAction(delete_category_button)
         self.toolBar.addAction(start_button)
@@ -85,10 +81,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.toolBar.addAction(stop_button)
         
         self.actionQuit.triggered.connect(self.quit_menu_clicked)
-
-
-    def refresh_btn_clicked(self, s) -> None:
-        print(s)
 
     
     def new_cat_btn_clicked(self, s) -> None:
