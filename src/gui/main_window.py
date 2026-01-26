@@ -5,6 +5,7 @@ Handles The Main GUI Window
 import sys
 from pathlib import Path
 from tokenize import String
+from typing import overload
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -37,6 +38,7 @@ from PySide6.QtGui import (
     QPalette
 )
 from PySide6.QtCore import (
+    QEvent,
     Qt,
     QSize,
     QObject
@@ -88,7 +90,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.treeWidget.doubleClicked.connect(self.edit_widget_text)
 
-    
+        self.installEventFilter(self)
+
+
     # toolbar functions
     def new_cat_btn_clicked(self) -> None:
         child_item = QTreeWidgetItem(self.treeWidget)
@@ -98,7 +102,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def delete_cat_btn_clicked(self) -> None:
         cur_item = self.treeWidget.currentItem()
-        if cur_item:
+        if cur_item and cur_item.isSelected():
             parent = cur_item.parent()
             if parent:
                 parent.removeChild(cur_item)
@@ -132,6 +136,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def edit_widget_text(self) -> None:
         self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
+
+    
+    def eventFilter(self, obj: QObject, event: QEvent):
+        if (event.type() == QEvent.Type.MouseButtonPress):
+            self.treeWidget.clearSelection()
+            
+        return super().eventFilter(obj, event)
 
 
 def load_base_ui() -> None:
