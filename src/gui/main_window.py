@@ -2,9 +2,9 @@
 Handles The Main GUI Window 
 """
 
-from dataclasses import asdict
 import sys
 from pathlib import Path
+from tokenize import String
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -86,14 +86,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.setCheckable(True)
         self.actionShow_Toolbar.toggle()
 
+        self.treeWidget.doubleClicked.connect(self.edit_widget_text)
+
     
     # toolbar functions
-    def new_cat_btn_clicked(self, s) -> None:
+    def new_cat_btn_clicked(self) -> None:
         child_item = QTreeWidgetItem(self.treeWidget)
-        child_item.setText(0, "Hello World!")
+        child_item.setText(0, "New Category")
+        child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
 
 
-    def delete_cat_btn_clicked(self, s) -> None:
+    def delete_cat_btn_clicked(self) -> None:
         cur_item = self.treeWidget.currentItem()
         if cur_item:
             parent = cur_item.parent()
@@ -116,15 +119,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     # menu functions  
-    def quit_menu_clicked(self):
+    def quit_menu_clicked(self) -> None:
         sys.exit()
 
 
-    def show_toolbar_menu_clicked(self):
+    def show_toolbar_menu_clicked(self) -> None:
         if self.actionShow_Toolbar.isChecked():
             self.toolBar.show()
         else:
             self.toolBar.hide()
+        
+    
+    def edit_widget_text(self) -> None:
+        self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
 
 
 def load_base_ui() -> None:
