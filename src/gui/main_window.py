@@ -2,6 +2,7 @@
 Handles The Main GUI Window 
 """
 
+from codecs import utf_8_encode
 import sys
 from pathlib import Path
 from tokenize import String
@@ -93,6 +94,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.installEventFilter(self)
 
+        self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
+        self.treeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
+
 
     # toolbar functions
     def new_cat_btn_clicked(self) -> None:
@@ -147,6 +151,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return super().eventFilter(obj, event)
 
 
+def display_window() -> None:
+    main_window.show()
+    app.exec()
+
+
+def load_stylesheet(path: str) -> str:
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
 def load_base_ui() -> None:
     ui_path = BASE_DIR / "src" / "gui" / "ui" / "main_window.ui"
     ui_window = ui_loader.load(str(ui_path), None)
@@ -154,13 +168,8 @@ def load_base_ui() -> None:
     app.exec()
 
 
-def display_window() -> None:
-    main_window.show()
-    app.exec()
-
-
-# Base Project Path
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
+STYLES_DIR = Path(__file__).resolve().parent / "styles"  # Style Sheets Path
 
 # main window instance
 ui_loader = QUiLoader()

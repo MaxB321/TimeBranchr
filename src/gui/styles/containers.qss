@@ -1,0 +1,4 @@
+QGroupBox#groupBox {
+    border: 2px solid #929292;
+    border-radius: 10px;
+}
