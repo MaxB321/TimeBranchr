@@ -89,6 +89,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.toggle()
 
         self.treeWidget.doubleClicked.connect(self.edit_widget_text)
+        
 
         self.installEventFilter(self)
 
@@ -138,7 +139,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
 
     
-    def eventFilter(self, obj: QObject, event: QEvent):
+    # deselect treewidgetitems through overloaded QObject method
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
             self.treeWidget.clearSelection()
             

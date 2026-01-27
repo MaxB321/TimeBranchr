@@ -40,7 +40,15 @@
          <widget class="QTreeWidget" name="treeWidget_2">
           <column>
            <property name="text">
-            <string notr="true">1</string>
+            <string notr="true">Timer</string>
+           </property>
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="textAlignment">
+            <set>AlignCenter</set>
            </property>
           </column>
          </widget>

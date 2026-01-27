@@ -74,7 +74,9 @@ class Ui_MainWindow(object):
 
         self.treeWidget_2 = QTreeWidget(self.page)
         __qtreewidgetitem1 = QTreeWidgetItem()
-        __qtreewidgetitem1.setText(0, u"1");
+        __qtreewidgetitem1.setText(0, u"Timer");
+        __qtreewidgetitem1.setTextAlignment(0, Qt.AlignCenter);
+        __qtreewidgetitem1.setFont(0, font);
         self.treeWidget_2.setHeaderItem(__qtreewidgetitem1)
         self.treeWidget_2.setObjectName(u"treeWidget_2")
 
