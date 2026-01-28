@@ -33,8 +33,8 @@ class Ui_MainWindow(object):
         self.actionCopy.setObjectName(u"actionCopy")
         self.actionPaste = QAction(MainWindow)
         self.actionPaste.setObjectName(u"actionPaste")
-        self.actionSign_Out = QAction(MainWindow)
-        self.actionSign_Out.setObjectName(u"actionSign_Out")
+        self.actionDisplay_Name = QAction(MainWindow)
+        self.actionDisplay_Name.setObjectName(u"actionDisplay_Name")
         self.actionExport_CSV = QAction(MainWindow)
         self.actionExport_CSV.setObjectName(u"actionExport_CSV")
         self.actionUndo = QAction(MainWindow)
@@ -197,7 +197,7 @@ class Ui_MainWindow(object):
         self.menuView.addAction(self.actionShow_Toolbar)
         self.menuHelp.addAction(self.actionKeyboard_Shortcuts)
         self.menuHelp.addAction(self.actionAbout)
-        self.menuSettings.addAction(self.actionSign_Out)
+        self.menuSettings.addAction(self.actionDisplay_Name)
 
         self.retranslateUi(MainWindow)
 
@@ -212,7 +212,7 @@ class Ui_MainWindow(object):
         self.actionDark_Mode.setText(QCoreApplication.translate("MainWindow", u"Dark Mode", None))
         self.actionCopy.setText(QCoreApplication.translate("MainWindow", u"Copy (Ctrl+C)", None))
         self.actionPaste.setText(QCoreApplication.translate("MainWindow", u"Paste (Ctrl+V)", None))
-        self.actionSign_Out.setText(QCoreApplication.translate("MainWindow", u"Sign Out", None))
+        self.actionDisplay_Name.setText(QCoreApplication.translate("MainWindow", u"Change Display Name", None))
         self.actionExport_CSV.setText(QCoreApplication.translate("MainWindow", u"Export (CSV)", None))
         self.actionUndo.setText(QCoreApplication.translate("MainWindow", u"Undo (Ctrl+Z)", None))
         self.actionQuit.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
