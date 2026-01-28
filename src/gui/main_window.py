@@ -2,11 +2,8 @@
 Handles The Main GUI Window 
 """
 
-from codecs import utf_8_encode
 import sys
 from pathlib import Path
-from tokenize import String
-from typing import overload
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -47,15 +44,17 @@ from PySide6.QtCore import (
 from PySide6.QtUiTools import QUiLoader
 import gui.resources_rc
 from gui.generated.MainWindow import Ui_MainWindow
+from gui.widgets.timer_widget import TimerWidget
 
 
-class MainWindow(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow, TimerWidget):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
-        
+        self.timer_widget = TimerWidget(self.label)
+
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.new_cat_btn_clicked)
@@ -114,17 +113,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(cur_item))
 
     
-    def start_btn_clicked(self, s) -> None:
-        print(s)
+    def start_btn_clicked(self) -> None:
+        self.timer_widget.start_timer()
     
 
-    def pause_btn_clicked(self, s) -> None:
-        print(s)
+    def pause_btn_clicked(self) -> None:
+        self.timer_widget.pause_timer()
 
 
-    def stop_btn_clicked(self, s) -> None:
-        print(s)
-    
+    def stop_btn_clicked(self) -> None:
+        self.timer_widget.stop_timer()
+
 
     # menu functions  
     def quit_menu_clicked(self) -> None:
