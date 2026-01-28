@@ -90,7 +90,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.toggle()
 
         self.treeWidget.doubleClicked.connect(self.edit_widget_text)
-        
 
         self.installEventFilter(self)
 
