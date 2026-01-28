@@ -15,7 +15,7 @@ class TimerWidget():
     def pause_timer(self) -> None:
         if self._timer.isActive():
             self._timer.stop()
-        else:
+        elif not self._timer.isActive() and not (self.label.text() == "00:00:00"):
             self._timer.start()
 
 

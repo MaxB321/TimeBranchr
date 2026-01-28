@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
-        <!-- 16x16 PNGs -->
+        <!-- PNGs -->
         <file alias="arrow-180.png">icons/arrow-180.png</file>
         <file alias="arrow-circle-225-left.png">icons/arrow-circle-225-left.png</file>
         <file alias="arrow-circle-315.png">icons/arrow-circle-315.png</file>

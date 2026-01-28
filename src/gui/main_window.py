@@ -114,7 +114,9 @@ class MainWindow(QMainWindow, Ui_MainWindow, TimerWidget):
 
     
     def start_btn_clicked(self) -> None:
-        self.timer_widget.start_timer()
+        cur_item = self.treeWidget.currentItem()
+        if cur_item and cur_item.isSelected():
+            self.timer_widget.start_timer()
     
 
     def pause_btn_clicked(self) -> None:
