@@ -30,15 +30,15 @@ class TimerWidget():
         self.label.setText("00:00:00")
 
 
-    def _display_timer(self) -> str:
-        seconds = self._elapsed_seconds
-        minutes = 0
-        hours = 0
+    def _display_timer(self, seconds) -> str:
+        s = seconds % 60
+        minutes = (seconds % 3600) // 60
+        hours = seconds // 3600
         
-        return f"{seconds}"
+        return f"{hours:02}:{minutes:02}:{s:02}"
         #return f"{hours}:{minutes}:{seconds}"
 
 
     def _update_timer(self) -> None:
         self._elapsed_seconds += 1
-        self.label.setText(self._display_timer())
+        self.label.setText(self._display_timer(self._elapsed_seconds))
