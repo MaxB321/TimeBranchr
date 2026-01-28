@@ -36,7 +36,6 @@ class TimerWidget():
         hours = seconds // 3600
         
         return f"{hours:02}:{minutes:02}:{s:02}"
-        #return f"{hours}:{minutes}:{seconds}"
 
 
     def _update_timer(self) -> None:
