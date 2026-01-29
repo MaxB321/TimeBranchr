@@ -127,7 +127,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QTreeWidget" name="treeWidget_2">
+            <widget class="QTreeWidget" name="logTreeWidget">
              <column>
               <property name="text">
                <string>Logs</string>
@@ -205,7 +205,7 @@
     <property name="title">
      <string>Settings</string>
     </property>
-    <addaction name="actionSign_Out"/>
+    <addaction name="actionDisplay_Name"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -240,9 +240,9 @@
     <string>Paste (Ctrl+V)</string>
    </property>
   </action>
-  <action name="actionSign_Out">
+  <action name="actionDisplay_Name">
    <property name="text">
-    <string>Sign Out</string>
+    <string>Change Display Name</string>
    </property>
   </action>
   <action name="actionExport_CSV">

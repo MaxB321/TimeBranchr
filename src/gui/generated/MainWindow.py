@@ -133,10 +133,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_7)
 
-        self.treeWidget_2 = QTreeWidget(self.groupBox)
-        self.treeWidget_2.setObjectName(u"treeWidget_2")
+        self.logTreeWidget = QTreeWidget(self.groupBox)
+        self.logTreeWidget.setObjectName(u"logTreeWidget")
 
-        self.verticalLayout.addWidget(self.treeWidget_2)
+        self.verticalLayout.addWidget(self.logTreeWidget)
 
 
         self.gridLayout_2.addWidget(self.groupBox, 0, 1, 1, 1)
@@ -223,7 +223,7 @@ class Ui_MainWindow(object):
         self.actionShow_Toolbar.setText(QCoreApplication.translate("MainWindow", u"Show Toolbar", None))
         self.groupBox.setTitle("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
-        ___qtreewidgetitem = self.treeWidget_2.headerItem()
+        ___qtreewidgetitem = self.logTreeWidget.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Logs", None));
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))

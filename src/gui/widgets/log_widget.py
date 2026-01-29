@@ -1,11 +1,9 @@
-import main_window
-
-class LogWidget(main_window.MainWindow):
+class LogWidget():
     def __init__(self) -> None:
         super().__init__()
 
 
-    def add_log(self):  # add timer log after stop btn pressed
+    def add_log(self, seconds: int):  # add timer log after stop btn pressed
         pass
 
 
