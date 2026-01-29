@@ -47,7 +47,7 @@ from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 
 
-class MainWindow(QMainWindow, Ui_MainWindow, TimerWidget):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
