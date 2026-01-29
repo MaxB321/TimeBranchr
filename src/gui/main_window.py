@@ -45,6 +45,7 @@ from PySide6.QtUiTools import QUiLoader
 import gui.resources_rc
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
+from gui.widgets.log_widget import LogWidget
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -54,6 +55,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
+        self.log_widget = LogWidget()
 
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -124,6 +126,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def stop_btn_clicked(self) -> None:
+        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds)
         self.timer_widget.stop_timer()
 
 
