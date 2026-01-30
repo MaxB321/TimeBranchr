@@ -18,8 +18,13 @@ class LogWidget():
             new_log.setText(0, log_str)
 
 
-    def connect_log(self):  # connect log to category
-        pass
+    def connect_log(self, category_tree: QTreeWidget, log_tree: QTreeWidget):  # connect log to category
+        cur_item = category_tree.currentItem()
+        if cur_item:
+            cur_item_name = cur_item.text(0)
+            header = log_tree.headerItem()
+            header.setText(0, f"Logs - {cur_item_name}")
+        
 
 
     def create_log(self):  # user-created log 

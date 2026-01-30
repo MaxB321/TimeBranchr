@@ -91,6 +91,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.toggle()
 
         self.treeWidget.doubleClicked.connect(self.edit_widget_text)
+        self.treeWidget.itemClicked.connect(self.update_log_view)
+        self.treeWidget.itemChanged.connect(self.update_log_view)
 
         self.installEventFilter(self)
 
@@ -98,7 +100,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
 
 
-    # toolbar functions
+    # TOOLBAR FUNCTIONS
     def new_cat_btn_clicked(self) -> None:
         child_item = QTreeWidgetItem(self.treeWidget)
         child_item.setText(0, "New Category")
@@ -130,7 +132,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timer_widget.stop_timer()
 
 
-    # menu functions  
+    # MENU FUNCTIONS  
     def quit_menu_clicked(self) -> None:
         sys.exit()
 
@@ -146,12 +148,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
 
     
+    # MISCELLANEOUS FUNCTIONS
     # deselect treewidgetitems through overloaded QObject method
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
             self.treeWidget.clearSelection()
             
         return super().eventFilter(obj, event)
+
+    
+    def update_log_view(self):
+        self.log_widget.connect_log(self.treeWidget, self.logTreeWidget)
 
 
 def display_window() -> None:
