@@ -4,6 +4,7 @@ Handles The Main GUI Window
 
 import sys
 from pathlib import Path
+from uuid import uuid4
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -56,7 +57,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget()
-
+        
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.new_cat_btn_clicked)
@@ -72,7 +73,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         pause_button = QAction(QIcon(":/icons/pause.png"), "Pause/Resume", self)
         pause_button.setStatusTip("Pause or Resume Timer")
         pause_button.triggered.connect(self.pause_btn_clicked)
-
+        
         stop_button = QAction(QIcon(":/icons/stop.png"), "Stop", self)
         stop_button.setStatusTip("Stop Timer")
         stop_button.triggered.connect(self.stop_btn_clicked)
@@ -106,10 +107,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         child_item.setText(0, "New Category")
         child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
 
+        category_id = str(uuid4())
+        child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+        self.log_widget.init_category(category_id)
+
 
     def delete_cat_btn_clicked(self) -> None:
         cur_item = self.treeWidget.currentItem()
         if cur_item and cur_item.isSelected():
+            category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
+            self.log_widget._user_logs.pop(category_id, None)
             parent = cur_item.parent()
             if parent:
                 parent.removeChild(cur_item)
@@ -156,8 +163,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             
         return super().eventFilter(obj, event)
 
-    
-    def update_log_view(self):
+
+    def get_category_id(self):
+        pass
+
+
+    def update_log_view(self) -> None:
         self.log_widget.connect_log(self.treeWidget, self.logTreeWidget)
 
 
