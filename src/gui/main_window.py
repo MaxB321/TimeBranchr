@@ -2,6 +2,7 @@
 Handles The Main GUI Window 
 """
 
+from sqlite3 import Cursor
 import sys
 from pathlib import Path
 from uuid import uuid4
@@ -128,6 +129,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cur_item = self.treeWidget.currentItem()
         if cur_item and cur_item.isSelected():
             self.timer_widget.start_timer()
+            category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
+            self.log_widget.set_category_id(category_id)
     
 
     def pause_btn_clicked(self) -> None:
@@ -164,11 +167,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return super().eventFilter(obj, event)
 
 
-    def get_category_id(self):
-        pass
-
-
     def update_log_view(self) -> None:
+        cur_item = self.treeWidget.currentItem()
+        if not cur_item:
+            return
+        category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
+        self.log_widget.set_category_id(category_id)
         self.log_widget.connect_log(self.treeWidget, self.logTreeWidget)
 
 
