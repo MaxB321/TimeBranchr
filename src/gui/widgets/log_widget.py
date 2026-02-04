@@ -15,7 +15,7 @@ class LogWidget():
             return
         
         self._user_logs[self._category_id].append(seconds)
-        self.display_logs_nto(parent)
+        self.display_logs_newest_first(parent)
 
 
     def connect_log(self, category_tree: QTreeWidget, log_tree: QTreeWidget) -> None:  # connect log to category
@@ -27,8 +27,8 @@ class LogWidget():
         header = log_tree.headerItem()
         header.setText(0, f"Logs - {cur_item_name}")
 
-        self.display_logs_nto(log_tree)
-        
+        self.display_logs_newest_first(log_tree)
+
 
     def create_log(self):  # user-created log 
         pass
@@ -38,7 +38,7 @@ class LogWidget():
         pass
 
 
-    def display_logs_nto(self, parent: QTreeWidget):
+    def display_logs_newest_first(self, parent: QTreeWidget):
         parent.clear()
         for val in reversed(self._user_logs[self._category_id]):
             s = val % 60
