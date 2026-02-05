@@ -45,9 +45,12 @@ from PySide6.QtCore import (
 )
 from PySide6.QtUiTools import QUiLoader
 import gui.resources_rc
+import database.categories_table
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 from gui.widgets.log_widget import LogWidget
+from database.db_connect import db_conn
+
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -95,11 +98,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeWidget.doubleClicked.connect(self.edit_widget_text)
         self.treeWidget.itemClicked.connect(self.update_log_view)
         self.treeWidget.itemChanged.connect(self.update_log_view)
+        self.treeWidget.itemChanged.connect(self.update_cat_name_db)
 
         self.installEventFilter(self)
 
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
         self.treeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
+        self.i = 0
 
 
     # TOOLBAR FUNCTIONS
@@ -143,7 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timer_widget.stop_timer()
 
 
-    # MENU FUNCTIONS  
+    # MENU FUNCTIONS
     def quit_menu_clicked(self) -> None:
         sys.exit()
 
@@ -157,7 +162,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     # MISCELLANEOUS FUNCTIONS
     def edit_widget_text(self) -> None:
-        self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
+        cur_item = self.treeWidget.currentItem()
+        self.treeWidget.editItem(cur_item, 0)
 
 
     # deselect treewidgetitems through overloaded QObject method
@@ -166,6 +172,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.treeWidget.clearSelection()
             
         return super().eventFilter(obj, event)
+
+
+    def get_category_id(self) -> str:
+        cur_item = self.treeWidget.currentItem()
+        category_id: str = cur_item.data(0, Qt.ItemDataRole.UserRole)
+        return category_id
+
+
+    def update_cat_name_db(self) -> None:
+        if self.treeWidget.currentItem() is None:
+            return
+        
+        cur_item_text = self.treeWidget.currentItem().text(0)
+        if not cur_item_text == "New Category":
+
+            print(f"{self.i}")
+            self.i += 1
+        
+            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
 
 
     def update_log_view(self) -> None:
