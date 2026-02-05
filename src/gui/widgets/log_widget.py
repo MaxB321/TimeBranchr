@@ -1,5 +1,8 @@
 from ast import List
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
+from database.db_connect import db_conn
+import database.categories_table
+import database.logs_table
 
 
 class LogWidget():
@@ -16,6 +19,7 @@ class LogWidget():
         
         self._user_logs[self._category_id].append(seconds)
         self.display_logs_newest_first(parent)
+        database.logs_table.init_log(db_conn, self._category_id, seconds)
 
 
     def connect_log(self, category_tree: QTreeWidget, log_tree: QTreeWidget) -> None:  # connect log to category
@@ -38,7 +42,7 @@ class LogWidget():
         pass
 
 
-    def display_logs_newest_first(self, parent: QTreeWidget):
+    def display_logs_newest_first(self, parent: QTreeWidget) -> None:
         parent.clear()
         for val in reversed(self._user_logs[self._category_id]):
             s = val % 60
@@ -49,10 +53,10 @@ class LogWidget():
             new_log.setText(0, log_str)
 
 
-    def init_category(self, category_id: str):
+    def init_category(self, category_id: str, category_name: str) -> None:
         self._user_logs[category_id] = []
+        database.categories_table.init_category(db_conn, category_id, category_name, 0)
 
 
-    def set_category_id(self, category_id: str):
+    def set_category_id(self, category_id: str) -> None:
         self._category_id = category_id
-    

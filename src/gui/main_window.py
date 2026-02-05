@@ -119,10 +119,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         child_item = QTreeWidgetItem(self.treeWidget)
         child_item.setText(0, "New Category")
         child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
+        child_item_text = child_item.text(0)
 
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
-        self.log_widget.init_category(category_id)   
+        self.log_widget.init_category(category_id, child_item_text)   
 
 
     def pause_btn_clicked(self) -> None:

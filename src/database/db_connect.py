@@ -1,7 +1,10 @@
 from typing import Final
+from dotenv import load_dotenv
 import pymysql
 import os
 
+
+load_dotenv()
 
 def require_env(var: str) -> str:
     env_val: Final = os.getenv(var)
