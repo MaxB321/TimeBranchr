@@ -1,5 +1,4 @@
 from pymysql import connect
-from pymysql.cursors import DictCursor
 
 
 def add_category(db_connection: connect, category_id: str, category_name: str, time: int) -> None:
@@ -15,4 +14,8 @@ def add_category(db_connection: connect, category_id: str, category_name: str, t
 
 
 def delete_category_row(category_id: str) -> None:
+    pass
+
+
+def update_category_name(category_id: str) -> None:
     pass

@@ -103,16 +103,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     # TOOLBAR FUNCTIONS
-    def new_cat_btn_clicked(self) -> None:
-        child_item = QTreeWidgetItem(self.treeWidget)
-        child_item.setText(0, "New Category")
-        child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
-
-        category_id = str(uuid4())
-        child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
-        self.log_widget.init_category(category_id)
-
-
     def delete_cat_btn_clicked(self) -> None:
         cur_item = self.treeWidget.currentItem()
         if cur_item and cur_item.isSelected():
@@ -124,6 +114,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(cur_item))
 
+
+    def new_cat_btn_clicked(self) -> None:
+        child_item = QTreeWidgetItem(self.treeWidget)
+        child_item.setText(0, "New Category")
+        child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
+
+        category_id = str(uuid4())
+        child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+        self.log_widget.init_category(category_id)   
+
+
+    def pause_btn_clicked(self) -> None:
+        self.timer_widget.pause_timer() 
+
     
     def start_btn_clicked(self) -> None:
         cur_item = self.treeWidget.currentItem()
@@ -132,10 +136,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
             self.log_widget.set_category_id(category_id)
     
-
-    def pause_btn_clicked(self) -> None:
-        self.timer_widget.pause_timer()
-
 
     def stop_btn_clicked(self) -> None:
         self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds)
@@ -152,13 +152,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.toolBar.show()
         else:
             self.toolBar.hide()
-        
-    
-    def edit_widget_text(self) -> None:
-        self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
 
     
     # MISCELLANEOUS FUNCTIONS
+    def edit_widget_text(self) -> None:
+        self.treeWidget.editItem(self.treeWidget.currentItem(), 0)
+
+
     # deselect treewidgetitems through overloaded QObject method
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
@@ -181,16 +181,16 @@ def display_window() -> None:
     app.exec()
 
 
-def load_stylesheet(path: str) -> str:
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
 def load_base_ui() -> None:
     ui_path = BASE_DIR / "src" / "gui" / "ui" / "main_window.ui"
     ui_window = ui_loader.load(str(ui_path), None)
     ui_window.show()
     app.exec()
+
+
+def load_stylesheet(path: str) -> str:
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
