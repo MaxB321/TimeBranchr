@@ -99,12 +99,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.treeWidget.itemClicked.connect(self.update_log_view)
         self.treeWidget.itemChanged.connect(self.update_log_view)
         self.treeWidget.itemChanged.connect(self.update_cat_name_db)
-
+        
         self.installEventFilter(self)
 
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
         self.treeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
-        self.i = 0
 
 
     # TOOLBAR FUNCTIONS
@@ -121,6 +120,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def new_cat_btn_clicked(self) -> None:
+        self.treeWidget.blockSignals(True)
+
         child_item = QTreeWidgetItem(self.treeWidget)
         child_item.setText(0, "New Category")
         child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
@@ -128,6 +129,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+        
+        self.treeWidget.blockSignals(False)
         self.log_widget.init_category(category_id, child_item_text)   
 
 
@@ -185,12 +188,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
         
         cur_item_text = self.treeWidget.currentItem().text(0)
-        if not cur_item_text == "New Category":
-
-            print(f"{self.i}")
-            self.i += 1
-        
-            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
+        database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
 
 
     def update_log_view(self) -> None:
