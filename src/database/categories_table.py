@@ -2,7 +2,7 @@ from pymysql import connect
 from pymysql.cursors import DictCursor
 
 
-def delete_category_row(category_id: str) -> None:
+def delete_category_row(category_id: str) -> None:  # when user deletes category
     pass
 
 
@@ -31,5 +31,5 @@ def update_category_name(db_connection, category_id: str, category_name: str) ->
     db_connection.commit()
 
 
-def category_time() -> None:
-    pass
+def get_category_time(category_id: str) -> int:  # returns the seconds in the total_time 
+    return 0

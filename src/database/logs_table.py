@@ -1,3 +1,4 @@
+from PySide6.QtCore import QDateTime
 from pymysql import connect
 
 
@@ -5,7 +6,7 @@ def delete_log_row(log_id: int) -> None:
     pass
 
 
-def get_log_id() -> int:
+def get_log_id(category_id: str, user_id: str, date_time: QDateTime) -> int:  # will primarily be for deleting logs
     return 0
 
 

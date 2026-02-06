@@ -147,7 +147,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     def stop_btn_clicked(self) -> None:
-        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds)
+        category_id = self.get_category_id()
+        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id)
         self.timer_widget.stop_timer()
 
 
@@ -195,9 +196,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cur_item = self.treeWidget.currentItem()
         if not cur_item:
             return
-        category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
-        self.log_widget.set_category_id(category_id)
-        self.log_widget.connect_log(self.treeWidget, self.logTreeWidget)
+
+        category_id = self.get_category_id()
+        self.log_widget.display_logs(self.treeWidget, self.logTreeWidget, category_id)
 
 
 def display_window() -> None:
