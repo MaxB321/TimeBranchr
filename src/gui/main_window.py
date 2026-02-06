@@ -61,6 +61,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget()
+        self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -99,6 +100,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_cat_name_db)
+
+        self.log_widget.log_added.connect(self.update_category_time)
         
         self.installEventFilter(self)
 
@@ -130,6 +133,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+        self.cat_item_ref[category_id] = child_item
 
         child_item.setText(1, "0.0 Hrs")
         
@@ -202,6 +206,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cur_item_text = self.categoryTreeWidget.currentItem().text(0)
         database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
 
+
+    def update_category_time(self) -> None:
+        category_id = self.log_widget._category_id
+        child_item = self.cat_item_ref[category_id]
+        category_time = database.categories_table.get_category_time(db_conn, category_id)
+        s = category_time % 60
+        m = (category_time % 3600) // 60
+        h = category_time // 3600
+        
+        if h > 0:
+            child_item.setText(1, f"{h}.{int((m / 60) * 100):1} Hrs")
+        elif h == 0 and m > 0:
+            child_item.setText(1, f"{m}.{int((s / 60) * 100):1} Min")
+        else:
+            child_item.setText(1, f"{s} Sec")
+        
 
     def update_log_view(self) -> None:
         cur_item = self.categoryTreeWidget.currentItem()

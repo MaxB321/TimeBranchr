@@ -31,5 +31,20 @@ def update_category_name(db_connection, category_id: str, category_name: str) ->
     db_connection.commit()
 
 
-def get_category_time(category_id: str) -> int:  # returns the seconds in the total_time 
+def get_category_time(db_connection, category_id: str) -> int:  # returns the seconds in the total_time 
+    sql_query = """
+        SELECT total_time
+        FROM categories
+        WHERE category_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (category_id))
+    
+        row = cursor.fetchone()
+        if row:
+            val: int = row["total_time"]
+            return val
+    
     return 0
+    

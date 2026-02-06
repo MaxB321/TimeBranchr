@@ -1,12 +1,14 @@
 from ast import List
-from unicodedata import category
+from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
 import database.logs_table
 
 
-class LogWidget():
+class LogWidget(QObject):
+    log_added = Signal(str)
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -14,16 +16,17 @@ class LogWidget():
         self._category_id: str = ""
 
 
-    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str) -> None:  # add timer log after stop btn pressed
+    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str) -> None:  
         if seconds == 0:
             return
         
         self._user_logs[self._category_id].append(seconds)
         self.display_logs_newest_first(parent, selected_category_id)
         database.logs_table.init_log(db_conn, self._category_id, seconds)
+        self.log_added.emit(self._category_id)
 
 
-    def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str) -> None:  # connect log to category
+    def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str) -> None:  
         cur_item = category_tree.currentItem()
         if not cur_item:
             return
