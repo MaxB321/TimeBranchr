@@ -104,6 +104,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
+        self.init_category_tree()
 
 
     # TOOLBAR FUNCTIONS
@@ -182,6 +183,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         cur_item = self.categoryTreeWidget.currentItem()
         category_id: str = cur_item.data(0, Qt.ItemDataRole.UserRole)
         return category_id
+
+
+    def init_category_tree(self) -> None:
+        header = self.categoryTreeWidget.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, header.ResizeMode.Stretch)
+        header.setSectionResizeMode(1, header.ResizeMode.Fixed)
+        self.categoryTreeWidget.setColumnWidth(1, 150)
 
 
     def update_cat_name_db(self) -> None:
