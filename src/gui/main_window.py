@@ -130,9 +130,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+
+        child_item.setText(1, "0.0 Hrs")
         
         self.categoryTreeWidget.blockSignals(False)
-        self.log_widget.init_category(category_id, child_item_text)   
+        self.log_widget.init_category(category_id, child_item_text)
 
 
     def pause_btn_clicked(self) -> None:
@@ -189,8 +191,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header = self.categoryTreeWidget.header()
         header.setStretchLastSection(False)
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
-        header.setSectionResizeMode(1, header.ResizeMode.Fixed)
-        self.categoryTreeWidget.setColumnWidth(1, 150)
+        header.setSectionResizeMode(1, header.ResizeMode.Custom)
+        self.categoryTreeWidget.setColumnWidth(1, 125) 
 
 
     def update_cat_name_db(self) -> None:
