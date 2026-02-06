@@ -141,17 +141,20 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.groupBox, 0, 1, 1, 1)
 
-        self.treeWidget = QTreeWidget(self.page)
+        self.categoryTreeWidget = QTreeWidget(self.page)
         font1 = QFont()
         font1.setBold(True)
         __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setTextAlignment(1, Qt.AlignCenter);
+        __qtreewidgetitem.setFont(1, font1);
         __qtreewidgetitem.setText(0, u"Categories");
         __qtreewidgetitem.setTextAlignment(0, Qt.AlignCenter);
         __qtreewidgetitem.setFont(0, font1);
-        self.treeWidget.setHeaderItem(__qtreewidgetitem)
-        self.treeWidget.setObjectName(u"treeWidget")
+        self.categoryTreeWidget.setHeaderItem(__qtreewidgetitem)
+        self.categoryTreeWidget.setObjectName(u"categoryTreeWidget")
+        self.categoryTreeWidget.setMinimumSize(QSize(467, 0))
 
-        self.gridLayout_2.addWidget(self.treeWidget, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.categoryTreeWidget, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.page)
         self.page_2 = QWidget()
@@ -225,6 +228,8 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         ___qtreewidgetitem = self.logTreeWidget.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Logs", None));
+        ___qtreewidgetitem1 = self.categoryTreeWidget.headerItem()
+        ___qtreewidgetitem1.setText(1, QCoreApplication.translate("MainWindow", u"Time", None));
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menuView.setTitle(QCoreApplication.translate("MainWindow", u"View", None))

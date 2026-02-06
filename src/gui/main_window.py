@@ -95,20 +95,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.setCheckable(True)
         self.actionShow_Toolbar.toggle()
 
-        self.treeWidget.doubleClicked.connect(self.edit_widget_text)
-        self.treeWidget.itemClicked.connect(self.update_log_view)
-        self.treeWidget.itemChanged.connect(self.update_log_view)
-        self.treeWidget.itemChanged.connect(self.update_cat_name_db)
+        self.categoryTreeWidget.doubleClicked.connect(self.edit_widget_text)
+        self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
+        self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
+        self.categoryTreeWidget.itemChanged.connect(self.update_cat_name_db)
         
         self.installEventFilter(self)
 
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
-        self.treeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
+        self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
 
 
     # TOOLBAR FUNCTIONS
     def delete_cat_btn_clicked(self) -> None:
-        cur_item = self.treeWidget.currentItem()
+        cur_item = self.categoryTreeWidget.currentItem()
         if cur_item and cur_item.isSelected():
             category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
             self.log_widget._user_logs.pop(category_id, None)
@@ -116,13 +116,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if parent:
                 parent.removeChild(cur_item)
             else:
-                self.treeWidget.takeTopLevelItem(self.treeWidget.indexOfTopLevelItem(cur_item))
+                self.categoryTreeWidget.takeTopLevelItem(self.categoryTreeWidget.indexOfTopLevelItem(cur_item))
 
 
     def new_cat_btn_clicked(self) -> None:
-        self.treeWidget.blockSignals(True)
+        self.categoryTreeWidget.blockSignals(True)
 
-        child_item = QTreeWidgetItem(self.treeWidget)
+        child_item = QTreeWidgetItem(self.categoryTreeWidget)
         child_item.setText(0, "New Category")
         child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
         child_item_text = child_item.text(0)
@@ -130,7 +130,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
         
-        self.treeWidget.blockSignals(False)
+        self.categoryTreeWidget.blockSignals(False)
         self.log_widget.init_category(category_id, child_item_text)   
 
 
@@ -139,7 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     
     def start_btn_clicked(self) -> None:
-        cur_item = self.treeWidget.currentItem()
+        cur_item = self.categoryTreeWidget.currentItem()
         if cur_item and cur_item.isSelected():
             self.timer_widget.start_timer()
             category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
@@ -166,39 +166,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     # MISCELLANEOUS FUNCTIONS
     def edit_widget_text(self) -> None:
-        cur_item = self.treeWidget.currentItem()
-        self.treeWidget.editItem(cur_item, 0)
+        cur_item = self.categoryTreeWidget.currentItem()
+        self.categoryTreeWidget.editItem(cur_item, 0)
 
 
     # deselect treewidgetitems through overloaded QObject method
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
-            self.treeWidget.clearSelection()
+            self.categoryTreeWidget.clearSelection()
             
         return super().eventFilter(obj, event)
 
 
     def get_category_id(self) -> str:
-        cur_item = self.treeWidget.currentItem()
+        cur_item = self.categoryTreeWidget.currentItem()
         category_id: str = cur_item.data(0, Qt.ItemDataRole.UserRole)
         return category_id
 
 
     def update_cat_name_db(self) -> None:
-        if self.treeWidget.currentItem() is None:
+        if self.categoryTreeWidget.currentItem() is None:
             return
         
-        cur_item_text = self.treeWidget.currentItem().text(0)
+        cur_item_text = self.categoryTreeWidget.currentItem().text(0)
         database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
 
 
     def update_log_view(self) -> None:
-        cur_item = self.treeWidget.currentItem()
+        cur_item = self.categoryTreeWidget.currentItem()
         if not cur_item:
             return
 
         category_id = self.get_category_id()
-        self.log_widget.display_logs(self.treeWidget, self.logTreeWidget, category_id)
+        self.log_widget.display_logs(self.categoryTreeWidget, self.logTreeWidget, category_id)
 
 
 def display_window() -> None:

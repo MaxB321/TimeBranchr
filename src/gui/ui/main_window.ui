@@ -139,10 +139,29 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QTreeWidget" name="treeWidget">
+         <widget class="QTreeWidget" name="categoryTreeWidget">
+          <property name="minimumSize">
+           <size>
+            <width>467</width>
+            <height>0</height>
+           </size>
+          </property>
           <column>
            <property name="text">
             <string notr="true">Categories</string>
+           </property>
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="textAlignment">
+            <set>AlignCenter</set>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Time</string>
            </property>
            <property name="font">
             <font>
