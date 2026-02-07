@@ -2,7 +2,19 @@ from PySide6.QtCore import QDateTime
 from pymysql import connect
 
 
-def delete_log_row(log_id: int) -> None:
+def cleanup_log_row(db_connection, category_id: str) -> None:   
+    sql_query = """
+        DELETE FROM time_logs 
+        WHERE category_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (category_id))
+
+    db_connection.commit()
+
+
+def user_del_log_row() -> None:  
     pass
 
 

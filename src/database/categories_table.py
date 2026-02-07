@@ -1,9 +1,20 @@
 from pymysql import connect
 from pymysql.cursors import DictCursor
+from database import logs_table
 
+def delete_category_row(db_connection, category_id: str) -> None:  # when user deletes category
+    logs_table.cleanup_log_row(db_connection, category_id)
 
-def delete_category_row(category_id: str) -> None:  # when user deletes category
-    pass
+    # run cat table logic
+    sql_query = """
+        DELETE FROM categories 
+        WHERE category_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (category_id))
+
+    db_connection.commit()
 
 
 def init_category(db_connection, category_id: str, category_name: str, time: int) -> None:

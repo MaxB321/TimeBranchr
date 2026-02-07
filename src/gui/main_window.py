@@ -52,7 +52,6 @@ from gui.widgets.log_widget import LogWidget
 from database.db_connect import db_conn
 
 
-
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -66,7 +65,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.new_cat_btn_clicked)
-
+        
         delete_category_button = QAction(QIcon(":/icons/minus32.png"), "Delete Category", self)
         delete_category_button.setStatusTip("Deletes Selected Category")
         delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
@@ -121,6 +120,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 parent.removeChild(cur_item)
             else:
                 self.categoryTreeWidget.takeTopLevelItem(self.categoryTreeWidget.indexOfTopLevelItem(cur_item))
+            database.categories_table.delete_category_row(db_conn, category_id)
 
 
     def new_cat_btn_clicked(self) -> None:
@@ -203,6 +203,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.categoryTreeWidget.currentItem() is None:
             return
         
+
         cur_item_text = self.categoryTreeWidget.currentItem().text(0)
         database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
 
@@ -211,16 +212,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         category_id = self.log_widget._category_id
         child_item = self.cat_item_ref[category_id]
         category_time = database.categories_table.get_category_time(db_conn, category_id)
-        s = category_time % 60
-        m = (category_time % 3600) // 60
-        h = category_time // 3600
-        
-        if h > 0:
-            child_item.setText(1, f"{h}.{int((m / 60) * 100):1} Hrs")
-        elif h == 0 and m > 0:
-            child_item.setText(1, f"{m}.{int((s / 60) * 100):1} Min")
+        sec = category_time % 60
+        min = (category_time % 3600) // 60
+        hrs = category_time // 3600
+        hrs_display: float = float(category_time - sec) / 3600
+        min_display: float = float(category_time - sec) / 60
+
+        if hrs > 0:
+            child_item.setText(1, f"{hrs_display:.1f} Hrs")
+        elif hrs == 0 and min > 0:
+            child_item.setText(1, f"{min_display:.1f} Min")
         else:
-            child_item.setText(1, f"{s} Sec")
+            child_item.setText(1, f"{sec} Sec")
         
 
     def update_log_view(self) -> None:

@@ -8,7 +8,7 @@ class TimerWidget():
         self.label = label
         self._elapsed_seconds = 0
         self._timer = QTimer()
-        self._timer.setInterval(1000)
+        self._timer.setInterval(10)
         self._timer.timeout.connect(self._update_timer)
 
 
