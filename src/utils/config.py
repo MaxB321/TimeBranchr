@@ -7,9 +7,9 @@ def isConfig() -> bool:  # checks if config is present on local drive
     return CONFIG_FILE.exists()
 
 
-def read_config() -> str:
-        
-        return ""
+def read_config(user_id: str, user_name: str) -> None:
+    with CONFIG_FILE.open("r", encoding="utf-8") as file:
+        pass
 
 
 def write_config(user_id: str, user_name: str) -> None:
@@ -22,8 +22,7 @@ def write_config(user_id: str, user_name: str) -> None:
         json.dump(user_data, file, indent=4)
 
 
-# PATH Constants
-# save config to %appdata% roaming ; create dir called "TimeBranchr" ; create file called "config.json"
+# Constants
 APPDATA_PATH: Path = Path(os.environ["APPDATA"])
 APP_NAME: str = "TimeBranchr"
 CONFIG_PATH: Path = APPDATA_PATH / APP_NAME

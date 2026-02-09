@@ -48,6 +48,7 @@ from PySide6.QtUiTools import QUiLoader
 import gui.dialogs.getUserID
 import gui.resources_rc
 import database.categories_table
+import utils.config
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 from gui.widgets.log_widget import LogWidget
@@ -64,7 +65,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_widget = LogWidget()
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
-        self.user_dialog.show()
+        self._user_id: str = ""
+        self._user_name: str = ""
+        
+        if not utils.config.isConfig():
+            self.user_dialog.show()
+        else:
+            utils.config.read_config(self._user_id, self._user_name)
+            print(f"{self._user_id}\n{self._user_name}")
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
