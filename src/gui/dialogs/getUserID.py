@@ -9,6 +9,8 @@ from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
 import utils.config
+import database.user_table
+from database.db_connect import db_conn
 
 class UserDialog(QDialog, Ui_UserDialog):
     def __init__(self):
@@ -28,6 +30,7 @@ class UserDialog(QDialog, Ui_UserDialog):
         user_id = str(uuid4())
         user_name = self.lineEdit.text()
         utils.config.write_config(user_id, user_name)
+        database.user_table.init_user(db_conn, user_id, user_name)
         self.close()
         
 
