@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from uuid import uuid4
 from PySide6.QtWidgets import (
+    QDialog,
     QMainWindow,
     QWidget,
     QApplication,
@@ -44,6 +45,7 @@ from PySide6.QtCore import (
     QObject
 )
 from PySide6.QtUiTools import QUiLoader
+import gui.dialogs.getUserID
 import gui.resources_rc
 import database.categories_table
 from gui.generated.MainWindow import Ui_MainWindow
@@ -61,6 +63,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget()
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
+        self.user_dialog = gui.dialogs.getUserID.UserDialog()
+        self.user_dialog.show()
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -235,7 +239,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_widget.display_logs(self.categoryTreeWidget, self.logTreeWidget, category_id)
 
 
-def display_window() -> None:
+def display_main_window() -> None:
     main_window.show()
     app.exec()
 
