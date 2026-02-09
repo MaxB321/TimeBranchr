@@ -3,9 +3,12 @@ DIALOG WIDGET, ONLY APPEARS ON FIRST STARTUP
 """
 
 import sys
+from pathlib import Path
+from uuid import uuid4
 from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
+import utils.config
 
 class UserDialog(QDialog, Ui_UserDialog):
     def __init__(self):
@@ -18,27 +21,15 @@ class UserDialog(QDialog, Ui_UserDialog):
         self.prompt.setGeometry(100, 2, 500, 125)
         self.lineEdit.setGeometry(200, 100, 300, 25)
         
-
-    def get_user_id(self) -> str:
-        return ""
-    
-
-    def get_user_name(self) -> str:
-        return ""
+        self.lineEdit.returnPressed.connect(self.set_user_data)
 
 
-    def isConfig(self) -> bool:  # checks if config is present on local drive
-        return True
+    def set_user_data(self) -> None:
+        user_id = str(uuid4())
+        user_name = self.lineEdit.text()
+        utils.config.write_config(user_id, user_name)
+        
 
-
-    def write_config(self) -> None:
-        pass
-
-    
     def user_quit(self) -> None:  # if user quits out of dialog window before entering user_name then shut down the main window as well 
-        pass
-
-
-    def read_config(self) -> None:
         pass
 
