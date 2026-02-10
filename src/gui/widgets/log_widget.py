@@ -16,13 +16,13 @@ class LogWidget(QObject):
         self._category_id: str = ""
 
 
-    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str) -> None:  
+    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str, user_id: str) -> None:  
         if seconds == 0:
             return
         
         self._user_logs[self._category_id].append(seconds)
         self.display_logs_newest_first(parent, selected_category_id)
-        database.logs_table.init_log(db_conn, self._category_id, seconds)
+        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id)
         self.log_added.emit(self._category_id)
 
 

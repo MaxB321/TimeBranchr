@@ -48,6 +48,7 @@ from PySide6.QtUiTools import QUiLoader
 import gui.dialogs.getUserID
 import gui.resources_rc
 import database.categories_table
+import database.logs_table
 import utils.config
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
@@ -67,12 +68,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
         self._user_id: str = ""
         self._user_name: str = ""
+        self._user_categories: list[str] = []
+        self._user_logs: dict[str, int] = {}
         
         if not utils.config.isConfig():
             self.user_dialog.show()
         else:
             self._user_id = utils.config.get_user_id()
             self._user_name = utils.config.get_user_name()
+            # self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            # self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
+            # print(self._user_categories)
+            # print(self._user_logs)
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -168,7 +175,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def stop_btn_clicked(self) -> None:
         category_id = self.get_category_id()
-        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id)
+        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id)
         self.timer_widget.stop_timer()
 
 
@@ -210,6 +217,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
         self.categoryTreeWidget.setColumnWidth(1, 125) 
+    
+
+    def load_categories(self) -> None:
+        pass
+
+
+    def load_logs(self) -> None:
+        pass
 
 
     def update_cat_name_db(self) -> None:
