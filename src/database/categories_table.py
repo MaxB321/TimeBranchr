@@ -2,6 +2,7 @@ from pymysql import connect
 from pymysql.cursors import DictCursor
 from database import logs_table
 
+
 def delete_category_row(db_connection, category_id: str) -> None:  # when user deletes category
     logs_table.cleanup_log_row(db_connection, category_id)
 
@@ -25,13 +26,9 @@ def get_category_time(db_connection, category_id: str) -> int:  # returns the se
 
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (category_id))
-    
         row = cursor.fetchone()
-        if row:
-            val: int = row["total_time"]
-            return val
     
-    return 0
+    return row["total_time"]
 
 
 def init_category(db_connection, category_id: str, category_name: str, time: int, user_id: str) -> None:
@@ -46,6 +43,21 @@ def init_category(db_connection, category_id: str, category_name: str, time: int
     db_connection.commit()
 
 
+def get_user_categories(db_connection, user_id: str) -> list[str]:
+    sql_query = """
+        SELECT category
+        FROM categories
+        WHERE user_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (user_id))
+        rows = cursor.fetchall()
+    
+    return [row["category"] for row in rows] 
+    
+
+
 def update_category_name(db_connection, category_id: str, category_name: str) -> None:
     sql_query = """
         UPDATE categories
@@ -57,4 +69,3 @@ def update_category_name(db_connection, category_id: str, category_name: str) ->
         cursor.execute(sql_query, (category_name, category_id))
 
     db_connection.commit()
-    
