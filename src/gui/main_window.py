@@ -232,9 +232,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
             self.cat_item_ref[key] = child_item
 
-            child_item.setText(1, "0.0 Hrs")
+            category_time = database.categories_table.get_category_time(db_conn, key)
+            child_item.setText(1, self.load_category_time(category_time))
         
         self.categoryTreeWidget.blockSignals(False)
+    
+
+    def load_category_time(self, category_time: int) -> str:
+        sec = category_time % 60
+        min = (category_time % 3600) // 60
+        hrs = category_time // 3600
+        hrs_display: float = float(category_time - sec) / 3600
+        min_display: float = float(category_time - sec) / 60
+
+        if hrs > 0:
+            return f"{hrs_display:.1f} Hrs"
+        elif hrs == 0 and min > 0:
+            return f"{min_display:.1f} Min"
+        else:
+            return f"{sec} Sec"
 
 
     def load_logs(self) -> None:  # append the logs to the _user_logs dict in log_widget
@@ -266,6 +282,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             child_item.setText(1, f"{min_display:.1f} Min")
         else:
             child_item.setText(1, f"{sec} Sec")
+        
         
 
     def update_log_view(self) -> None:
