@@ -10,4 +10,7 @@ def init_user(db_connection, user_id: str, user_name: str) -> None:
         cursor.execute(sql_query, (user_id, user_name))
 
     db_connection.commit()
-    
+
+
+def update_user_name(user_id: str) -> None:  # allow user to change name and update the mysql column 
+    pass

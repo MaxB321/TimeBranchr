@@ -71,8 +71,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not utils.config.isConfig():
             self.user_dialog.show()
         else:
-            utils.config.read_config(self._user_id, self._user_name)
-            print(f"{self._user_id}\n{self._user_name}")
+            self._user_id = utils.config.get_user_id()
+            self._user_name = utils.config.get_user_name()
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -119,6 +119,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
         self.init_category_tree()
+        
 
 
     # TOOLBAR FUNCTIONS
@@ -150,7 +151,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         child_item.setText(1, "0.0 Hrs")
         
         self.categoryTreeWidget.blockSignals(False)
-        self.log_widget.init_category(category_id, child_item_text)
+        self.log_widget.init_category(category_id, child_item_text, self._user_id)
 
 
     def pause_btn_clicked(self) -> None:

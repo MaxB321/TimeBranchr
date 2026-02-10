@@ -34,14 +34,14 @@ def get_category_time(db_connection, category_id: str) -> int:  # returns the se
     return 0
 
 
-def init_category(db_connection, category_id: str, category_name: str, time: int) -> None:
+def init_category(db_connection, category_id: str, category_name: str, time: int, user_id: str) -> None:
     sql_query = """
-        INSERT INTO categories (category_id, category, total_time)
-        VALUES (%s, %s, %s)
+        INSERT INTO categories (category_id, category, total_time, user_id)
+        VALUES (%s, %s, %s, %s)
     """
 
     with db_connection.cursor() as cursor:
-        cursor.execute(sql_query, (category_id, category_name, time))
+        cursor.execute(sql_query, (category_id, category_name, time, user_id))
 
     db_connection.commit()
 

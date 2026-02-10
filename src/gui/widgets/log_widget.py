@@ -57,9 +57,9 @@ class LogWidget(QObject):
             new_log.setText(0, log_str)
 
 
-    def init_category(self, category_id: str, category_name: str) -> None:
+    def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
-        database.categories_table.init_category(db_conn, category_id, category_name, 0)
+        database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
 
 
     def set_category_id(self, category_id: str) -> None:
