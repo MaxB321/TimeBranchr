@@ -69,17 +69,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_id: str = ""
         self._user_name: str = ""
         self._user_categories: list[str] = []
-        self._user_logs: dict[str, int] = {}
+        self._user_logs: dict[str, list[int]] = {}
         
         if not utils.config.isConfig():
             self.user_dialog.show()
         else:
             self._user_id = utils.config.get_user_id()
             self._user_name = utils.config.get_user_name()
-            # self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
-            # self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
-            # print(self._user_categories)
-            # print(self._user_logs)
+            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")

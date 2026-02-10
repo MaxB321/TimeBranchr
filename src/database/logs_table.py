@@ -18,19 +18,22 @@ def get_log_id(category_id: str, user_id: str, date_time: QDateTime) -> int:  # 
     return 0
 
 
-def get_user_logs(db_connection, user_id: str) -> dict[str, int]:  # need date-time and log_time for user logs to load user data 
+def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]:  # need date-time and log_time for user logs to load user data 
     sql_query = """
-        SELECT log_time
+        SELECT category_id, log_time
         FROM time_logs
         WHERE user_id = (%s)
     """
-    user_data: dict[str, int] = {}
-
+    
+    user_data: dict[str, list[int]] = {}
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
-        rows = cursor.fetchall()
-        user_data.update( [row["category"] for row in rows] )
-        user_data.update( [row["log_time"] for row in rows] )
+        rows = cursor.fetchall() 
+        
+        for row in rows:
+            if row["category_id"] not in user_data:
+                user_data[row["category_id"]] = []
+            user_data[row["category_id"]].append(row["log_time"])
 
     return user_data
 
