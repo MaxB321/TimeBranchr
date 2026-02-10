@@ -62,5 +62,30 @@ class LogWidget(QObject):
         database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
 
 
+    def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> list[str]:
+        category_id: list[str] = []
+        category_id_logs: list[str] = []
+        categories_with_no_logs: list[str] = []
+        for key in user_categories.keys():
+            category_id.append(key)
+        for key in user_logs.keys():
+            category_id_logs.append(key)
+        for x in category_id:
+            if x not in category_id_logs:
+                categories_with_no_logs.append(x)
+
+        return categories_with_no_logs
+
+    
+    def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> None:
+        categories_with_no_logs: list[str] = self.category_with_no_logs(user_logs, user_categories)
+        for key, val in user_logs.items():
+            if key not in self._user_logs:
+                self._user_logs[key] = []
+            self._user_logs[key] = val
+        for x in categories_with_no_logs:
+            self._user_logs[x] = []
+
+
     def set_category_id(self, category_id: str) -> None:
         self._category_id = category_id

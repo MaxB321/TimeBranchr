@@ -49,6 +49,7 @@ import gui.dialogs.getUserID
 import gui.resources_rc
 import database.categories_table
 import database.logs_table
+from gui.widgets import log_widget
 import utils.config
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
@@ -79,6 +80,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
             self.load_categories()
+            self.load_logs()
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -235,8 +237,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.blockSignals(False)
 
 
-    def load_logs(self) -> None:
-        pass
+    def load_logs(self) -> None:  # append the logs to the _user_logs dict in log_widget
+        self.log_widget.load_logs(self._user_logs, self._user_categories)
 
 
     def update_cat_name_db(self) -> None:
