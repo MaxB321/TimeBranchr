@@ -3,7 +3,7 @@ from pymysql.cursors import DictCursor
 from database import logs_table
 
 
-def delete_category_row(db_connection, category_id: str) -> None:  # when user deletes category
+def delete_category_row(db_connection, category_id: str) -> None:
     logs_table.cleanup_log_row(db_connection, category_id)
 
     sql_query = """
@@ -17,7 +17,7 @@ def delete_category_row(db_connection, category_id: str) -> None:  # when user d
     db_connection.commit()
 
 
-def get_category_time(db_connection, category_id: str) -> int:  # returns the seconds in the total_time 
+def get_category_time(db_connection, category_id: str) -> int:  # returns the seconds in the total_time column
     sql_query = """
         SELECT total_time
         FROM categories
@@ -43,18 +43,22 @@ def init_category(db_connection, category_id: str, category_name: str, time: int
     db_connection.commit()
 
 
-def get_user_categories(db_connection, user_id: str) -> list[str]:
+def get_user_categories(db_connection, user_id: str) -> dict[str, str]:
     sql_query = """
-        SELECT category
+        SELECT category_id, category
         FROM categories
         WHERE user_id = (%s)
     """
 
+    user_data: dict[str, str] = {}
+
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
         rows = cursor.fetchall()
-    
-    return [row["category"] for row in rows] 
+        for row in rows:
+            user_data[row["category_id"]] = row["category"]
+            
+    return user_data
     
 
 

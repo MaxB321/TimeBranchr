@@ -18,7 +18,7 @@ def get_log_id(category_id: str, user_id: str, date_time: QDateTime) -> int:  # 
     return 0
 
 
-def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]:  # need date-time and log_time for user logs to load user data 
+def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]: 
     sql_query = """
         SELECT category_id, log_time
         FROM time_logs

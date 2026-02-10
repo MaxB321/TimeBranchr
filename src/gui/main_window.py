@@ -68,7 +68,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
         self._user_id: str = ""
         self._user_name: str = ""
-        self._user_categories: list[str] = []
+        self._user_categories: dict[str, str] = {}
         self._user_logs: dict[str, list[int]] = {}
         
         if not utils.config.isConfig():
@@ -78,6 +78,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_name = utils.config.get_user_name()
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
+            self.load_categories()
         
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
@@ -218,7 +219,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     def load_categories(self) -> None:
-        pass
+        self.categoryTreeWidget.blockSignals(True)
+
+        for key, val in self._user_categories.items():
+
+            child_item = QTreeWidgetItem(self.categoryTreeWidget)
+            child_item.setText(0, val)
+            child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
+            child_item.setData(0, Qt.ItemDataRole.UserRole, key)
+
+            self.cat_item_ref[key] = child_item
+
+            child_item.setText(1, "0.0 Hrs")
+        
+        self.categoryTreeWidget.blockSignals(False)
 
 
     def load_logs(self) -> None:
