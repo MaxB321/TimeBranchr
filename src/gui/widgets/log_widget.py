@@ -63,13 +63,10 @@ class LogWidget(QObject):
 
 
     def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> list[str]:
-        category_id: list[str] = []
-        category_id_logs: list[str] = []
+        category_id = list[str](user_categories.keys())
+        category_id_logs = list[str](user_logs.keys())
         categories_with_no_logs: list[str] = []
-        for key in user_categories.keys():
-            category_id.append(key)
-        for key in user_logs.keys():
-            category_id_logs.append(key)
+        
         for x in category_id:
             if x not in category_id_logs:
                 categories_with_no_logs.append(x)
