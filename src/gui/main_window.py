@@ -242,8 +242,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         sec = category_time % 60
         min = (category_time % 3600) // 60
         hrs = category_time // 3600
-        hrs_display: float = float(category_time - sec) / 3600
-        min_display: float = float(category_time - sec) / 60
+        hrs_display: float = float(category_time / 3600)
+        min_display: float = float(category_time / 60)
 
         if hrs > 0:
             return f"{hrs_display:.1f} Hrs"
@@ -273,8 +273,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         sec = category_time % 60
         min = (category_time % 3600) // 60
         hrs = category_time // 3600
-        hrs_display: float = float(category_time - sec) / 3600
-        min_display: float = float(category_time - sec) / 60
+        hrs_display: float = float(category_time / 3600) 
+        min_display: float = float(category_time / 60)
 
         if hrs > 0:
             child_item.setText(1, f"{hrs_display:.1f} Hrs")
@@ -282,7 +282,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             child_item.setText(1, f"{min_display:.1f} Min")
         else:
             child_item.setText(1, f"{sec} Sec")
-        
         
 
     def update_log_view(self) -> None:
