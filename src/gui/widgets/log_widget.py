@@ -14,6 +14,7 @@ class LogWidget(QObject):
         super().__init__()
 
         self._user_logs: dict[str, list[int]] = {}
+        self._user_log_datetime: dict[str, list[datetime]] = {}
         self._category_id: str = ""
 
 
@@ -28,6 +29,14 @@ class LogWidget(QObject):
         self.log_added.emit(self._category_id)
 
 
+    def create_log(self):  # user-created log 
+        pass
+
+
+    def delete_log(self):
+        pass
+
+
     def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str) -> None:  
         cur_item = category_tree.currentItem()
         if not cur_item:
@@ -40,27 +49,22 @@ class LogWidget(QObject):
         self.display_logs_newest_first(log_tree, category_id)
 
 
-    def create_log(self):  # user-created log 
-        pass
-
-
-    def delete_log(self):
-        pass
-
-
     def display_logs_newest_first(self, parent: QTreeWidget, category_id: str) -> None:
         parent.clear()
-        for val in reversed(self._user_logs[category_id]):
+        datetime_list: list[str] = []
+        for x in reversed(self._user_log_datetime[category_id]):
+            datetime_list.append(str(x))
+
+        for i, val in enumerate(reversed(self._user_logs[category_id])): 
             s = val % 60
             m = (val % 3600) // 60
             h = val // 3600
             log_str = f"{h:02}:{m:02}:{s:02}" 
+            datetime_str = str(datetime_list[i])
             new_log = QTreeWidgetItem(parent)
             new_log.setText(0, log_str)
-    
+            new_log.setText(1, datetime_str)
 
-    def display_log_datetime_newest_first(self, parent: QTreeWidget, category_id: str) -> None:
-        pass
 
 
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
@@ -80,12 +84,19 @@ class LogWidget(QObject):
         return categories_with_no_logs
 
     
-    def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> None:
+    def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_logs_datetime: dict[str, list[datetime]]) -> None:
         categories_with_no_logs: list[str] = self.category_with_no_logs(user_logs, user_categories)
         for key, val in user_logs.items():
             if key not in self._user_logs:
                 self._user_logs[key] = []
             self._user_logs[key] = val
+        for x in categories_with_no_logs:
+            self._user_logs[x] = []
+        
+        for key, val in user_logs_datetime.items():
+            if key not in self._user_logs:
+                self._user_log_datetime[key] = []
+            self._user_log_datetime[key] = val
         for x in categories_with_no_logs:
             self._user_logs[x] = []
 

@@ -229,7 +229,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setStretchLastSection(False)
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
-        self.logTreeWidget.setColumnWidth(1, 175) 
+        self.logTreeWidget.setColumnWidth(1, 125) 
 
 
     def load_categories(self) -> None:
@@ -266,8 +266,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def load_logs(self) -> None:
-        self.log_widget.load_logs(self._user_logs, self._user_categories)
-        
+        self.log_widget.load_logs(self._user_logs, self._user_categories, self._user_logs_datetime)
 
 
     def update_cat_name_db(self) -> None:
