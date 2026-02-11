@@ -127,6 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
         self.init_category_tree()
+        self.init_log_tree()
         
 
 
@@ -219,6 +220,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
         self.categoryTreeWidget.setColumnWidth(1, 125) 
     
+
+    def init_log_tree(self) -> None:
+        header = self.logTreeWidget.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, header.ResizeMode.Stretch)
+        header.setSectionResizeMode(1, header.ResizeMode.Custom)
+        self.logTreeWidget.setColumnWidth(1, 175) 
+
 
     def load_categories(self) -> None:
         self.categoryTreeWidget.blockSignals(True)
