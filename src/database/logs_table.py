@@ -39,6 +39,26 @@ def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]:
     return user_data
 
 
+def get_user_logs_datetime(db_connection, user_id: str) -> dict[str, list[datetime]]:
+    sql_query = """
+        SELECT category_id, date_time
+        FROM time_logs
+        WHERE user_id = (%s)
+    """
+    
+    user_data: dict[str, list[datetime]] = {}
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (user_id))
+        rows = cursor.fetchall() 
+        
+        for row in rows:
+            if row["category_id"] not in user_data:
+                user_data[row["category_id"]] = []
+            user_data[row["category_id"]].append(row["date_time"])
+
+    return user_data 
+
+
 def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
     sql_query = """
         INSERT INTO time_logs (category_id, log_time, user_id, date_time)

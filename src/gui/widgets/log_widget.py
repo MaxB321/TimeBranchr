@@ -57,6 +57,10 @@ class LogWidget(QObject):
             log_str = f"{h:02}:{m:02}:{s:02}" 
             new_log = QTreeWidgetItem(parent)
             new_log.setText(0, log_str)
+    
+
+    def display_log_datetime_newest_first(self, parent: QTreeWidget, category_id: str) -> None:
+        pass
 
 
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:

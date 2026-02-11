@@ -2,6 +2,7 @@
 Handles The Main GUI Window 
 """
 
+from datetime import datetime
 from sqlite3 import Cursor
 import sys
 from pathlib import Path
@@ -71,6 +72,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_name: str = ""
         self._user_categories: dict[str, str] = {}
         self._user_logs: dict[str, list[int]] = {}
+        self._user_logs_datetime: dict[str, list[datetime]] = {}
         
         if not utils.config.isConfig():
             self.user_dialog.show()
@@ -79,6 +81,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_name = utils.config.get_user_name()
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
+            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
             self.load_categories()
             self.load_logs()
         
@@ -262,8 +265,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return f"{sec} Sec"
 
 
-    def load_logs(self) -> None:  # append the logs to the _user_logs dict in log_widget
+    def load_logs(self) -> None:
         self.log_widget.load_logs(self._user_logs, self._user_categories)
+        
 
 
     def update_cat_name_db(self) -> None:
