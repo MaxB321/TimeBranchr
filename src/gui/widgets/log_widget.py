@@ -1,5 +1,6 @@
 from ast import List
-from PySide6.QtCore import QObject, Signal
+from datetime import datetime
+from PySide6.QtCore import QDateTime, QObject, Signal
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
@@ -22,7 +23,8 @@ class LogWidget(QObject):
         
         self._user_logs[self._category_id].append(seconds)
         self.display_logs_newest_first(parent, selected_category_id)
-        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id)
+        cur_date_time = datetime.now()
+        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time)
         self.log_added.emit(self._category_id)
 
 

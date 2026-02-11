@@ -1,3 +1,4 @@
+from datetime import datetime
 from PySide6.QtCore import QDateTime
 from pymysql import connect
 
@@ -38,14 +39,14 @@ def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]:
     return user_data
 
 
-def init_log(db_connection, category_id: str, log_time: int, user_id: str) -> None:
+def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
     sql_query = """
-        INSERT INTO time_logs (category_id, log_time, user_id)
-        VALUES (%s, %s, %s)
+        INSERT INTO time_logs (category_id, log_time, user_id, date_time)
+        VALUES (%s, %s, %s, %s)
     """
 
     with db_connection.cursor() as cursor:
-        cursor.execute(sql_query, (category_id, log_time, user_id))
+        cursor.execute(sql_query, (category_id, log_time, user_id, date_time))
 
     db_connection.commit()
 
