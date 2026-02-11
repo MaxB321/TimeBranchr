@@ -133,6 +133,14 @@
                <string>Logs</string>
               </property>
              </column>
+             <column>
+              <property name="text">
+               <string>DateTime</string>
+              </property>
+              <property name="textAlignment">
+               <set>AlignCenter</set>
+              </property>
+             </column>
             </widget>
            </item>
           </layout>

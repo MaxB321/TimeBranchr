@@ -134,6 +134,9 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.frame_7)
 
         self.logTreeWidget = QTreeWidget(self.groupBox)
+        __qtreewidgetitem = QTreeWidgetItem()
+        __qtreewidgetitem.setTextAlignment(1, Qt.AlignCenter);
+        self.logTreeWidget.setHeaderItem(__qtreewidgetitem)
         self.logTreeWidget.setObjectName(u"logTreeWidget")
 
         self.verticalLayout.addWidget(self.logTreeWidget)
@@ -144,13 +147,13 @@ class Ui_MainWindow(object):
         self.categoryTreeWidget = QTreeWidget(self.page)
         font1 = QFont()
         font1.setBold(True)
-        __qtreewidgetitem = QTreeWidgetItem()
-        __qtreewidgetitem.setTextAlignment(1, Qt.AlignCenter);
-        __qtreewidgetitem.setFont(1, font1);
-        __qtreewidgetitem.setText(0, u"Categories");
-        __qtreewidgetitem.setTextAlignment(0, Qt.AlignCenter);
-        __qtreewidgetitem.setFont(0, font1);
-        self.categoryTreeWidget.setHeaderItem(__qtreewidgetitem)
+        __qtreewidgetitem1 = QTreeWidgetItem()
+        __qtreewidgetitem1.setTextAlignment(1, Qt.AlignCenter);
+        __qtreewidgetitem1.setFont(1, font1);
+        __qtreewidgetitem1.setText(0, u"Categories");
+        __qtreewidgetitem1.setTextAlignment(0, Qt.AlignCenter);
+        __qtreewidgetitem1.setFont(0, font1);
+        self.categoryTreeWidget.setHeaderItem(__qtreewidgetitem1)
         self.categoryTreeWidget.setObjectName(u"categoryTreeWidget")
         self.categoryTreeWidget.setMinimumSize(QSize(467, 0))
 
@@ -227,6 +230,7 @@ class Ui_MainWindow(object):
         self.groupBox.setTitle("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         ___qtreewidgetitem = self.logTreeWidget.headerItem()
+        ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"DateTime", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Logs", None));
         ___qtreewidgetitem1 = self.categoryTreeWidget.headerItem()
         ___qtreewidgetitem1.setText(1, QCoreApplication.translate("MainWindow", u"Time", None));
