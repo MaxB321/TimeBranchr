@@ -1,5 +1,4 @@
 from datetime import datetime
-from PySide6.QtCore import QDateTime
 from pymysql import connect
 
 
@@ -15,7 +14,7 @@ def cleanup_log_row(db_connection, category_id: str) -> None:
     db_connection.commit()
 
 
-def get_log_id(category_id: str, user_id: str, date_time: QDateTime) -> int:  # will primarily be for deleting logs
+def get_log_id(category_id: str, user_id: str, date_time: datetime) -> int:  # will primarily be for deleting logs
     return 0
 
 

@@ -22,9 +22,10 @@ class LogWidget(QObject):
         if seconds == 0:
             return
         
+        cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[self._category_id].append(seconds)
+        self._user_log_datetime[self._category_id].append(cur_date_time)
         self.display_logs_newest_first(parent, selected_category_id)
-        cur_date_time = datetime.now()
         database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time)
         self.log_added.emit(self._category_id)
 
