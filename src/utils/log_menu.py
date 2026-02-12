@@ -17,6 +17,7 @@ class LogMenu(QMenu):
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
 
+
     def create_log_item(self) -> None:
         pass
 
@@ -26,18 +27,21 @@ class LogMenu(QMenu):
 
 
     def is_item_selected(self) -> bool:
-        return True
+        cur_item = self.menu_parent.currentItem()
+        if cur_item and cur_item.isSelected():
+            return True
+        return False
 
 
     def open_context_menu(self, cur_pos: QPoint) -> None:
         global_pos = self.menu_parent.viewport().mapToGlobal(cur_pos)
-        self.menu.exec(global_pos)
-        
 
-        if not self.is_item_selected():  # hide the del_log_action action
-            pass
-        else:  # grab selected item 
-            pass
+        if not self.is_item_selected():
+            self.create_log_action.setVisible(False)
+        else:  
+            self.create_log_action.setVisible(True)
+
+        self.menu.exec(global_pos)
 
 
     def sort_logs(self) -> None:
