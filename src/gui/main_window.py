@@ -131,6 +131,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.logTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
+        self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
         
         self.installEventFilter(self)
 
@@ -190,7 +191,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timer_widget.stop_timer()
 
 
-    # MENU FUNCTIONS
+    # TOP MENU FUNCTIONS
     def quit_menu_clicked(self) -> None:
         sys.exit()
 
@@ -200,11 +201,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.toolBar.show()
         else:
             self.toolBar.hide()
-    
 
+
+    # LOG CONTEXT MENU FUNCTIONS
+    def sort_logs(self) -> None:
+        cur_item = self.categoryTreeWidget.currentItem()
+        if not cur_item:
+            return
+
+        category_id = self.get_category_id()
+        if self.log_menu.sort_log_action.isChecked():
+            self.log_widget.display_logs_newest_first(self.logTreeWidget, category_id)
+        else:
+            self.log_widget.display_logs_oldest_first(self.logTreeWidget, category_id)
+        
+
+    
     def open_log_context_menu(self, cur_pos: QPoint) -> None:
         self.log_menu.open_context_menu(cur_pos)
-    
     
     # MISCELLANEOUS FUNCTIONS
     def edit_widget_text(self) -> None:

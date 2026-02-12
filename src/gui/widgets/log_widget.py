@@ -67,6 +67,23 @@ class LogWidget(QObject):
             new_log.setText(1, datetime_str)
 
 
+    def display_logs_oldest_first(self, parent: QTreeWidget, category_id: str) -> None:
+        parent.clear()
+        datetime_list: list[str] = []
+        
+        for x in self._user_log_datetime[category_id]:
+            datetime_list.append(str(x))
+
+        for i, val in enumerate(self._user_logs[category_id]): 
+            s = val % 60
+            m = (val % 3600) // 60
+            h = val // 3600
+            log_str = f"{h:02}:{m:02}:{s:02}" 
+            datetime_str = str(datetime_list[i])
+            new_log = QTreeWidgetItem(parent)
+            new_log.setText(0, log_str)
+            new_log.setText(1, datetime_str)
+
 
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []

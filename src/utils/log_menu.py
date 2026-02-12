@@ -16,6 +16,7 @@ class LogMenu(QMenu):
 
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
+        self.sort_log_action.toggle()
 
 
     def create_log_item(self) -> None:
@@ -42,7 +43,3 @@ class LogMenu(QMenu):
             self.create_log_action.setVisible(True)
 
         self.menu.exec(global_pos)
-
-
-    def sort_logs(self) -> None:
-        pass
