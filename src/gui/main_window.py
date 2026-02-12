@@ -187,7 +187,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def stop_btn_clicked(self) -> None:
         category_id = self.get_category_id()
-        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id)
+        sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
+        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id, sort_new_first)
         self.timer_widget.stop_timer()
 
 
@@ -326,7 +327,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         category_id = self.get_category_id()
-        self.log_widget.display_logs(self.categoryTreeWidget, self.logTreeWidget, category_id)
+        sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
+        self.log_widget.display_logs(self.categoryTreeWidget, self.logTreeWidget, category_id, sort_new_first)
 
 
 def display_main_window() -> None:

@@ -18,15 +18,20 @@ class LogWidget(QObject):
         self._category_id: str = ""
 
 
-    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str, user_id: str) -> None:  
+    def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool) -> None:  
         if seconds == 0:
             return
         
         cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[self._category_id].append(seconds)
         self._user_log_datetime[self._category_id].append(cur_date_time)
-        self.display_logs_newest_first(parent, selected_category_id)
         database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time)
+
+        if sort_new_first:
+            self.display_logs_newest_first(parent, selected_category_id)
+        else:
+            self.display_logs_oldest_first(parent, selected_category_id)
+        
         self.log_added.emit(self._category_id)
 
 
@@ -38,7 +43,7 @@ class LogWidget(QObject):
         pass
 
 
-    def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str) -> None:  
+    def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str, sort_new_first: bool) -> None:  
         cur_item = category_tree.currentItem()
         if not cur_item:
             return
@@ -47,7 +52,10 @@ class LogWidget(QObject):
         header = log_tree.headerItem()
         header.setText(0, f"Logs - {cur_item_name}")
 
-        self.display_logs_newest_first(log_tree, category_id)
+        if sort_new_first:
+            self.display_logs_newest_first(log_tree, category_id)
+        else:
+            self.display_logs_oldest_first(log_tree, category_id)
 
 
     def display_logs_newest_first(self, parent: QTreeWidget, category_id: str) -> None:
