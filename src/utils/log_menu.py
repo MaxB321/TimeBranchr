@@ -38,8 +38,8 @@ class LogMenu(QMenu):
         global_pos = self.menu_parent.viewport().mapToGlobal(cur_pos)
 
         if not self.is_item_selected():
-            self.create_log_action.setVisible(False)
+            self.del_log_action.setVisible(False)
         else:  
-            self.create_log_action.setVisible(True)
+            self.del_log_action.setVisible(True)
 
         self.menu.exec(global_pos)
