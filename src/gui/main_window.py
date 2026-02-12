@@ -41,6 +41,7 @@ from PySide6.QtGui import (
 )
 from PySide6.QtCore import (
     QEvent,
+    QPoint,
     Qt,
     QSize,
     QObject
@@ -52,6 +53,7 @@ import database.categories_table
 import database.logs_table
 from gui.widgets import log_widget
 import utils.config
+from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 from gui.widgets.log_widget import LogWidget
@@ -66,6 +68,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget()
+        self.log_menu = LogMenu(self.logTreeWidget)
+
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
         self._user_id: str = ""
@@ -124,6 +128,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.itemChanged.connect(self.update_cat_name_db)
 
         self.log_widget.log_added.connect(self.update_category_time)
+
+        self.logTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
         
         self.installEventFilter(self)
 
@@ -131,7 +138,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
         self.init_category_tree()
         self.init_log_tree()
-        
 
 
     # TOOLBAR FUNCTIONS
@@ -194,7 +200,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.toolBar.show()
         else:
             self.toolBar.hide()
+    
 
+    def open_log_context_menu(self, cur_pos: QPoint) -> None:
+        self.log_menu.open_context_menu(cur_pos)
+    
     
     # MISCELLANEOUS FUNCTIONS
     def edit_widget_text(self) -> None:
