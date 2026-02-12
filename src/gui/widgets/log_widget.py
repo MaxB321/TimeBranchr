@@ -70,7 +70,7 @@ class LogWidget(QObject):
     def display_logs_oldest_first(self, parent: QTreeWidget, category_id: str) -> None:
         parent.clear()
         datetime_list: list[str] = []
-        
+
         for x in self._user_log_datetime[category_id]:
             datetime_list.append(str(x))
 
@@ -87,6 +87,7 @@ class LogWidget(QObject):
 
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
+        self._user_log_datetime[category_id] = []
         database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
 
 
@@ -116,7 +117,7 @@ class LogWidget(QObject):
                 self._user_log_datetime[key] = []
             self._user_log_datetime[key] = val
         for x in categories_with_no_logs:
-            self._user_logs[x] = []
+            self._user_log_datetime[x] = []
 
 
     def set_category_id(self, category_id: str) -> None:
