@@ -16,9 +16,9 @@ def cleanup_log_row(db_connection, category_id: str) -> None:
 
 def get_log_id(db_connection, user_id: str, date_time: datetime) -> int:  # will primarily be for deleting logs
     sql_query = """
-        SELECT FROM time_logs 
-        WHERE user_id = (%s)
-        AND date_time = (%s)
+        SELECT log_id
+        FROM time_logs 
+        WHERE user_id = (%s) AND date_time = (%s)
     """
 
     with db_connection.cursor() as cursor:
