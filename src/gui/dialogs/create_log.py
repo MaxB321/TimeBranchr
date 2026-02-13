@@ -17,6 +17,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.lineEdit_m.setGeometry(110, 95, 100, 25)
         self.lineEdit_s.setGeometry(110, 155, 100, 25)
         self.buttonBox.setGeometry(280, 470, 150, 100)
+        self.setFixedSize(450, 550)
 
         self.hours: int = 0
         self.minutes: int = 0
@@ -37,7 +38,7 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape or Qt.Key.Key_Enter:
             event.ignore()
             return
 
