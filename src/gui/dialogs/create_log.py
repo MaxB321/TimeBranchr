@@ -9,26 +9,28 @@ class LogDialog(QDialog, Ui_LogDialog):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
-        self.setGeometry(700, 225, 450, 550)
+        self.setGeometry(700, 225, 450, 500)
         self.label_h.setGeometry(20, 20, 75, 50)
         self.label_m.setGeometry(20, 80, 75, 50)
         self.label_s.setGeometry(20, 140, 75, 50)
         self.lineEdit_h.setGeometry(110, 35, 100, 25)
         self.lineEdit_m.setGeometry(110, 95, 100, 25)
         self.lineEdit_s.setGeometry(110, 155, 100, 25)
-        self.buttonBox.setGeometry(280, 470, 150, 100)
-        self.setFixedSize(450, 550)
+        self.ok_btn.setGeometry(310, 455, 60, 30)
+        self.cancel_btn.setGeometry(375, 455, 60, 30)
+        self.setFixedSize(450, 500)
+        self.deselect_lineedits()
+        self.ok_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.cancel_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
         self.hours: int = 0
         self.minutes: int = 0
         self.seconds: int = 0
 
-        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))
+        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))        
         
-
-        self.buttonBox.accepted.connect(self.ok_btn_clicked)
-        self.buttonBox.rejected.connect(self.cancel_btn_clicked)
-        
+        self.ok_btn.pressed.connect(self.ok_btn_clicked)
+        self.cancel_btn.pressed.connect(self.cancel_btn_clicked)
 
 
     def cancel_btn_clicked(self) -> None:
@@ -71,7 +73,9 @@ class LogDialog(QDialog, Ui_LogDialog):
     def ok_btn_clicked(self) -> None:
         self.set_log_time()
         print(f"{self.hours}, {self.minutes}, {self.seconds}")
+        self.accept()
         self.clear_lineedits()
+        self.deselect_lineedits()
 
 
     def set_log_time(self) -> None:

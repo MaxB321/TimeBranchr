@@ -15,19 +15,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QLabel, QLineEdit, QSizePolicy, QWidget)
+from PySide6.QtWidgets import (QApplication, QDialog, QLabel, QLineEdit,
+    QPushButton, QSizePolicy, QWidget)
 
 class Ui_LogDialog(object):
     def setupUi(self, LogDialog):
         if not LogDialog.objectName():
             LogDialog.setObjectName(u"LogDialog")
         LogDialog.resize(871, 473)
-        self.buttonBox = QDialogButtonBox(LogDialog)
-        self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setGeometry(QRect(520, 430, 341, 32))
-        self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
         self.label_h = QLabel(LogDialog)
         self.label_h.setObjectName(u"label_h")
         self.label_h.setGeometry(QRect(120, 80, 91, 21))
@@ -46,10 +41,14 @@ class Ui_LogDialog(object):
         self.label_s = QLabel(LogDialog)
         self.label_s.setObjectName(u"label_s")
         self.label_s.setGeometry(QRect(120, 180, 91, 21))
+        self.ok_btn = QPushButton(LogDialog)
+        self.ok_btn.setObjectName(u"ok_btn")
+        self.ok_btn.setGeometry(QRect(540, 410, 81, 26))
+        self.cancel_btn = QPushButton(LogDialog)
+        self.cancel_btn.setObjectName(u"cancel_btn")
+        self.cancel_btn.setGeometry(QRect(670, 410, 81, 26))
 
         self.retranslateUi(LogDialog)
-        self.buttonBox.accepted.connect(LogDialog.accept)
-        self.buttonBox.rejected.connect(LogDialog.reject)
 
         QMetaObject.connectSlotsByName(LogDialog)
     # setupUi
@@ -59,5 +58,7 @@ class Ui_LogDialog(object):
         self.label_h.setText(QCoreApplication.translate("LogDialog", u"Hours", None))
         self.label_m.setText(QCoreApplication.translate("LogDialog", u"Minutes", None))
         self.label_s.setText(QCoreApplication.translate("LogDialog", u"Seconds", None))
+        self.ok_btn.setText(QCoreApplication.translate("LogDialog", u"Ok", None))
+        self.cancel_btn.setText(QCoreApplication.translate("LogDialog", u"Cancel", None))
     # retranslateUi
 
