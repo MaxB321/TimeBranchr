@@ -29,6 +29,7 @@ class LogMenu(QMenu):
         # Add log and update the runtime hashmaps in log_widget
         # Insert new log into DB
         # Update log view
+        self.log_dialog.init_dialog()
         self.log_dialog.exec()
         
 

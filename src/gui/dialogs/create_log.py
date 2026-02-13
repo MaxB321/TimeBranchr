@@ -1,6 +1,3 @@
-from ast import Raise
-from logging import raiseExceptions
-from multiprocessing import Value
 from pathlib import Path
 from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtGui import QCloseEvent, QEnterEvent, QKeyEvent
@@ -22,13 +19,6 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.ok_btn.setGeometry(310, 455, 60, 30)
         self.cancel_btn.setGeometry(375, 455, 60, 30)
         self.setFixedSize(450, 500)
-        self.deselect_lineedits()
-        self.ok_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self.cancel_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-
-        self.error_msg.setGeometry(150, 220, 300, 50)
-        self.error_msg.setText("Enter an integer value")
-        self.error_msg.setVisible(False)
 
         self.hours: int = 0
         self.minutes: int = 0
@@ -37,12 +27,12 @@ class LogDialog(QDialog, Ui_LogDialog):
 
         self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))        
         
-        self.ok_btn.pressed.connect(self.ok_btn_clicked)
-        self.cancel_btn.pressed.connect(self.cancel_btn_clicked)
+        self.ok_btn.clicked.connect(self.ok_btn_clicked)
+        self.cancel_btn.clicked.connect(self.cancel_btn_clicked)
 
 
     def cancel_btn_clicked(self) -> None:
-        self.clear_lineedits()
+        self.reject()
 
 
     def clear_lineedits(self) -> None:
@@ -66,6 +56,18 @@ class LogDialog(QDialog, Ui_LogDialog):
         return [self.hours, self.minutes, self.seconds]
 
 
+    def init_dialog(self) -> None:
+        self.deselect_lineedits()
+        self.clear_lineedits()
+        self.ok_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.cancel_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        
+        self.accept_flag = False
+        self.error_msg.setGeometry(150, 220, 300, 50)
+        self.error_msg.setText("Enter an integer value")
+        self.error_msg.setVisible(False)
+
+
     def keyPressEvent(self, event: QKeyEvent) -> None:
         if event.key() == Qt.Key.Key_Enter:
             event.ignore()
@@ -85,8 +87,6 @@ class LogDialog(QDialog, Ui_LogDialog):
 
         print(f"{self.hours}, {self.minutes}, {self.seconds}")
         self.accept()
-        self.clear_lineedits()
-        self.deselect_lineedits()
 
 
     def set_log_time(self) -> None:
@@ -105,7 +105,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         except ValueError as e:
             self.show_error_msg(e)
             return
-        
+
         self.accept_flag = True
         
     
