@@ -1,6 +1,6 @@
 from pathlib import Path
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QKeyEvent
+from PySide6.QtCore import QEvent, QObject, Qt
+from PySide6.QtGui import QCloseEvent, QKeyEvent
 from PySide6.QtWidgets import QDialog
 from gui.generated.CreateLog import Ui_LogDialog
 
@@ -30,7 +30,26 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def cancel_btn_clicked(self) -> None:
-        print("cancel")
+        self.clear_lineedits()
+
+
+    def clear_lineedits(self) -> None:
+        self.lineEdit_h.clear()
+        self.lineEdit_m.clear()
+        self.lineEdit_s.clear()
+
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.clear_lineedits()
+        self.deselect_lineedits()
+        
+        return super().closeEvent(event)
+
+
+    def deselect_lineedits(self) -> None:
+        self.lineEdit_h.deselect()
+        self.lineEdit_m.deselect()
+        self.lineEdit_s.deselect()
 
 
     def get_log_time(self) -> list[int]:
@@ -46,11 +65,15 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def ok_btn_clicked(self) -> None:
-        print("ok")
+        self.set_log_time()
+        print(f"{self.hours}, {self.minutes}, {self.seconds}")
+        self.clear_lineedits()
 
 
     def set_log_time(self) -> None:
-        pass
+        self.hours = int(self.lineEdit_h.text())
+        self.minutes = int(self.lineEdit_m.text())
+        self.seconds = int(self.lineEdit_s.text())
 
 
 def load_stylesheet(path: str) -> str:
