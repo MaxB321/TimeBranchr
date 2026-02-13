@@ -21,6 +21,13 @@ class LogMenu(QMenu):
 
 
     def create_log(self) -> None:
+        # Open dialog widget
+        # Lock the main_window functionality 
+        # Get user input through lineedits and put it into a dict with keys ("hrs", "min", "sec") - stored in dialog widget object
+        # Add log and update the runtime hashmaps in log_widget
+        # Insert new log into DB
+        # Update log view
+        
         pass
 
 

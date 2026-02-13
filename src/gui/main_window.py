@@ -78,17 +78,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_logs: dict[str, list[int]] = {}
         self._user_logs_datetime: dict[str, list[datetime]] = {}
         
-        if not utils.config.isConfig():
-            self.user_dialog.show()
-        else:
-            self._user_id = utils.config.get_user_id()
-            self._user_name = utils.config.get_user_name()
-            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
-            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
-            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
-            self.load_categories()
-            self.load_logs()
-        
         new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
         new_category_button.setStatusTip("Creates New Category")
         new_category_button.triggered.connect(self.new_cat_btn_clicked)
@@ -140,6 +129,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
         self.init_category_tree()
         self.init_log_tree()
+
+        if not utils.config.isConfig():
+            self.show()
+            self.user_dialog.exec()
+            self._user_id = self.user_dialog._user_id
+            self._user_name = self.user_dialog._user_name
+        else:
+            self._user_id = utils.config.get_user_id()
+            self._user_name = utils.config.get_user_name()
+            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
+            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
+            self.load_categories()
+            self.load_logs()
 
 
     # TOOLBAR FUNCTIONS
@@ -206,6 +209,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     # LOG CONTEXT MENU FUNCTIONS
+    def create_log(self) -> None:
+        pass
+    
+    
     def del_log(self) -> None:
         category_id = self.get_category_id()
         self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id)

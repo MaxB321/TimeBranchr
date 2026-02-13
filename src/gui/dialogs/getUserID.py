@@ -29,11 +29,8 @@ class UserDialog(QDialog, Ui_UserDialog):
     def set_user_data(self) -> None:
         user_id = str(uuid4())
         user_name = self.lineEdit.text()
+        self._user_id = user_id
+        self._user_name = user_name
         utils.config.write_config(user_id, user_name)
         database.user_table.init_user(db_conn, user_id, user_name)
         self.close()
-        
-
-    def user_quit(self) -> None:  # if user quits out of dialog window before entering user_name then shut down the main window as well 
-        pass
-
