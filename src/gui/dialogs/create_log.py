@@ -1,6 +1,6 @@
 from pathlib import Path
 from PySide6.QtCore import QEvent, QObject, Qt
-from PySide6.QtGui import QCloseEvent, QKeyEvent
+from PySide6.QtGui import QCloseEvent, QEnterEvent, QKeyEvent
 from PySide6.QtWidgets import QDialog
 from gui.generated.CreateLog import Ui_LogDialog
 
@@ -24,9 +24,11 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.seconds: int = 0
 
         self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))
+        
 
         self.buttonBox.accepted.connect(self.ok_btn_clicked)
         self.buttonBox.rejected.connect(self.cancel_btn_clicked)
+        
 
 
     def cancel_btn_clicked(self) -> None:
@@ -47,9 +49,7 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def deselect_lineedits(self) -> None:
-        self.lineEdit_h.deselect()
-        self.lineEdit_m.deselect()
-        self.lineEdit_s.deselect()
+        self.setFocus()
 
 
     def get_log_time(self) -> list[int]:
@@ -57,9 +57,13 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key.Key_Escape or Qt.Key.Key_Enter:
+        if event.key() == Qt.Key.Key_Enter:
             event.ignore()
             return
+        
+        elif event.key() == Qt.Key.Key_Escape:
+            self.clear_lineedits()
+            self.deselect_lineedits()
 
         return super().keyPressEvent(event)
 

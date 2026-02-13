@@ -1,5 +1,5 @@
 from datetime import datetime
-from PySide6.QtCore import QPoint
+from PySide6.QtCore import QPoint, Qt
 from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
 from gui.dialogs.create_log import LogDialog
