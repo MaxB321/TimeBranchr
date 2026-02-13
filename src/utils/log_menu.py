@@ -2,6 +2,7 @@ from datetime import datetime
 from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
+from gui.dialogs.create_log import LogDialog
 from gui.widgets.log_widget import LogWidget
 
 
@@ -10,6 +11,7 @@ class LogMenu(QMenu):
         super().__init__()
         self.menu = QMenu(parent)
         self.menu_parent: QTreeWidget = parent
+        self.log_dialog = LogDialog()
         
         self.create_log_action = self.menu.addAction("Create Log")
         
@@ -27,8 +29,8 @@ class LogMenu(QMenu):
         # Add log and update the runtime hashmaps in log_widget
         # Insert new log into DB
         # Update log view
+        self.log_dialog.exec()
         
-        pass
 
 
     def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:

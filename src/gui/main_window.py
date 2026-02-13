@@ -122,6 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
         self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
         self.log_menu.del_log_action.triggered.connect(self.del_log)
+        self.log_menu.create_log_action.triggered.connect(self.create_log)
         
         self.installEventFilter(self)
 
@@ -210,7 +211,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # LOG CONTEXT MENU FUNCTIONS
     def create_log(self) -> None:
-        pass
+        self.log_menu.create_log()
     
     
     def del_log(self) -> None:
