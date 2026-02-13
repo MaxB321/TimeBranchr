@@ -1,3 +1,6 @@
+from ast import Raise
+from logging import raiseExceptions
+from multiprocessing import Value
 from pathlib import Path
 from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtGui import QCloseEvent, QEnterEvent, QKeyEvent
@@ -23,9 +26,14 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.ok_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.cancel_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
+        self.error_msg.setGeometry(150, 220, 300, 50)
+        self.error_msg.setText("Enter an integer value")
+        self.error_msg.setVisible(False)
+
         self.hours: int = 0
         self.minutes: int = 0
         self.seconds: int = 0
+        self.accept_flag: bool = False
 
         self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))        
         
@@ -72,6 +80,9 @@ class LogDialog(QDialog, Ui_LogDialog):
 
     def ok_btn_clicked(self) -> None:
         self.set_log_time()
+        if not self.accept_flag:
+            return
+
         print(f"{self.hours}, {self.minutes}, {self.seconds}")
         self.accept()
         self.clear_lineedits()
@@ -79,9 +90,27 @@ class LogDialog(QDialog, Ui_LogDialog):
 
 
     def set_log_time(self) -> None:
-        self.hours = int(self.lineEdit_h.text())
-        self.minutes = int(self.lineEdit_m.text())
-        self.seconds = int(self.lineEdit_s.text())
+        try:
+            self.hours = int(self.lineEdit_h.text())
+        except ValueError as e:
+            self.show_error_msg(e)
+            return
+        try:
+            self.minutes = int(self.lineEdit_m.text())
+        except ValueError as e:
+            self.show_error_msg(e)
+            return
+        try:
+            self.seconds = int(self.lineEdit_s.text())
+        except ValueError as e:
+            self.show_error_msg(e)
+            return
+        
+        self.accept_flag = True
+        
+    
+    def show_error_msg(self, e) -> None:
+        self.error_msg.setVisible(True)
 
 
 def load_stylesheet(path: str) -> str:

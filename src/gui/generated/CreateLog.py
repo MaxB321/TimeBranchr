@@ -47,6 +47,9 @@ class Ui_LogDialog(object):
         self.cancel_btn = QPushButton(LogDialog)
         self.cancel_btn.setObjectName(u"cancel_btn")
         self.cancel_btn.setGeometry(QRect(670, 410, 81, 26))
+        self.error_msg = QLabel(LogDialog)
+        self.error_msg.setObjectName(u"error_msg")
+        self.error_msg.setGeometry(QRect(320, 260, 131, 21))
 
         self.retranslateUi(LogDialog)
 
@@ -60,5 +63,6 @@ class Ui_LogDialog(object):
         self.label_s.setText(QCoreApplication.translate("LogDialog", u"Seconds", None))
         self.ok_btn.setText(QCoreApplication.translate("LogDialog", u"Ok", None))
         self.cancel_btn.setText(QCoreApplication.translate("LogDialog", u"Cancel", None))
+        self.error_msg.setText(QCoreApplication.translate("LogDialog", u"Error", None))
     # retranslateUi
 

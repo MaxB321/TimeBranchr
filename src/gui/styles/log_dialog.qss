@@ -1,3 +1,9 @@
+QLabel#error_msg {
+    font-size: 15px;
+    color: rgb(225, 0, 0);
+}
+
 QLabel {
     font-size: 20px;
 }
+
