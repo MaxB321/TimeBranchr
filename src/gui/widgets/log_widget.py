@@ -52,13 +52,17 @@ class LogWidget(QObject):
         pass
 
 
-    def delete_log_item(self, category_id: str) -> datetime:
+    def delete_log_item(self, category_id: str, parent: QTreeWidget, sort_new_first: bool) -> datetime:
         cur_item = self.log_parent.currentItem()
         item_datetime: datetime = self.get_datetime(cur_item)
         item_index = self._user_log_datetime[category_id].index(item_datetime)
         self._user_logs[category_id].pop(item_index)
         self._user_log_datetime[category_id].pop(item_index)
-
+        
+        if sort_new_first:
+            self.display_logs_newest_first(parent, category_id)
+        else:
+            self.display_logs_oldest_first(parent, category_id)
         
         return item_datetime 
 

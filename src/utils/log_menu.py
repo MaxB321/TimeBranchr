@@ -25,7 +25,8 @@ class LogMenu(QMenu):
 
 
     def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:
-        item_datetime = log_widget.delete_log_item(category_id)
+        sort_flag: bool = self.sort_log_action.isChecked()
+        item_datetime = log_widget.delete_log_item(category_id, self.menu_parent, sort_flag)
         
         # log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime)
         # database.logs_table.user_del_log_row(db_conn, log_id)
