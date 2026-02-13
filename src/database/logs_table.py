@@ -14,8 +14,20 @@ def cleanup_log_row(db_connection, category_id: str) -> None:
     db_connection.commit()
 
 
-def get_log_id(category_id: str, user_id: str, date_time: datetime) -> int:  # will primarily be for deleting logs
-    return 0
+def get_log_id(db_connection, user_id: str, date_time: datetime) -> int:  # will primarily be for deleting logs
+    sql_query = """
+        SELECT FROM time_logs 
+        WHERE user_id = (%s)
+        AND date_time = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (user_id, date_time))
+        row = cursor.fetchone()
+
+    db_connection.commit()
+    
+    return row["log_id"]
 
 
 def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]: 
@@ -70,5 +82,13 @@ def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_
     db_connection.commit()
 
 
-def user_del_log_row() -> None:  
-    pass
+def user_del_log_row(db_connection, log_id: int) -> None:  
+    sql_query = """
+        DELETE FROM time_logs
+        WHERE log_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (log_id))
+
+    db_connection.commit()

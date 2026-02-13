@@ -1,6 +1,6 @@
 from ast import List
 from datetime import datetime
-from PySide6.QtCore import QDateTime, QObject, Signal
+from PySide6.QtCore import QDateTime, QObject, Signal, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
@@ -10,12 +10,13 @@ import database.logs_table
 class LogWidget(QObject):
     log_added = Signal(str)
 
-    def __init__(self) -> None:
+    def __init__(self, parent: QTreeWidget) -> None:
         super().__init__()
 
         self._user_logs: dict[str, list[int]] = {}
         self._user_log_datetime: dict[str, list[datetime]] = {}
         self._category_id: str = ""
+        self.log_parent = parent
 
 
     def add_log(self, parent: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool) -> None:  
@@ -35,12 +36,31 @@ class LogWidget(QObject):
         self.log_added.emit(self._category_id)
 
 
-    def create_log(self):  # user-created log 
+    def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> list[str]:
+        category_id = list[str](user_categories.keys())
+        category_id_logs = list[str](user_logs.keys())
+        categories_with_no_logs: list[str] = []
+        
+        for x in category_id:
+            if x not in category_id_logs:
+                categories_with_no_logs.append(x)
+
+        return categories_with_no_logs
+
+
+    def create_log_item(self):  # user-created log 
         pass
 
 
-    def delete_log(self):
-        pass
+    def delete_log_item(self, category_id: str) -> datetime:
+        cur_item = self.log_parent.currentItem()
+        item_datetime: datetime = self.get_datetime(cur_item)
+        item_index = self._user_log_datetime[category_id].index(item_datetime)
+        self._user_logs[category_id].pop(item_index)
+        self._user_log_datetime[category_id].pop(item_index)
+
+        
+        return item_datetime 
 
 
     def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str, sort_new_first: bool) -> None:  
@@ -60,27 +80,33 @@ class LogWidget(QObject):
 
     def display_logs_newest_first(self, parent: QTreeWidget, category_id: str) -> None:
         parent.clear()
-        datetime_list: list[str] = []
+        datetime_list: list[datetime] = []
+        converted_datetime_list: list[str] = []
+
         for x in reversed(self._user_log_datetime[category_id]):
-            datetime_list.append(str(x))
+            datetime_list.append(x)
+            converted_datetime_list.append(str(x))
 
         for i, val in enumerate(reversed(self._user_logs[category_id])): 
             s = val % 60
             m = (val % 3600) // 60
             h = val // 3600
             log_str = f"{h:02}:{m:02}:{s:02}" 
-            datetime_str = str(datetime_list[i])
+            datetime_str = str(converted_datetime_list[i])
             new_log = QTreeWidgetItem(parent)
             new_log.setText(0, log_str)
             new_log.setText(1, datetime_str)
+            new_log.setData(1, Qt.ItemDataRole.UserRole, datetime_list[i])
 
 
     def display_logs_oldest_first(self, parent: QTreeWidget, category_id: str) -> None:
         parent.clear()
-        datetime_list: list[str] = []
+        datetime_list: list[datetime] = []
+        converted_datetime_list: list[str] = []
 
         for x in self._user_log_datetime[category_id]:
-            datetime_list.append(str(x))
+            datetime_list.append(x)
+            converted_datetime_list.append(str(x))
 
         for i, val in enumerate(self._user_logs[category_id]): 
             s = val % 60
@@ -91,24 +117,18 @@ class LogWidget(QObject):
             new_log = QTreeWidgetItem(parent)
             new_log.setText(0, log_str)
             new_log.setText(1, datetime_str)
+            new_log.setData(1, Qt.ItemDataRole.UserRole, datetime_list[i])
+
+
+    def get_datetime(self, cur_item: QTreeWidgetItem) -> datetime:
+        item_datetime: datetime = cur_item.data(1, Qt.ItemDataRole.UserRole)
+        return item_datetime
 
 
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
         database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
-
-
-    def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> list[str]:
-        category_id = list[str](user_categories.keys())
-        category_id_logs = list[str](user_logs.keys())
-        categories_with_no_logs: list[str] = []
-        
-        for x in category_id:
-            if x not in category_id_logs:
-                categories_with_no_logs.append(x)
-
-        return categories_with_no_logs
 
     
     def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_logs_datetime: dict[str, list[datetime]]) -> None:

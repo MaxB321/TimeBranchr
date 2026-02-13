@@ -1,5 +1,8 @@
+from datetime import datetime
 from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QMenu, QTreeWidget
+import database.logs_table
+from gui.widgets.log_widget import LogWidget
 
 
 class LogMenu(QMenu):
@@ -9,22 +12,28 @@ class LogMenu(QMenu):
         self.menu_parent: QTreeWidget = parent
         
         self.create_log_action = self.menu.addAction("Create Log")
-        self.create_log_action.setCheckable(True)
         
         self.del_log_action = self.menu.addAction("Delete Log")
-        self.del_log_action.setCheckable(True)
 
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
         self.sort_log_action.toggle()
 
 
-    def create_log_item(self) -> None:
+    def create_log(self) -> None:
         pass
 
 
-    def delete_log_item(self) -> None:
-        pass    
+    def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:
+        item_datetime = log_widget.delete_log_item(category_id)
+        
+        # log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime)
+        # database.logs_table.user_del_log_row(db_conn, log_id)
+
+
+    def deselect_log_item(self, parent: QTreeWidget) -> None:
+        if not self.is_item_selected():
+            return
 
 
     def is_item_selected(self) -> bool:

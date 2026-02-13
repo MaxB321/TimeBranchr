@@ -67,7 +67,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
-        self.log_widget = LogWidget()
+        self.log_widget = LogWidget(self.logTreeWidget)
         self.log_menu = LogMenu(self.logTreeWidget)
 
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
@@ -132,6 +132,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.logTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
         self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
+        self.log_menu.del_log_action.triggered.connect(self.del_log)
         
         self.installEventFilter(self)
 
@@ -205,6 +206,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     # LOG CONTEXT MENU FUNCTIONS
+    def del_log(self) -> None:
+        category_id = self.get_category_id()
+        self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id)
+
+
     def sort_logs(self) -> None:
         cur_item = self.categoryTreeWidget.currentItem()
         if not cur_item:
@@ -216,11 +222,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.log_widget.display_logs_oldest_first(self.logTreeWidget, category_id)
         
-
     
     def open_log_context_menu(self, cur_pos: QPoint) -> None:
         self.log_menu.open_context_menu(cur_pos)
     
+
     # MISCELLANEOUS FUNCTIONS
     def edit_widget_text(self) -> None:
         cur_item = self.categoryTreeWidget.currentItem()
