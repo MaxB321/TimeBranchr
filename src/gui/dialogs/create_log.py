@@ -92,15 +92,7 @@ class LogDialog(QDialog, Ui_LogDialog):
     def set_log_time(self) -> None:
         try:
             self.hours = int(self.lineEdit_h.text())
-        except ValueError as e:
-            self.show_error_msg(e)
-            return
-        try:
             self.minutes = int(self.lineEdit_m.text())
-        except ValueError as e:
-            self.show_error_msg(e)
-            return
-        try:
             self.seconds = int(self.lineEdit_s.text())
         except ValueError as e:
             self.show_error_msg(e)
