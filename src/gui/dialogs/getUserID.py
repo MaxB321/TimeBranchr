@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from uuid import uuid4
 from PySide6.QtCore import QEvent, Qt
-from PySide6.QtGui import QKeyEvent
+from PySide6.QtGui import QCloseEvent, QKeyEvent
 from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
@@ -29,6 +29,13 @@ class UserDialog(QDialog, Ui_UserDialog):
         self.errorLabel.setVisible(False)
 
         self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "user_id_dialog.qss")))
+
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self._user_name == "":
+            sys.exit()
+        
+        return super().closeEvent(event)
 
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
