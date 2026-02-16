@@ -68,7 +68,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget(self.logTreeWidget)
-        self.log_menu = LogMenu(self.logTreeWidget)
+        self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget)
 
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.user_dialog = gui.dialogs.getUserID.UserDialog()

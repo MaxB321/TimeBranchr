@@ -7,10 +7,11 @@ from gui.widgets.log_widget import LogWidget
 
 
 class LogMenu(QMenu):
-    def __init__(self, parent: QTreeWidget):
+    def __init__(self, parent: QTreeWidget, category_tree: QTreeWidget):
         super().__init__()
         self.menu = QMenu(parent)
         self.menu_parent: QTreeWidget = parent
+        self.category_tree_widget = category_tree
         self.log_dialog = LogDialog()
         
         self.create_log_action = self.menu.addAction("Create Log")
@@ -23,9 +24,6 @@ class LogMenu(QMenu):
 
 
     def create_log(self) -> None:
-        # Open dialog widget
-        # Lock the main_window functionality 
-        # Get user input through lineedits and put it into a dict with keys ("hrs", "min", "sec") - stored in dialog widget object
         # Add log and update the runtime hashmaps in log_widget
         # Insert new log into DB
         # Update log view
@@ -61,5 +59,10 @@ class LogMenu(QMenu):
             self.del_log_action.setVisible(False)
         else:  
             self.del_log_action.setVisible(True)
+        
+        if not self.category_tree_widget.currentItem():
+            self.create_log_action.setVisible(False)
+        else:
+            self.create_log_action.setVisible(True)
 
         self.menu.exec(global_pos)
