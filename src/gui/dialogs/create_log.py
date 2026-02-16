@@ -47,6 +47,11 @@ class LogDialog(QDialog, Ui_LogDialog):
         
         return super().closeEvent(event)
 
+    
+    def convert_time_seconds(self, hours: int, minutes: int, seconds: int) -> int:
+        converted_time: int = 0
+        return converted_time
+
 
     def deselect_lineedits(self) -> None:
         self.setFocus()
@@ -72,10 +77,6 @@ class LogDialog(QDialog, Ui_LogDialog):
         if event.key() == Qt.Key.Key_Enter:
             event.ignore()
             return
-        
-        elif event.key() == Qt.Key.Key_Escape:
-            self.clear_lineedits()
-            self.deselect_lineedits()
 
         return super().keyPressEvent(event)
 
@@ -97,6 +98,8 @@ class LogDialog(QDialog, Ui_LogDialog):
         except ValueError as e:
             self.show_error_msg(e)
             return
+
+        # add convert_time_seconds call here for the total time that will be used for db and LogWidget object
 
         self.accept_flag = True
         
