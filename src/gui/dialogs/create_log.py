@@ -23,6 +23,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.hours: int = 0
         self.minutes: int = 0
         self.seconds: int = 0
+        self.converted_time_seconds: int = 0
         self.accept_flag: bool = False
 
         self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))        
@@ -50,6 +51,10 @@ class LogDialog(QDialog, Ui_LogDialog):
     
     def convert_time_seconds(self, hours: int, minutes: int, seconds: int) -> int:
         converted_time: int = 0
+        h_seconds: int = hours * 3600
+        m_seconds: int = minutes * 60
+        converted_time = h_seconds + m_seconds + seconds
+
         return converted_time
 
 
@@ -86,7 +91,6 @@ class LogDialog(QDialog, Ui_LogDialog):
         if not self.accept_flag:
             return
 
-        print(f"{self.hours}, {self.minutes}, {self.seconds}")
         self.accept()
 
 
@@ -99,8 +103,7 @@ class LogDialog(QDialog, Ui_LogDialog):
             self.show_error_msg(e)
             return
 
-        # add convert_time_seconds call here for the total time that will be used for db and LogWidget object
-
+        self.converted_time_seconds = self.convert_time_seconds(self.hours, self.minutes, self.seconds)
         self.accept_flag = True
         
     
