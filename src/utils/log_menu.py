@@ -1,5 +1,5 @@
 from datetime import datetime
-from PySide6.QtCore import QPoint, Qt
+from PySide6.QtCore import QObject, QPoint, Qt
 from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
 from gui.dialogs.create_log import LogDialog
@@ -25,7 +25,6 @@ class LogMenu(QMenu):
 
 
     def create_log(self, category_id: str, user_id: str) -> None:
-        # Insert new log into DB
         self.log_dialog.init_dialog()
         self.log_dialog.exec()
 
@@ -41,11 +40,15 @@ class LogMenu(QMenu):
         
         log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime)
         database.logs_table.user_del_log_row(db_conn, log_id)
+        
+        self.log_widget.log_del.emit(category_id)
 
 
-    def deselect_log_item(self, parent: QTreeWidget) -> None:
+    def deselect_log_item(self, log_tree: QTreeWidget) -> None:
         if not self.is_item_selected():
             return
+        
+        # add deselect logic here
 
 
     def is_item_selected(self) -> bool:

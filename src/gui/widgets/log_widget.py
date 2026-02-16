@@ -9,6 +9,7 @@ import database.logs_table
 
 class LogWidget(QObject):
     log_added = Signal(str)
+    log_del = Signal(str)
 
     def __init__(self, parent: QTreeWidget) -> None:
         super().__init__()
@@ -17,6 +18,8 @@ class LogWidget(QObject):
         self._user_log_datetime: dict[str, list[datetime]] = {}
         self._category_id: str = ""
         self.log_parent = parent
+        self.log_created: bool = False
+        self.log_deleted: bool = False
 
 
     def add_log(self, log_tree: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool) -> None:  
@@ -61,6 +64,9 @@ class LogWidget(QObject):
             self.display_logs_newest_first(log_tree, category_id)
         else:
             self.display_logs_oldest_first(log_tree, category_id)
+        
+        self.log_created = True
+        self.log_added.emit(category_id)
 
 
     def delete_log_item(self, category_id: str, parent: QTreeWidget, sort_new_first: bool) -> datetime:
@@ -74,6 +80,8 @@ class LogWidget(QObject):
             self.display_logs_newest_first(parent, category_id)
         else:
             self.display_logs_oldest_first(parent, category_id)
+        
+        self.log_deleted = True
         
         return item_datetime 
 

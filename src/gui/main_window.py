@@ -117,6 +117,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.itemChanged.connect(self.update_cat_name_db)
 
         self.log_widget.log_added.connect(self.update_category_time)
+        self.log_widget.log_del.connect(self.update_category_time)
 
         self.logTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
@@ -319,7 +320,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def update_category_time(self) -> None:
-        category_id = self.log_widget._category_id
+        if self.log_widget.log_created or self.log_widget.log_deleted:
+            category_id = self.get_category_id()
+        else:
+            category_id = self.log_widget._category_id
+
         child_item = self.cat_item_ref[category_id]
         category_time = database.categories_table.get_category_time(db_conn, category_id)
         sec = category_time % 60
@@ -334,6 +339,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             child_item.setText(1, f"{min_display:.1f} Min")
         else:
             child_item.setText(1, f"{sec} Sec")
+        
+        self.log_widget.log_created = False
+        self.log_widget.log_deleted = False
         
 
     def update_log_view(self) -> None:
