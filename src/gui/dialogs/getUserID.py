@@ -5,6 +5,8 @@ DIALOG WIDGET, ONLY APPEARS ON FIRST STARTUP
 import sys
 from pathlib import Path
 from uuid import uuid4
+from PySide6.QtCore import QEvent, Qt
+from PySide6.QtGui import QKeyEvent
 from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
@@ -22,15 +24,48 @@ class UserDialog(QDialog, Ui_UserDialog):
         self.setFixedSize(720, 300)
         self.prompt.setGeometry(100, 2, 500, 125)
         self.lineEdit.setGeometry(200, 100, 300, 25)
-        
-        self.lineEdit.returnPressed.connect(self.set_user_data)
+        self.errorLabel.setGeometry(290, 145, 300, 50)
+        self.errorLabel.setText("Enter a Valid Name")
+        self.errorLabel.setVisible(False)
+
+        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "user_id_dialog.qss")))
+
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        if event.key() == Qt.Key.Key_Escape:
+            event.ignore()
+            return
+        elif event.key() == Qt.Key.Key_Return:
+            event.ignore()
+            self.set_user_data()
+            return
+
+        return super().keyPressEvent(event)
 
 
     def set_user_data(self) -> None:
+        line_text: str = self.lineEdit.text()
+        if line_text.isspace() or (line_text == ""):
+            self.show_error_msg()
+            return
+
+        user_name = str(line_text)
         user_id = str(uuid4())
-        user_name = self.lineEdit.text()
+        
         self._user_id = user_id
         self._user_name = user_name
         utils.config.write_config(user_id, user_name)
         database.user_table.init_user(db_conn, user_id, user_name)
         self.close()
+    
+
+    def show_error_msg(self) -> None:
+        self.errorLabel.setVisible(True)
+
+
+def load_stylesheet(path: str) -> str:
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+STYLES_DIR = Path(__file__).resolve().parent.parent / "styles"  # Style Sheets Path

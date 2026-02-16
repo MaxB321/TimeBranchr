@@ -26,7 +26,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.converted_time_seconds: int = 0
         self.accept_flag: bool = False
 
-        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))        
+        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))  
         
         self.ok_btn.clicked.connect(self.ok_btn_clicked)
         self.cancel_btn.clicked.connect(self.cancel_btn_clicked)

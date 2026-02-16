@@ -34,6 +34,9 @@ class Ui_UserDialog(object):
         self.lineEdit = QLineEdit(UserDialog)
         self.lineEdit.setObjectName(u"lineEdit")
         self.lineEdit.setGeometry(QRect(290, 200, 271, 21))
+        self.errorLabel = QLabel(UserDialog)
+        self.errorLabel.setObjectName(u"errorLabel")
+        self.errorLabel.setGeometry(QRect(300, 280, 271, 21))
 
         self.retranslateUi(UserDialog)
 
@@ -43,5 +46,6 @@ class Ui_UserDialog(object):
     def retranslateUi(self, UserDialog):
         UserDialog.setWindowTitle(QCoreApplication.translate("UserDialog", u"Dialog", None))
         self.prompt.setText(QCoreApplication.translate("UserDialog", u"<html><head/><body><p align=\"center\">Enter a Display Name</p></body></html>", None))
+        self.errorLabel.setText(QCoreApplication.translate("UserDialog", u"TextLabel", None))
     # retranslateUi
 
