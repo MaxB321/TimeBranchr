@@ -68,7 +68,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget(self.logTreeWidget)
-        self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget)
+        self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget, self.log_widget)
 
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
@@ -211,7 +211,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # LOG CONTEXT MENU FUNCTIONS
     def create_log(self) -> None:
-        self.log_menu.create_log()
+        category_id = self.get_category_id()
+        self.log_menu.create_log(category_id, self._user_id)
     
     
     def del_log(self) -> None:

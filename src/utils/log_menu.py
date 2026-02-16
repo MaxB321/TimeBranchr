@@ -7,12 +7,13 @@ from gui.widgets.log_widget import LogWidget
 
 
 class LogMenu(QMenu):
-    def __init__(self, parent: QTreeWidget, category_tree: QTreeWidget):
+    def __init__(self, log_tree: QTreeWidget, category_tree: QTreeWidget, log_widget: LogWidget):
         super().__init__()
-        self.menu = QMenu(parent)
-        self.menu_parent: QTreeWidget = parent
+        self.menu = QMenu(log_tree)
+        self.menu_parent: QTreeWidget = log_tree
         self.category_tree_widget = category_tree
         self.log_dialog = LogDialog()
+        self.log_widget = log_widget
         
         self.create_log_action = self.menu.addAction("Create Log")
         
@@ -23,13 +24,17 @@ class LogMenu(QMenu):
         self.sort_log_action.toggle()
 
 
-    def create_log(self) -> None:
+    def create_log(self, category_id: str, user_id: str) -> None:
         # Add log and update the runtime hashmaps in log_widget
         # Insert new log into DB
         # Update log view
         self.log_dialog.init_dialog()
         self.log_dialog.exec()
-        
+
+        if self.log_dialog.accept_flag:
+            seconds: int = self.log_dialog.converted_time_seconds
+            sort_flag: bool = self.sort_log_action.isChecked()
+            self.log_widget.create_log(self.menu_parent, seconds, category_id, user_id, sort_flag)
 
 
     def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:

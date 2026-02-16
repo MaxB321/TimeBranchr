@@ -19,7 +19,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.ok_btn.setGeometry(310, 455, 60, 30)
         self.cancel_btn.setGeometry(375, 455, 60, 30)
         self.setFixedSize(450, 500)
-
+        
         self.hours: int = 0
         self.minutes: int = 0
         self.seconds: int = 0
