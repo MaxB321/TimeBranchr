@@ -58,9 +58,9 @@ class Ui_LogDialog(object):
 
     def retranslateUi(self, LogDialog):
         LogDialog.setWindowTitle(QCoreApplication.translate("LogDialog", u"Dialog", None))
-        self.label_h.setText(QCoreApplication.translate("LogDialog", u"Hours", None))
-        self.label_m.setText(QCoreApplication.translate("LogDialog", u"Minutes", None))
-        self.label_s.setText(QCoreApplication.translate("LogDialog", u"Seconds", None))
+        self.label_h.setText(QCoreApplication.translate("LogDialog", u"Hours:", None))
+        self.label_m.setText(QCoreApplication.translate("LogDialog", u"Minutes:", None))
+        self.label_s.setText(QCoreApplication.translate("LogDialog", u"Seconds:", None))
         self.ok_btn.setText(QCoreApplication.translate("LogDialog", u"Ok", None))
         self.cancel_btn.setText(QCoreApplication.translate("LogDialog", u"Cancel", None))
         self.error_msg.setText(QCoreApplication.translate("LogDialog", u"Error", None))

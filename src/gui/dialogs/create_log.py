@@ -12,7 +12,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.setGeometry(700, 225, 450, 500)
         self.label_h.setGeometry(20, 20, 75, 50)
         self.label_m.setGeometry(20, 80, 75, 50)
-        self.label_s.setGeometry(20, 140, 75, 50)
+        self.label_s.setGeometry(20, 140, 80, 50)
         self.lineEdit_h.setGeometry(110, 35, 100, 25)
         self.lineEdit_m.setGeometry(110, 95, 100, 25)
         self.lineEdit_s.setGeometry(110, 155, 100, 25)

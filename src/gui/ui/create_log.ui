@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Hours</string>
+    <string>Hours:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_h">
@@ -66,7 +66,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Minutes</string>
+    <string>Minutes:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_s">
@@ -79,7 +79,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Seconds</string>
+    <string>Seconds:</string>
    </property>
   </widget>
   <widget class="QPushButton" name="ok_btn">
