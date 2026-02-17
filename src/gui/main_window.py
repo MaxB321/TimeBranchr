@@ -48,11 +48,13 @@ from PySide6.QtCore import (
 )
 from PySide6.QtUiTools import QUiLoader
 import gui.dialogs.getUserID
+import gui.dialogs.change_name
 import gui.resources_rc
 import database.categories_table
 import database.logs_table
 from gui.widgets import log_widget
-import utils.config
+from utils import config
+from utils import stylesheets
 from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
@@ -72,6 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
+        self.change_name_dialog = gui.dialogs.change_name.changeNameDialog()
         self._user_id: str = ""
         self._user_name: str = ""
         self._user_categories: dict[str, str] = {}
@@ -110,6 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
         self.actionShow_Toolbar.setCheckable(True)
         self.actionShow_Toolbar.toggle()
+        self.actionDisplay_Name.triggered.connect(self.change_name_clicked)
 
         self.categoryTreeWidget.doubleClicked.connect(self.edit_widget_text)
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
@@ -127,19 +131,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         self.installEventFilter(self)
 
-        self.groupBox.setStyleSheet(load_stylesheet(str(STYLES_DIR / "containers.qss")))
-        self.categoryTreeWidget.setStyleSheet(load_stylesheet(str(STYLES_DIR / "item_widgets.qss")))
+        self.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "containers.qss")))
+        self.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "item_widgets.qss")))
         self.init_category_tree()
         self.init_log_tree()
 
-        if not utils.config.isConfig():
+        if not config.isConfig():
             self.show()
             self.user_dialog.exec()
             self._user_id = self.user_dialog._user_id
             self._user_name = self.user_dialog._user_name
         else:
-            self._user_id = utils.config.get_user_id()
-            self._user_name = utils.config.get_user_name()
+            self._user_id = config.get_user_id()
+            self._user_name = config.get_user_name()
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
             self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
@@ -199,6 +203,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     # TOP MENU FUNCTIONS
+    def change_name_clicked(self) -> None:
+        self.change_name_dialog.init_dialog(self._user_id)
+        self.change_name_dialog.exec()
+        self._user_name = self.change_name_dialog.get_new_name()
+    
+    
     def quit_menu_clicked(self) -> None:
         sys.exit()
 
@@ -366,13 +376,7 @@ def load_base_ui() -> None:
     app.exec()
 
 
-def load_stylesheet(path: str) -> str:
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
-STYLES_DIR = Path(__file__).resolve().parent / "styles"  # Style Sheets Path
 
 # main window instance
 ui_loader = QUiLoader()

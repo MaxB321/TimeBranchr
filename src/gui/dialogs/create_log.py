@@ -3,6 +3,7 @@ from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtGui import QCloseEvent, QEnterEvent, QKeyEvent
 from PySide6.QtWidgets import QDialog
 from gui.generated.CreateLog import Ui_LogDialog
+from utils import stylesheets
 
 
 class LogDialog(QDialog, Ui_LogDialog):
@@ -26,7 +27,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.converted_time_seconds: int = 0
         self.accept_flag: bool = False
 
-        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "log_dialog.qss")))  
+        self.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "log_dialog.qss")))  
         
         self.ok_btn.clicked.connect(self.ok_btn_clicked)
         self.cancel_btn.clicked.connect(self.cancel_btn_clicked)
@@ -109,11 +110,3 @@ class LogDialog(QDialog, Ui_LogDialog):
     
     def show_error_msg(self, e) -> None:
         self.error_msg.setVisible(True)
-
-
-def load_stylesheet(path: str) -> str:
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
-STYLES_DIR = Path(__file__).resolve().parent.parent / "styles"  # Style Sheets Path

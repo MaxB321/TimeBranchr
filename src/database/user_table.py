@@ -12,5 +12,14 @@ def init_user(db_connection, user_id: str, user_name: str) -> None:
     db_connection.commit()
 
 
-def update_user_name(user_id: str) -> None:  # allow user to change name and update the mysql column 
-    pass
+def update_user_name(db_connection, user_id: str, user_name: str) -> None:
+    sql_query = """
+        UPDATE user_data
+        SET user_name = (%s)
+        WHERE user_id = (%s)
+    """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (user_name, user_id))
+
+    db_connection.commit()

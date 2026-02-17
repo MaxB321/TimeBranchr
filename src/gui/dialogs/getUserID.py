@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
 import utils.config
+from utils import stylesheets
 import database.user_table
 from database.db_connect import db_conn
 
@@ -28,7 +29,7 @@ class UserDialog(QDialog, Ui_UserDialog):
         self.errorLabel.setText("Enter a Valid Name")
         self.errorLabel.setVisible(False)
 
-        self.setStyleSheet(load_stylesheet(str(STYLES_DIR / "user_id_dialog.qss")))
+        self.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "user_id_dialog.qss")))
 
 
     def closeEvent(self, event: QCloseEvent) -> None:
@@ -69,10 +70,3 @@ class UserDialog(QDialog, Ui_UserDialog):
     def show_error_msg(self) -> None:
         self.errorLabel.setVisible(True)
 
-
-def load_stylesheet(path: str) -> str:
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
-STYLES_DIR = Path(__file__).resolve().parent.parent / "styles"  # Style Sheets Path
