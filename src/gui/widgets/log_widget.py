@@ -17,7 +17,7 @@ class LogWidget(QObject):
         self._user_logs: dict[str, list[int]] = {}
         self._user_log_datetime: dict[str, list[datetime]] = {}
         self._category_id: str = ""
-        self.log_parent = parent
+        self.log_tree = parent
         self.log_created: bool = False
         self.log_deleted: bool = False
 
@@ -70,7 +70,7 @@ class LogWidget(QObject):
 
 
     def delete_log_item(self, category_id: str, parent: QTreeWidget, sort_new_first: bool) -> datetime:
-        cur_item = self.log_parent.currentItem()
+        cur_item = self.log_tree.currentItem()
         item_datetime: datetime = self.get_datetime(cur_item)
         item_index = self._user_log_datetime[category_id].index(item_datetime)
         self._user_logs[category_id].pop(item_index)
@@ -86,19 +86,19 @@ class LogWidget(QObject):
         return item_datetime 
 
 
-    def display_logs(self, category_tree: QTreeWidget, log_tree: QTreeWidget, category_id: str, sort_new_first: bool) -> None:  
+    def display_logs(self, category_tree: QTreeWidget, category_id: str, sort_new_first: bool) -> None:  
         cur_item = category_tree.currentItem()
         if not cur_item:
             return
 
         cur_item_name = cur_item.text(0)
-        header = log_tree.headerItem()
+        header = self.log_tree.headerItem()
         header.setText(0, f"Logs - {cur_item_name}")
 
         if sort_new_first:
-            self.display_logs_newest_first(log_tree, category_id)
+            self.display_logs_newest_first(self.log_tree, category_id)
         else:
-            self.display_logs_oldest_first(log_tree, category_id)
+            self.display_logs_oldest_first(self.log_tree, category_id)
 
 
     def display_logs_newest_first(self, parent: QTreeWidget, category_id: str) -> None:

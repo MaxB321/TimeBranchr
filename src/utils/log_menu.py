@@ -10,10 +10,12 @@ class LogMenu(QMenu):
     def __init__(self, log_tree: QTreeWidget, category_tree: QTreeWidget, log_widget: LogWidget):
         super().__init__()
         self.menu = QMenu(log_tree)
-        self.menu_parent: QTreeWidget = log_tree
+        self.log_tree: QTreeWidget = log_tree
         self.category_tree_widget = category_tree
         self.log_dialog = LogDialog()
         self.log_widget = log_widget
+        self.log_tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.log_tree.customContextMenuRequested.connect(self.open_context_menu)
         
         self.create_log_action = self.menu.addAction("Create Log")
         
@@ -31,12 +33,12 @@ class LogMenu(QMenu):
         if self.log_dialog.accept_flag:
             seconds: int = self.log_dialog.converted_time_seconds
             sort_flag: bool = self.sort_log_action.isChecked()
-            self.log_widget.create_log(self.menu_parent, seconds, category_id, user_id, sort_flag)
+            self.log_widget.create_log(self.log_tree, seconds, category_id, user_id, sort_flag)
 
 
     def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:
         sort_flag: bool = self.sort_log_action.isChecked()
-        item_datetime = log_widget.delete_log_item(category_id, self.menu_parent, sort_flag)
+        item_datetime = log_widget.delete_log_item(category_id, self.log_tree, sort_flag)
         
         log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime)
         database.logs_table.user_del_log_row(db_conn, log_id)
@@ -52,14 +54,14 @@ class LogMenu(QMenu):
 
 
     def is_item_selected(self) -> bool:
-        cur_item = self.menu_parent.currentItem()
+        cur_item = self.log_tree.currentItem()
         if cur_item and cur_item.isSelected():
             return True
         return False
 
 
     def open_context_menu(self, cur_pos: QPoint) -> None:
-        global_pos = self.menu_parent.viewport().mapToGlobal(cur_pos)
+        global_pos = self.log_tree.viewport().mapToGlobal(cur_pos)
 
         if not self.is_item_selected():
             self.del_log_action.setVisible(False)

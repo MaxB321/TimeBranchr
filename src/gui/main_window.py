@@ -30,6 +30,7 @@ from PySide6.QtWidgets import (
     QStackedLayout
 )
 from PySide6.QtGui import (
+    QContextMenuEvent,
     QGuiApplication,
     QWindow,
     QScreen,
@@ -53,6 +54,8 @@ import gui.resources_rc
 import database.categories_table
 import database.logs_table
 from gui.widgets import log_widget
+from gui.widgets.category_widget import CategoryWidget
+from gui.widgets.toolbar_widget import ToolbarWidget
 from utils import config
 from utils import stylesheets
 from utils.log_menu import LogMenu
@@ -71,8 +74,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.timer_widget = TimerWidget(self.label)
         self.log_widget = LogWidget(self.logTreeWidget)
         self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget, self.log_widget)
-
-        self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
+        self.cat_widget = CategoryWidget(self.categoryTreeWidget)
+        self.toolbar = ToolbarWidget()
+        self.addToolBar(self.toolbar)
+        
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
         self.change_name_dialog = gui.dialogs.change_name.changeNameDialog()
         self._user_id: str = ""
@@ -80,51 +85,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_categories: dict[str, str] = {}
         self._user_logs: dict[str, list[int]] = {}
         self._user_logs_datetime: dict[str, list[datetime]] = {}
-        
-        new_category_button = QAction(QIcon(":/icons/plus32.png"), "New Category", self)
-        new_category_button.setStatusTip("Creates New Category")
-        new_category_button.triggered.connect(self.new_cat_btn_clicked)
-        
-        delete_category_button = QAction(QIcon(":/icons/minus32.png"), "Delete Category", self)
-        delete_category_button.setStatusTip("Deletes Selected Category")
-        delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
 
-        start_button = QAction(QIcon(":/icons/play.png"), "Start", self)
-        start_button.setStatusTip("Start Timer")
-        start_button.triggered.connect(self.start_btn_clicked)
+        self.toolbar.new_category_button.triggered.connect(self.new_cat_btn_clicked)
+        self.toolbar.delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
+        self.toolbar.start_button.triggered.connect(self.start_btn_clicked)
+        self.toolbar.pause_button.triggered.connect(self.pause_btn_clicked)
+        self.toolbar.stop_button.triggered.connect(self.stop_btn_clicked)
 
-        pause_button = QAction(QIcon(":/icons/pause.png"), "Pause/Resume", self)
-        pause_button.setStatusTip("Pause or Resume Timer")
-        pause_button.triggered.connect(self.pause_btn_clicked)
-        
-        stop_button = QAction(QIcon(":/icons/stop.png"), "Stop", self)
-        stop_button.setStatusTip("Stop Timer")
-        stop_button.triggered.connect(self.stop_btn_clicked)
-
-        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
-        self.toolBar.setMovable(False)
-        self.toolBar.addAction(new_category_button)
-        self.toolBar.addAction(delete_category_button)
-        self.toolBar.addAction(start_button)
-        self.toolBar.addAction(pause_button)
-        self.toolBar.addAction(stop_button)
-        
         self.actionQuit.triggered.connect(self.quit_menu_clicked)
         self.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
         self.actionShow_Toolbar.setCheckable(True)
         self.actionShow_Toolbar.toggle()
         self.actionDisplay_Name.triggered.connect(self.change_name_clicked)
 
-        self.categoryTreeWidget.doubleClicked.connect(self.edit_widget_text)
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
-        self.categoryTreeWidget.itemChanged.connect(self.update_cat_name_db)
 
         self.log_widget.log_added.connect(self.update_category_time)
         self.log_widget.log_del.connect(self.update_category_time)
 
-        self.logTreeWidget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.logTreeWidget.customContextMenuRequested.connect(self.open_log_context_menu)
         self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
         self.log_menu.del_log_action.triggered.connect(self.del_log)
         self.log_menu.create_log_action.triggered.connect(self.create_log)
@@ -133,7 +112,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "item_widgets.qss")))
-        self.init_category_tree()
+        self.cat_widget.init_category_tree()
         self.init_log_tree()
 
         if not config.isConfig():
@@ -145,6 +124,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            self.cat_widget.user_categories = self._user_categories
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
             self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
             self.load_categories()
@@ -166,21 +146,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def new_cat_btn_clicked(self) -> None:
-        self.categoryTreeWidget.blockSignals(True)
-
-        child_item = QTreeWidgetItem(self.categoryTreeWidget)
-        child_item.setText(0, "New Category")
-        child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
-        child_item_text = child_item.text(0)
-
-        category_id = str(uuid4())
-        child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
-        self.cat_item_ref[category_id] = child_item
-
-        child_item.setText(1, "0.0 Hrs")
-        
-        self.categoryTreeWidget.blockSignals(False)
-        self.log_widget.init_category(category_id, child_item_text, self._user_id)
+        self.cat_widget.add_category(self.log_widget)
 
 
     def pause_btn_clicked(self) -> None:
@@ -196,7 +162,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     def stop_btn_clicked(self) -> None:
-        category_id = self.get_category_id()
+        category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
         self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id, sort_new_first)
         self.timer_widget.stop_timer()
@@ -215,19 +181,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def show_toolbar_menu_clicked(self) -> None:
         if self.actionShow_Toolbar.isChecked():
-            self.toolBar.show()
+            self.toolbar.show()
         else:
-            self.toolBar.hide()
+            self.toolbar.hide()
 
 
     # LOG CONTEXT MENU FUNCTIONS
     def create_log(self) -> None:
-        category_id = self.get_category_id()
+        category_id = self.cat_widget.get_category_id()
         self.log_menu.create_log(category_id, self._user_id)
     
     
     def del_log(self) -> None:
-        category_id = self.get_category_id()
+        category_id = self.cat_widget.get_category_id()
         self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id)
 
 
@@ -236,44 +202,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not cur_item:
             return
 
-        category_id = self.get_category_id()
+        category_id = self.cat_widget.get_category_id()
         if self.log_menu.sort_log_action.isChecked():
             self.log_widget.display_logs_newest_first(self.logTreeWidget, category_id)
         else:
             self.log_widget.display_logs_oldest_first(self.logTreeWidget, category_id)
-        
-    
-    def open_log_context_menu(self, cur_pos: QPoint) -> None:
-        self.log_menu.open_context_menu(cur_pos)
     
 
     # MISCELLANEOUS FUNCTIONS
-    def edit_widget_text(self) -> None:
-        cur_item = self.categoryTreeWidget.currentItem()
-        self.categoryTreeWidget.editItem(cur_item, 0)
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
+        event.ignore()
+        return
 
-
+    
     # deselect treewidgetitems through overloaded QObject method
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
             self.categoryTreeWidget.clearSelection()
-            
+            self.logTreeWidget.clearSelection()
+
         return super().eventFilter(obj, event)
 
-
-    def get_category_id(self) -> str:
-        cur_item = self.categoryTreeWidget.currentItem()
-        category_id: str = cur_item.data(0, Qt.ItemDataRole.UserRole)
-        return category_id
-
-
-    def init_category_tree(self) -> None:
-        header = self.categoryTreeWidget.header()
-        header.setStretchLastSection(False)
-        header.setSectionResizeMode(0, header.ResizeMode.Stretch)
-        header.setSectionResizeMode(1, header.ResizeMode.Custom)
-        self.categoryTreeWidget.setColumnWidth(1, 125) 
-    
 
     def init_log_tree(self) -> None:
         header = self.logTreeWidget.header()
@@ -284,74 +233,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def load_categories(self) -> None:
-        self.categoryTreeWidget.blockSignals(True)
-
-        for key, val in self._user_categories.items():
-
-            child_item = QTreeWidgetItem(self.categoryTreeWidget)
-            child_item.setText(0, val)
-            child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
-            child_item.setData(0, Qt.ItemDataRole.UserRole, key)
-
-            self.cat_item_ref[key] = child_item
-
-            category_time = database.categories_table.get_category_time(db_conn, key)
-            child_item.setText(1, self.load_category_time(category_time))
-        
-        self.categoryTreeWidget.blockSignals(False)
-    
-
-    def load_category_time(self, category_time: int) -> str:
-        sec = category_time % 60
-        min = (category_time % 3600) // 60
-        hrs = category_time // 3600
-        hrs_display: float = float(category_time / 3600)
-        min_display: float = float(category_time / 60)
-
-        if hrs > 0:
-            return f"{hrs_display:.1f} Hrs"
-        elif hrs == 0 and min > 0:
-            return f"{min_display:.1f} Min"
-        else:
-            return f"{sec} Sec"
+        self.cat_widget.load_categories()
 
 
     def load_logs(self) -> None:
         self.log_widget.load_logs(self._user_logs, self._user_categories, self._user_logs_datetime)
 
 
-    def update_cat_name_db(self) -> None:
-        if self.categoryTreeWidget.currentItem() is None:
-            return
-        
-
-        cur_item_text = self.categoryTreeWidget.currentItem().text(0)
-        database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
-
-
     def update_category_time(self) -> None:
-        if self.log_widget.log_created or self.log_widget.log_deleted:
-            category_id = self.get_category_id()
-        else:
-            category_id = self.log_widget._category_id
-
-        child_item = self.cat_item_ref[category_id]
-        category_time = database.categories_table.get_category_time(db_conn, category_id)
-        sec = category_time % 60
-        min = (category_time % 3600) // 60
-        hrs = category_time // 3600
-        hrs_display: float = float(category_time / 3600) 
-        min_display: float = float(category_time / 60)
-
-        if hrs > 0:
-            child_item.setText(1, f"{hrs_display:.1f} Hrs")
-        elif hrs == 0 and min > 0:
-            child_item.setText(1, f"{min_display:.1f} Min")
-        else:
-            child_item.setText(1, f"{sec} Sec")
-        
-        self.log_widget.log_created = False
-        self.log_widget.log_deleted = False
+        self.cat_widget.update_category_time(self.log_widget)
         
 
     def update_log_view(self) -> None:
@@ -359,9 +249,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if not cur_item:
             return
 
-        category_id = self.get_category_id()
+        category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
-        self.log_widget.display_logs(self.categoryTreeWidget, self.logTreeWidget, category_id, sort_new_first)
+        self.log_widget.display_logs(self.categoryTreeWidget, category_id, sort_new_first)
 
 
 def display_main_window() -> None:
