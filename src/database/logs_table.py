@@ -1,6 +1,8 @@
 from datetime import datetime
 from pymysql import connect
 
+from utils.category_type import CategoryType
+
 
 def cleanup_log_row(db_connection, category_id: str) -> None:   
     sql_query = """
@@ -14,12 +16,19 @@ def cleanup_log_row(db_connection, category_id: str) -> None:
     db_connection.commit()
 
 
-def get_log_id(db_connection, user_id: str, date_time: datetime) -> int:  # will primarily be for deleting logs
-    sql_query = """
-        SELECT log_id
-        FROM time_logs 
-        WHERE user_id = (%s) AND date_time = (%s)
-    """
+def get_log_id(db_connection, user_id: str, date_time: datetime, category_type: CategoryType) -> int:  # will primarily be for deleting logs
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            SELECT log_id
+            FROM time_logs 
+            WHERE user_id = (%s) AND date_time = (%s)
+        """
+    else:
+        sql_query = """
+            SELECT log_id
+            FROM subcategory_time_logs 
+            WHERE user_id = (%s) AND date_time = (%s)
+        """
 
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id, date_time))
@@ -70,9 +79,27 @@ def get_user_logs_datetime(db_connection, user_id: str) -> dict[str, list[dateti
     return user_data 
 
 
-def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
+def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime, category_type: CategoryType) -> None:
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            INSERT INTO time_logs (category_id, log_time, user_id, date_time)
+            VALUES (%s, %s, %s, %s)
+        """
+    else:
+        sql_query = """
+            INSERT INTO subcategory_time_logs (category_id, log_time, user_id, date_time)
+            VALUES (%s, %s, %s, %s)
+        """
+
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (category_id, log_time, user_id, date_time))
+
+    db_connection.commit()
+
+
+def init_subcat_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
     sql_query = """
-        INSERT INTO time_logs (category_id, log_time, user_id, date_time)
+        INSERT INTO subcategory_time_logs (category_id, log_time, user_id, date_time)
         VALUES (%s, %s, %s, %s)
     """
 

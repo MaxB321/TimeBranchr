@@ -1,10 +1,10 @@
-from ast import List
 from datetime import datetime
 from PySide6.QtCore import QDateTime, QObject, Signal, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
 import database.logs_table
+from utils.category_type import CategoryType
 
 
 class LogWidget(QObject):
@@ -22,14 +22,15 @@ class LogWidget(QObject):
         self.log_deleted: bool = False
 
 
-    def add_log(self, log_tree: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool) -> None:  
+    def add_log(self, log_tree: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool, cat_type: CategoryType) -> None:  
         if seconds == 0:
             return
         
         cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[self._category_id].append(seconds)
         self._user_log_datetime[self._category_id].append(cur_date_time)
-        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time)
+        
+        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time, cat_type)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, selected_category_id)
@@ -51,14 +52,14 @@ class LogWidget(QObject):
         return categories_with_no_logs
 
 
-    def create_log(self, log_tree: QTreeWidget, seconds: int, category_id: str, user_id: str, sort_new_first: bool):  # user-created log 
+    def create_log(self, log_tree: QTreeWidget, seconds: int, category_id: str, user_id: str, sort_new_first: bool, category_type: CategoryType):  # user-created log 
         if seconds == 0:
             return
         
         cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[category_id].append(seconds)
         self._user_log_datetime[category_id].append(cur_date_time)
-        database.logs_table.init_log(db_conn, category_id, seconds, user_id, cur_date_time)
+        database.logs_table.init_log(db_conn, category_id, seconds, user_id, cur_date_time, category_type)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, category_id)
@@ -152,6 +153,12 @@ class LogWidget(QObject):
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
         database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
+    
+
+    def init_subcategory(self, category_id: str, parent_id: str, category_name: str, user_id: str) -> None:
+        self._user_logs[category_id] = []
+        self._user_log_datetime[category_id] = []
+        database.categories_table.init_subcategory(db_conn, category_id, parent_id, category_name, 0, user_id)
 
     
     def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_logs_datetime: dict[str, list[datetime]]) -> None:

@@ -58,6 +58,7 @@ from gui.widgets.category_widget import CategoryWidget
 from gui.widgets.toolbar_widget import ToolbarWidget
 from utils import config
 from utils import stylesheets
+from utils.category_type import CategoryType
 from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
@@ -101,8 +102,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
 
-        self.log_widget.log_added.connect(self.update_category_time)
-        self.log_widget.log_del.connect(self.update_category_time)
+        self.log_widget.log_added.connect(self.update_category_time_add)
+        self.log_widget.log_del.connect(self.update_category_time_del)
 
         self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
         self.log_menu.del_log_action.triggered.connect(self.del_log)
@@ -160,12 +161,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.timer_widget.start_timer()
             category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
             self.log_widget.set_category_id(category_id)
-    
+            if not cur_item.parent():
+                self.cat_widget.set_category_type(CategoryType.MainCategory)
+            else:
+                self.cat_widget.set_category_type(CategoryType.SubCategory)
+
 
     def stop_btn_clicked(self) -> None:
         category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
-        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id, sort_new_first)
+        cat_type = self.cat_widget.get_category_type()
+        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id, sort_new_first, cat_type)
         self.timer_widget.stop_timer()
 
 
@@ -190,12 +196,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # LOG CONTEXT MENU FUNCTIONS
     def create_log(self) -> None:
         category_id = self.cat_widget.get_category_id()
-        self.log_menu.create_log(category_id, self._user_id)
+        if self.cat_widget.is_outermost_layer():
+            self.log_menu.create_log(category_id, self._user_id, CategoryType.MainCategory)
+        else:
+            self.log_menu.create_log(category_id, self._user_id, CategoryType.SubCategory)
     
     
     def del_log(self) -> None:
         category_id = self.cat_widget.get_category_id()
-        self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id)
+        if self.cat_widget.is_outermost_layer():
+            self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id, CategoryType.MainCategory)
+        else:
+            self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id, CategoryType.SubCategory)
 
 
     def sort_logs(self) -> None:
@@ -237,9 +249,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_widget.load_logs(self._user_logs, self._user_categories, self._user_logs_datetime)
 
 
-    def update_category_time(self) -> None:
-        self.cat_widget.update_category_time(self.log_widget)
-        
+    def update_category_time_add(self) -> None:
+        if not self.log_widget.log_created:
+            category_type = self.cat_widget.get_category_type()
+            self.cat_widget.update_category_time(self.log_widget, category_type)
+        else:
+            if self.cat_widget.is_outermost_layer():
+                self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory)
+            else:
+                self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory)
+
+
+    def update_category_time_del(self) -> None:
+        if self.cat_widget.is_outermost_layer():
+            self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory)
+        else:
+            self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory)
+
 
     def update_log_view(self) -> None:
         cur_item = self.categoryTreeWidget.currentItem()

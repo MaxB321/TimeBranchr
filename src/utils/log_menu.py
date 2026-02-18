@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
 from gui.dialogs.create_log import LogDialog
 from gui.widgets.log_widget import LogWidget
+from utils.category_type import CategoryType
 
 
 class LogMenu(QMenu):
@@ -26,21 +27,21 @@ class LogMenu(QMenu):
         self.sort_log_action.toggle()
 
 
-    def create_log(self, category_id: str, user_id: str) -> None:
+    def create_log(self, category_id: str, user_id: str, category_type: CategoryType) -> None:
         self.log_dialog.init_dialog()
         self.log_dialog.exec()
 
         if self.log_dialog.accept_flag:
             seconds: int = self.log_dialog.converted_time_seconds
             sort_flag: bool = self.sort_log_action.isChecked()
-            self.log_widget.create_log(self.log_tree, seconds, category_id, user_id, sort_flag)
+            self.log_widget.create_log(self.log_tree, seconds, category_id, user_id, sort_flag, category_type)
 
 
-    def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str) -> None:
+    def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str, category_type: CategoryType) -> None:
         sort_flag: bool = self.sort_log_action.isChecked()
         item_datetime = log_widget.delete_log_item(category_id, self.log_tree, sort_flag)
         
-        log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime)
+        log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime, category_type)
         database.logs_table.user_del_log_row(db_conn, log_id)
         
         self.log_widget.log_del.emit(category_id)

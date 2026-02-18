@@ -5,6 +5,7 @@ from gui.widgets.log_widget import LogWidget
 from utils import config
 import database.categories_table
 from database.db_connect import db_conn
+from utils.category_type import CategoryType
 
 
 class CategoryWidget():
@@ -15,6 +16,7 @@ class CategoryWidget():
         self.cat_tree = parent
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.sort_ascending: bool = True
+        self._category_type = CategoryType.MainCategory
 
         self.cat_tree.doubleClicked.connect(self.edit_widget_text)
         self.cat_tree.itemChanged.connect(self.update_cat_name_db)
@@ -58,16 +60,13 @@ class CategoryWidget():
         category_id = str(uuid4())
         child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
         self.cat_item_ref[category_id] = child_item
+        parent_id = selected_item.data(0, Qt.ItemDataRole.UserRole)
 
         child_item.setText(1, "0 Sec")
 
         self.cat_tree.blockSignals(False)
-        log_widget.init_category(category_id, child_item_text, self.user_id)
+        log_widget.init_subcategory(category_id, parent_id, child_item_text, self.user_id)
         self.update_display()
-
-
-    def display_categories(self) -> None:
-        pass
 
 
     def edit_widget_text(self) -> None:
@@ -79,6 +78,10 @@ class CategoryWidget():
         cur_item = self.cat_tree.currentItem()
         category_id: str = cur_item.data(0, Qt.ItemDataRole.UserRole)
         return category_id
+    
+    
+    def get_category_type(self) -> CategoryType:
+        return self._category_type
 
 
     def init_category_tree(self) -> None:
@@ -110,6 +113,15 @@ class CategoryWidget():
         return False
     
 
+    def is_outermost_layer(self) -> bool:
+        cur_item = self.cat_tree.currentItem()
+        parent = cur_item.parent()
+        if not parent:
+            return True
+        
+        return False
+    
+
     def load_categories(self) -> None:
         self.cat_tree.blockSignals(True)
 
@@ -122,10 +134,14 @@ class CategoryWidget():
 
             self.cat_item_ref[key] = child_item
 
-            category_time = database.categories_table.get_category_time(db_conn, key)
+            category_time = database.categories_table.get_category_time(db_conn, key, CategoryType.MainCategory)
             child_item.setText(1, self.load_category_time(category_time))
-        
+
         self.cat_tree.blockSignals(False)
+    
+
+    def load_subcategories(self) -> None:
+        pass
 
 
     def load_category_time(self, category_time: int) -> str:
@@ -141,6 +157,10 @@ class CategoryWidget():
             return f"{min_display:.1f} Min"
         else:
             return f"{sec} Sec"
+    
+
+    def set_category_type(self, cat_type: CategoryType) -> None:
+        self._category_type = cat_type
 
 
     def update_cat_name_db(self) -> None:
@@ -152,14 +172,16 @@ class CategoryWidget():
         self.update_display()
 
 
-    def update_category_time(self, log_widget: LogWidget) -> None:
+    def update_category_time(self, log_widget: LogWidget, cat_type: CategoryType) -> None:
         if log_widget.log_created or log_widget.log_deleted:
             category_id = self.get_category_id()
         else:
             category_id = log_widget._category_id
 
         child_item = self.cat_item_ref[category_id]
-        category_time = database.categories_table.get_category_time(db_conn, category_id)
+
+        category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+
         sec = category_time % 60
         min = (category_time % 3600) // 60
         hrs = category_time // 3600
