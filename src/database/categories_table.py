@@ -43,6 +43,14 @@ def init_category(db_connection, category_id: str, category_name: str, time: int
     db_connection.commit()
 
 
+def init_subcategory(db_connection, category_id: str, category_name: str, time: int, user_id: str) -> None:
+    pass
+
+
+def init_sub_child(db_connection, category_id: str, category_name: str, time: int, user_id: str) -> None:
+    pass
+
+
 def get_user_categories(db_connection, user_id: str) -> dict[str, str]:
     sql_query = """
         SELECT category_id, category

@@ -112,8 +112,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "item_widgets.qss")))
-        self.cat_widget.init_category_tree()
-        self.init_log_tree()
 
         if not config.isConfig():
             self.show()
@@ -127,8 +125,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cat_widget.user_categories = self._user_categories
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
             self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
-            self.load_categories()
+            self.cat_widget.load_categories()
             self.load_logs()
+        
+        self.cat_widget.init_category_tree()
+        self.init_log_tree()
 
 
     # TOOLBAR FUNCTIONS
@@ -230,10 +231,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
         self.logTreeWidget.setColumnWidth(1, 125) 
-
-
-    def load_categories(self) -> None:
-        self.cat_widget.load_categories()
 
 
     def load_logs(self) -> None:

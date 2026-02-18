@@ -14,12 +14,17 @@ class CategoryWidget():
         self.user_categories: dict[str, str] = {}
         self.cat_tree = parent
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
+        self.sort_ascending: bool = True
 
         self.cat_tree.doubleClicked.connect(self.edit_widget_text)
         self.cat_tree.itemChanged.connect(self.update_cat_name_db)
 
 
     def add_category(self, log_widget: LogWidget) -> None:
+        if self.is_category_selected():
+            self.add_subcategory(self.cat_tree.currentItem(), log_widget)
+            return
+
         self.cat_tree.blockSignals(True)
 
         child_item = QTreeWidgetItem(self.cat_tree)
@@ -35,25 +40,33 @@ class CategoryWidget():
         
         self.cat_tree.blockSignals(False)
         log_widget.init_category(category_id, child_item_text, self.user_id)
+        self.update_display()
 
 
-    def add_subcategory(self) -> None:
-        pass
+    def add_subcategory(self, selected_item: QTreeWidgetItem, log_widget: LogWidget) -> None:
+        if self.is_innermost_layer(selected_item):
+            return 
+        
+        self.cat_tree.blockSignals(True)
 
+        child_item = QTreeWidgetItem()
+        child_item.setText(0, "Child Item")
+        child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
+        selected_item.addChild(child_item)
+        child_item_text = child_item.text(0)
 
-    def add_sub_child(self) -> None:
-        pass
+        category_id = str(uuid4())
+        child_item.setData(0, Qt.ItemDataRole.UserRole, category_id)
+        self.cat_item_ref[category_id] = child_item
+
+        child_item.setText(1, "0 Sec")
+
+        self.cat_tree.blockSignals(False)
+        log_widget.init_category(category_id, child_item_text, self.user_id)
+        self.update_display()
 
 
     def display_categories(self) -> None:
-        pass
-    
-
-    def display_categories_ascending(self) -> None:
-        pass
-
-
-    def display_categories_descending(self) -> None:
         pass
 
 
@@ -73,14 +86,27 @@ class CategoryWidget():
         header.setStretchLastSection(False)
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
-        self.cat_tree.setColumnWidth(1, 125) 
+        self.cat_tree.setColumnWidth(1, 125)
+        self.cat_tree.sortByColumn(0, Qt.SortOrder.AscendingOrder)
 
 
-    def isCategorySelected(self) -> bool:
+    def is_category_selected(self) -> bool:
         cur_item = self.cat_tree.currentItem()
         if cur_item and cur_item.isSelected():
             return True
         
+        return False
+    
+
+    def is_innermost_layer(self, selected_item: QTreeWidgetItem) -> bool:
+        layer2_item = selected_item.parent()
+        if layer2_item:
+            layer1_item = layer2_item.parent()
+            if layer1_item:
+                return True
+            else:
+                return False
+
         return False
     
 
@@ -120,10 +146,11 @@ class CategoryWidget():
     def update_cat_name_db(self) -> None:
         if self.cat_tree.currentItem() is None:
             return
-        
+
         cur_item_text = self.cat_tree.currentItem().text(0)
         database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
-    
+        self.update_display()
+
 
     def update_category_time(self, log_widget: LogWidget) -> None:
         if log_widget.log_created or log_widget.log_deleted:
@@ -148,3 +175,10 @@ class CategoryWidget():
         
         log_widget.log_created = False
         log_widget.log_deleted = False
+    
+
+    def update_display(self) -> None:
+        if self.sort_ascending:
+            self.cat_tree.sortByColumn(0, Qt.SortOrder.AscendingOrder)
+        else:
+            self.cat_tree.sortByColumn(0, Qt.SortOrder.DescendingOrder)
