@@ -45,13 +45,20 @@ def get_log_id(db_connection, user_id: str, date_time: datetime, category_type: 
     return row["log_id"]
 
 
-def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]: 
-    sql_query = """
-        SELECT category_id, log_time
-        FROM time_logs
-        WHERE user_id = (%s)
-    """
-    
+def get_user_logs(db_connection, user_id: str, category_type: CategoryType) -> dict[str, list[int]]:  # add categoryType arg, call it twice and just append the second call results after the first in dict
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            SELECT category_id, log_time
+            FROM time_logs
+            WHERE user_id = (%s)
+        """
+    else:
+        sql_query = """
+            SELECT category_id, log_time
+            FROM subcategory_time_logs
+            WHERE user_id = (%s)
+        """
+
     user_data: dict[str, list[int]] = {}
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
@@ -65,13 +72,20 @@ def get_user_logs(db_connection, user_id: str) -> dict[str, list[int]]:
     return user_data
 
 
-def get_user_logs_datetime(db_connection, user_id: str) -> dict[str, list[datetime]]:
-    sql_query = """
-        SELECT category_id, date_time
-        FROM time_logs
-        WHERE user_id = (%s)
-    """
-    
+def get_user_logs_datetime(db_connection, user_id: str, category_type: CategoryType) -> dict[str, list[datetime]]:
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            SELECT category_id, date_time
+            FROM time_logs
+            WHERE user_id = (%s)
+        """
+    else:
+        sql_query = """
+            SELECT category_id, date_time
+            FROM subcategory_time_logs
+            WHERE user_id = (%s)
+        """
+
     user_data: dict[str, list[datetime]] = {}
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
