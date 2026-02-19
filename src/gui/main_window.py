@@ -115,25 +115,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "containers.qss")))
         self.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "item_widgets.qss")))
 
-        if not config.isConfig():
-            self.show()
-            self.user_dialog.exec()
-            self._user_id = self.user_dialog._user_id
-            self._user_name = self.user_dialog._user_name
-        else:
-            self._user_id = config.get_user_id()
-            self._user_name = config.get_user_name()
-            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
-            self._user_subcategories = database.categories_table.get_user_subcategories(db_conn, self._user_id)
-            self.cat_widget.user_categories = self._user_categories
-            self.cat_widget.user_subcategories = self._user_subcategories
-            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.MainCategory)
-            self._user_logs |= database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.SubCategory)
-            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.MainCategory)
-            self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.SubCategory)
-            self.cat_widget.load_categories()
-            self.cat_widget.load_subcategories()
-            self.load_logs()
+        self.init_user_data()
         
         self.cat_widget.init_category_tree()
         self.init_log_tree()
@@ -252,7 +234,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         header.setStretchLastSection(False)
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
-        self.logTreeWidget.setColumnWidth(1, 125) 
+        self.logTreeWidget.setColumnWidth(1, 125)
+
+
+    def init_user_data(self) -> None:
+        if not config.isConfig():
+            self.show()
+            self.user_dialog.exec()
+            self._user_id = self.user_dialog._user_id
+            self._user_name = self.user_dialog._user_name
+        else:
+            self._user_id = config.get_user_id()
+            self._user_name = config.get_user_name()
+            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            self._user_subcategories = database.categories_table.get_user_subcategories(db_conn, self._user_id)
+            self.cat_widget.user_categories = self._user_categories
+            self.cat_widget.user_subcategories = self._user_subcategories
+            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.MainCategory)
+            self._user_logs |= database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.SubCategory)
+            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.MainCategory)
+            self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.SubCategory)
+            self.cat_widget.load_categories()
+            self.cat_widget.load_subcategories()
+            self.load_logs()
 
 
     def load_logs(self) -> None:
