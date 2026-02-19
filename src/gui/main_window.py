@@ -146,6 +146,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 database.categories_table.delete_category_row(db_conn, category_id, CategoryType.MainCategory)
                 self.categoryTreeWidget.takeTopLevelItem(self.categoryTreeWidget.indexOfTopLevelItem(cur_item))
             else:
+                self.cat_widget.cleanup_children_items(cur_item)
                 database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
                 parent.removeChild(cur_item)
 
