@@ -67,6 +67,35 @@ class CategoryWidget():
         self.cat_tree.blockSignals(False)
         log_widget.init_subcategory(category_id, parent_id, child_item_text, self.user_id)
         self.update_display()
+    
+
+    def cleanup_children_items(self, cur_item: QTreeWidgetItem) -> None:
+        child_count = cur_item.childCount()
+        if child_count == 0:
+            return 
+        
+        i: int = 0
+        j: int = 0
+
+        while i < child_count:
+            cur_child = cur_item.child(0)
+            j = 0
+
+            innermost_child_count: int = cur_child.childCount()
+            if not innermost_child_count == 0:
+                while j < innermost_child_count:
+                    innermost_child = cur_child.child(0)
+                    category_id = innermost_child.data(0, Qt.ItemDataRole.UserRole)
+                    cur_child.removeChild(innermost_child)
+                    database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+                    j += 1
+
+            category_id = cur_child.data(0, Qt.ItemDataRole.UserRole)
+            cur_item.removeChild(cur_child)
+            database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+
+            i += 1
+        
 
 
     def edit_widget_text(self) -> None:
@@ -168,7 +197,10 @@ class CategoryWidget():
             return
 
         cur_item_text = self.cat_tree.currentItem().text(0)
-        database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text)
+        if self.is_outermost_layer():
+            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text, CategoryType.MainCategory)
+        else:
+            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text, CategoryType.SubCategory)
         self.update_display()
 
 

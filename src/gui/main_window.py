@@ -140,11 +140,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
             self.log_widget._user_logs.pop(category_id, None)
             parent = cur_item.parent()
-            if parent:
-                parent.removeChild(cur_item)
-            else:
+            
+            if self.cat_widget.is_outermost_layer():
+                self.cat_widget.cleanup_children_items(cur_item)
+                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.MainCategory)
                 self.categoryTreeWidget.takeTopLevelItem(self.categoryTreeWidget.indexOfTopLevelItem(cur_item))
-            database.categories_table.delete_category_row(db_conn, category_id)
+            else:
+                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+                parent.removeChild(cur_item)
 
 
     def new_cat_btn_clicked(self) -> None:

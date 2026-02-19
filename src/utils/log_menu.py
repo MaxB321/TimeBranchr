@@ -42,7 +42,7 @@ class LogMenu(QMenu):
         item_datetime = log_widget.delete_log_item(category_id, self.log_tree, sort_flag)
         
         log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime, category_type)
-        database.logs_table.user_del_log_row(db_conn, log_id)
+        database.logs_table.user_del_log_row(db_conn, log_id, category_type)
         
         self.log_widget.log_del.emit(category_id)
 

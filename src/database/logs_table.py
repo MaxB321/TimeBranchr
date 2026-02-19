@@ -4,11 +4,17 @@ from pymysql import connect
 from utils.category_type import CategoryType
 
 
-def cleanup_log_row(db_connection, category_id: str) -> None:   
-    sql_query = """
-        DELETE FROM time_logs 
-        WHERE category_id = (%s)
-    """
+def cleanup_log_row(db_connection, category_id: str, category_type: CategoryType) -> None:   
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            DELETE FROM time_logs 
+            WHERE category_id = (%s)
+        """
+    else:
+        sql_query = """
+            DELETE FROM subcategory_time_logs 
+            WHERE category_id = (%s)
+        """
 
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (category_id))
@@ -109,11 +115,17 @@ def init_subcat_log(db_connection, category_id: str, log_time: int, user_id: str
     db_connection.commit()
 
 
-def user_del_log_row(db_connection, log_id: int) -> None:  
-    sql_query = """
-        DELETE FROM time_logs
-        WHERE log_id = (%s)
-    """
+def user_del_log_row(db_connection, log_id: int, category_type: CategoryType) -> None:  
+    if category_type == CategoryType.MainCategory:
+        sql_query = """
+            DELETE FROM time_logs
+            WHERE log_id = (%s)
+        """
+    else:
+        sql_query = """
+            DELETE FROM subcategory_time_logs
+            WHERE log_id = (%s)
+        """
 
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (log_id))
