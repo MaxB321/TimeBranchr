@@ -40,12 +40,13 @@ class LogWidget(QObject):
         self.log_added.emit(self._category_id)
 
 
-    def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str]) -> list[str]:
-        category_id = list[str](user_categories.keys())
+    def category_with_no_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_subcategories: dict[str, list[str]]) -> list[str]:
+        category_ids = list[str](user_categories.keys())
+        category_ids.extend(user_subcategories.keys())
         category_id_logs = list[str](user_logs.keys())
         categories_with_no_logs: list[str] = []
         
-        for x in category_id:
+        for x in category_ids:
             if x not in category_id_logs:
                 categories_with_no_logs.append(x)
 
@@ -161,8 +162,8 @@ class LogWidget(QObject):
         database.categories_table.init_subcategory(db_conn, category_id, parent_id, category_name, 0, user_id)
 
     
-    def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_logs_datetime: dict[str, list[datetime]]) -> None:
-        categories_with_no_logs: list[str] = self.category_with_no_logs(user_logs, user_categories)
+    def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_subcategories: dict[str, list[str]], user_logs_datetime: dict[str, list[datetime]]) -> None:
+        categories_with_no_logs: list[str] = self.category_with_no_logs(user_logs, user_categories, user_subcategories)
         for key, val in user_logs.items():
             if key not in self._user_logs:
                 self._user_logs[key] = []

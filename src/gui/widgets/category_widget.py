@@ -171,11 +171,11 @@ class CategoryWidget():
     
 
     def load_subcategories(self) -> None:
-        self.cat_tree.blockSignals(True)
         innermost_items: dict[str, QTreeWidgetItem] = {} # key is parent_id
 
+        self.cat_tree.blockSignals(True)
         for key, val in self.user_subcategories.items():
-
+            
             child_item = QTreeWidgetItem()
             child_item.setText(0, val[0])
             child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
@@ -192,10 +192,13 @@ class CategoryWidget():
 
             category_time = database.categories_table.get_category_time(db_conn, key, CategoryType.SubCategory)
             child_item.setText(1, self.load_category_time(category_time))
+        
+        self.cat_tree.blockSignals(False)
 
         if not innermost_items:
             return
         
+        self.cat_tree.blockSignals(True)
         for key, val in innermost_items.items():
             parent_item = self.cat_item_ref[key]
             parent_item.addChild(val)
@@ -203,7 +206,6 @@ class CategoryWidget():
             self.cat_item_ref[category_id] = val
             category_time = database.categories_table.get_category_time(db_conn, category_id, CategoryType.SubCategory)
             val.setText(1, self.load_category_time(category_time))
-
 
         self.cat_tree.blockSignals(False)
 

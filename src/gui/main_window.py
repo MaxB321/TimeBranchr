@@ -260,7 +260,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def load_logs(self) -> None:
-        self.log_widget.load_logs(self._user_logs, self._user_categories, self._user_logs_datetime)
+        self.log_widget.load_logs(self._user_logs, self._user_categories, self._user_subcategories, self._user_logs_datetime)
 
 
     def update_category_time_add(self) -> None:
