@@ -84,6 +84,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_id: str = ""
         self._user_name: str = ""
         self._user_categories: dict[str, str] = {}
+        self._user_subcategories: dict[str, list[str]] = {}  # index(0) == category_name ; index(1) == parent_id
         self._user_logs: dict[str, list[int]] = {}
         self._user_logs_datetime: dict[str, list[datetime]] = {}
 
@@ -123,10 +124,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
             self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
+            self._user_subcategories = database.categories_table.get_user_subcategories(db_conn, self._user_id)
             self.cat_widget.user_categories = self._user_categories
+            self.cat_widget.user_subcategories = self._user_subcategories
             self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id)
             self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id)
             self.cat_widget.load_categories()
+            self.cat_widget.load_subcategories()
             self.load_logs()
         
         self.cat_widget.init_category_tree()

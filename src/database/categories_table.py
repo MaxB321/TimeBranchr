@@ -64,21 +64,21 @@ def get_user_categories(db_connection, user_id: str) -> dict[str, str]:
     return user_data
 
 
-def get_user_subcategories(db_connection, user_id: str) -> dict[str, str]:
+def get_user_subcategories(db_connection, user_id: str) -> dict[str, list[str]]:
     sql_query = """
-        SELECT category_id, category
+        SELECT category_id, category, parent_id
         FROM sub_categories
         WHERE user_id = (%s)
     """
 
-    user_data: dict[str, str] = {}
+    user_data: dict[str, list[str]] = {}
 
     with db_connection.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
         rows = cursor.fetchall()
         for row in rows:
-            user_data[row["category_id"]] = row["category"]
-            
+            user_data[row["category_id"]] = [row["category"], row["parent_id"]]
+    
     return user_data
 
 

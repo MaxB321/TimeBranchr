@@ -13,6 +13,7 @@ class CategoryWidget():
         super().__init__()
         self.user_id: str = config.get_user_id()
         self.user_categories: dict[str, str] = {}
+        self.user_subcategories: dict[str, list[str]] = {}
         self.cat_tree = parent
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.sort_ascending: bool = True
@@ -170,7 +171,41 @@ class CategoryWidget():
     
 
     def load_subcategories(self) -> None:
-        pass
+        self.cat_tree.blockSignals(True)
+        innermost_items: dict[str, QTreeWidgetItem] = {} # key is parent_id
+
+        for key, val in self.user_subcategories.items():
+
+            child_item = QTreeWidgetItem()
+            child_item.setText(0, val[0])
+            child_item.setFlags(child_item.flags() | Qt.ItemFlag.ItemIsEditable)
+            child_item.setData(0, Qt.ItemDataRole.UserRole, key)
+            
+            try:
+                parent_item: QTreeWidgetItem = self.cat_item_ref[val[1]]
+                parent_item.addChild(child_item)
+            except KeyError:
+                innermost_items[val[1]] = child_item
+                continue
+
+            self.cat_item_ref[key] = child_item
+
+            category_time = database.categories_table.get_category_time(db_conn, key, CategoryType.SubCategory)
+            child_item.setText(1, self.load_category_time(category_time))
+
+        if not innermost_items:
+            return
+        
+        for key, val in innermost_items.items():
+            parent_item = self.cat_item_ref[key]
+            parent_item.addChild(val)
+            category_id: str = val.data(0, Qt.ItemDataRole.UserRole)
+            self.cat_item_ref[category_id] = val
+            category_time = database.categories_table.get_category_time(db_conn, category_id, CategoryType.SubCategory)
+            val.setText(1, self.load_category_time(category_time))
+
+
+        self.cat_tree.blockSignals(False)
 
 
     def load_category_time(self, category_time: int) -> str:
