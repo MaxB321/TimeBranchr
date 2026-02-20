@@ -160,11 +160,43 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def stop_btn_clicked(self) -> None:
-        category_id = self.cat_widget.get_category_id()
+        selected_category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
         cat_type = self.cat_widget.get_category_type()
-        self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, category_id, self._user_id, sort_new_first, cat_type)
-        self.timer_widget.stop_timer()
+        
+        tracked_id: str = self.log_widget._category_id
+        tracked_item = self.cat_widget.cat_item_ref[tracked_id]
+        if self.cat_widget.is_outermost_layer(tracked_item):
+            self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, selected_category_id, self._user_id, sort_new_first, cat_type)
+            self.timer_widget.stop_timer()
+            return
+        else:
+            start_time: int = database.categories_table.get_category_time(db_conn, self.log_widget._category_id, CategoryType.SubCategory)
+            self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, selected_category_id, self._user_id, sort_new_first, cat_type)
+            self.timer_widget.stop_timer()
+            end_time: int = database.categories_table.get_category_time(db_conn, self.log_widget._category_id, CategoryType.SubCategory)
+            time_diff: int = end_time - start_time
+            parent_item = tracked_item.parent()
+            parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
+
+            if self.cat_widget.is_outermost_layer(parent_item):
+                parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                new_time = parent_time + time_diff    
+                database.categories_table.update_parent_time(db_conn, tracked_id, parent_id, new_time)
+                self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
+            else:
+                parent_time: int = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+                new_time: int = parent_time + time_diff
+                database.categories_table.update_parent_time(db_conn, tracked_id, parent_id, new_time)
+                self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
+
+                if self.cat_widget.is_innermost_layer(tracked_item):
+                    outermost_item = parent_item.parent()
+                    outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
+                    outermost_time: int = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    new_time = outermost_time + time_diff
+                    database.categories_table.update_parent_time(db_conn, parent_id, outermost_id, new_time)
+                    self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
 
 
     # TOP MENU FUNCTIONS

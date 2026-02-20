@@ -124,3 +124,27 @@ def update_category_name(db_connection, category_id: str, category_name: str, ca
         cursor.execute(sql_query, (category_name, category_id))
 
     db_connection.commit()
+
+
+def update_parent_time(db_connection, category_id: str, parent_id: str, new_time: int) -> None:  # time_diff should be calc'd using get_cat_time before and after log init
+    sql_query = """
+            UPDATE sub_categories
+            SET total_time = (%s)
+            WHERE category_id = (%s)
+        """
+    
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (new_time, parent_id))
+
+    db_connection.commit()
+
+    sql_query = """
+            UPDATE categories
+            SET total_time = (%s)
+            WHERE category_id = (%s)
+        """
+    
+    with db_connection.cursor() as cursor:
+        cursor.execute(sql_query, (new_time, parent_id))
+
+    db_connection.commit()
