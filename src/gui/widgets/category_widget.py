@@ -226,7 +226,7 @@ class CategoryWidget():
 
         if not innermost_items:
             return
-        
+
         self.cat_tree.blockSignals(True)
         for key, val in innermost_items.items():
             parent_item = self.cat_item_ref[key]

@@ -19,9 +19,7 @@ class LogMenu(QMenu):
         self.log_tree.customContextMenuRequested.connect(self.open_context_menu)
         
         self.create_log_action = self.menu.addAction("Create Log")
-        
         self.del_log_action = self.menu.addAction("Delete Log")
-
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
         self.sort_log_action.toggle()

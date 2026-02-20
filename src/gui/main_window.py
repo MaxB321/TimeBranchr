@@ -58,6 +58,7 @@ from gui.widgets.category_widget import CategoryWidget
 from gui.widgets.toolbar_widget import ToolbarWidget
 from utils import config
 from utils import stylesheets
+from utils.category_menu import CategoryMenu
 from utils.category_type import CategoryType
 from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
@@ -73,9 +74,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
         self.timer_widget = TimerWidget(self.label)
-        self.log_widget = LogWidget(self.logTreeWidget)
-        self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget, self.log_widget)
         self.cat_widget = CategoryWidget(self.categoryTreeWidget)
+        self.log_widget = LogWidget(self.logTreeWidget)
+        self.category_menu = CategoryMenu(self.categoryTreeWidget, self.cat_widget)
+        self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget, self.log_widget)
         self.toolbar = ToolbarWidget()
         self.addToolBar(self.toolbar)
         
@@ -339,7 +341,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         end_time = sum(self.log_widget._user_logs[item_id])
         time_diff = end_time - start_time
-        print(time_diff)
         if not self.cat_widget.is_innermost_layer():
             new_time = parent_time + time_diff
             database.categories_table.update_parent_time(db_conn, item_id, parent_id, new_time)
