@@ -20,6 +20,7 @@ class LogWidget(QObject):
         self.log_tree = parent
         self.log_created: bool = False
         self.log_deleted: bool = False
+        self.start_time: int =  0
 
 
     def add_log(self, log_tree: QTreeWidget, seconds: int, selected_category_id: str, user_id: str, sort_new_first: bool, cat_type: CategoryType) -> None:  

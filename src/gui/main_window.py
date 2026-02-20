@@ -220,6 +220,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # LOG CONTEXT MENU FUNCTIONS
     def create_log(self) -> None:
         category_id = self.cat_widget.get_category_id()
+        self.log_widget.start_time = sum(self.log_widget._user_logs[category_id])
         if self.cat_widget.is_outermost_layer():
             self.log_menu.create_log(category_id, self._user_id, CategoryType.MainCategory)
         else:
@@ -228,6 +229,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def del_log(self) -> None:
         category_id = self.cat_widget.get_category_id()
+        self.log_widget.start_time = sum(self.log_widget._user_logs[category_id])
         if self.cat_widget.is_outermost_layer():
             self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id, CategoryType.MainCategory)
         else:
@@ -303,16 +305,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.cat_widget.is_outermost_layer():
                 self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory)
             else:
-                # item_id = self.cat_widget.get_category_id()
-                # item: QTreeWidgetItem = self.cat_widget.cat_item_ref[item_id]
-                # parent_item = item.parent()
-                # parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
-
-                # if not self.cat_widget.is_innermost_layer():
-                #     print(self.log_widget._user_logs[item_id])
-                #     return
-                
                 self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory)
+                self.update_parent_time(self.log_widget.start_time)
 
 
     def update_category_time_del(self) -> None:
@@ -320,6 +314,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory)
         else:
             self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory)
+            self.update_parent_time(self.log_widget.start_time)
 
 
     def update_log_view(self) -> None:
@@ -330,6 +325,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
         self.log_widget.display_logs(self.categoryTreeWidget, category_id, sort_new_first)
+    
+
+    def update_parent_time(self, start_time: int) -> None:
+        item_id = self.cat_widget.get_category_id()
+        item: QTreeWidgetItem = self.cat_widget.cat_item_ref[item_id]
+        parent_item = item.parent()
+        parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
+        if self.cat_widget.is_outermost_layer(parent_item):
+            parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+        else:
+            parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+
+        end_time = sum(self.log_widget._user_logs[item_id])
+        time_diff = end_time - start_time
+        print(time_diff)
+        if not self.cat_widget.is_innermost_layer():
+            new_time = parent_time + time_diff
+            database.categories_table.update_parent_time(db_conn, item_id, parent_id, new_time)
+            self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
+        else:
+            new_time = parent_time + time_diff
+            database.categories_table.update_parent_time(db_conn, item_id, parent_id, new_time)
+            self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
+
+            outermost_item = parent_item.parent()
+            outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
+            outermost_time = parent_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+            new_time = outermost_time + time_diff
+            database.categories_table.update_parent_time(db_conn, item_id, outermost_id, new_time)
+            self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
+        
+        self.log_widget.start_time = 0
 
 
 def display_main_window() -> None:
