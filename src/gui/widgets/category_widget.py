@@ -147,7 +147,14 @@ class CategoryWidget():
         return False
     
 
-    def is_innermost_layer(self, item: QTreeWidgetItem) -> bool:
+    def is_innermost_layer(self, item: Optional[QTreeWidgetItem] = None) -> bool:
+        if item is None:
+            cur_item = self.cat_tree.currentItem()
+            parent = cur_item.parent()
+            if parent.parent():
+                return True
+            return False
+
         layer2_item = item.parent()
         if layer2_item:
             layer1_item = layer2_item.parent()
@@ -278,8 +285,25 @@ class CategoryWidget():
 
         if item is None:        
             child_item = self.cat_item_ref[category_id]
-            category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
-            self.display_total_time(child_item, category_time)
+
+            if self.is_outermost_layer(child_item):
+                category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+                self.display_total_time(child_item, category_time)
+            else:
+                category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+                self.display_total_time(child_item, category_time)
+                parent_item = child_item.parent()
+                parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
+
+                if not self.is_innermost_layer(child_item):
+                    category_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                    self.display_total_time(parent_item, category_time)
+                else:
+                    outermost_item = parent_item.parent()
+                    outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
+                    category_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    self.display_total_time(outermost_item, category_time)
+
         else:
             category_id = item.data(0, Qt.ItemDataRole.UserRole)
             category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)

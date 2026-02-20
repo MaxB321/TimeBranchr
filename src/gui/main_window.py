@@ -303,6 +303,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if self.cat_widget.is_outermost_layer():
                 self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory)
             else:
+                # item_id = self.cat_widget.get_category_id()
+                # item: QTreeWidgetItem = self.cat_widget.cat_item_ref[item_id]
+                # parent_item = item.parent()
+                # parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
+
+                # if not self.cat_widget.is_innermost_layer():
+                #     print(self.log_widget._user_logs[item_id])
+                #     return
+                
                 self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory)
 
 
