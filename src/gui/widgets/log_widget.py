@@ -1,5 +1,5 @@
 from datetime import datetime
-from PySide6.QtCore import QDateTime, QObject, Signal, Qt
+from PySide6.QtCore import QDateTime, QEvent, QObject, Signal, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
@@ -11,13 +11,13 @@ class LogWidget(QObject):
     log_added = Signal(str)
     log_del = Signal(str)
 
-    def __init__(self, parent: QTreeWidget) -> None:
+    def __init__(self, log_tree: QTreeWidget) -> None:
         super().__init__()
 
         self._user_logs: dict[str, list[int]] = {}
         self._user_log_datetime: dict[str, list[datetime]] = {}
         self._category_id: str = ""
-        self.log_tree = parent
+        self.log_tree = log_tree
         self.log_created: bool = False
         self.log_deleted: bool = False
         self.start_time: int =  0

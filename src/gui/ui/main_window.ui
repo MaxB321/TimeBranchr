@@ -205,14 +205,6 @@
     <addaction name="actionExport_CSV"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
-    <addaction name="actionUndo"/>
-   </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>View</string>
@@ -225,7 +217,7 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionKeyboard_Shortcuts"/>
+    <addaction name="actionGuide"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
@@ -235,7 +227,6 @@
     <addaction name="actionDisplay_Name"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
    <addaction name="menuView"/>
    <addaction name="menuSettings"/>
    <addaction name="menuHelp"/>
@@ -299,6 +290,11 @@
   <action name="actionShow_Toolbar">
    <property name="text">
     <string>Show Toolbar</string>
+   </property>
+  </action>
+  <action name="actionGuide">
+   <property name="text">
+    <string>Guide</string>
    </property>
   </action>
  </widget>

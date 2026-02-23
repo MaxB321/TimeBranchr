@@ -1,6 +1,6 @@
 from typing import Optional
 from uuid import uuid4
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QObject, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from gui.widgets.log_widget import LogWidget
 from utils import config
@@ -9,13 +9,13 @@ from database.db_connect import db_conn
 from utils.category_type import CategoryType
 
 
-class CategoryWidget():
-    def __init__(self, parent: QTreeWidget) -> None:
+class CategoryWidget(QObject):
+    def __init__(self, category_tree: QTreeWidget) -> None:
         super().__init__()
         self.user_id: str = config.get_user_id()
         self.user_categories: dict[str, str] = {}
         self.user_subcategories: dict[str, list[str]] = {}
-        self.cat_tree = parent
+        self.cat_tree = category_tree
         self.cat_item_ref: dict[str, QTreeWidgetItem] = {}
         self.sort_ascending: bool = True
         self._category_type = CategoryType.MainCategory

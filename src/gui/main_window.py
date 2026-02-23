@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import (
     QContextMenuEvent,
     QGuiApplication,
+    QMouseEvent,
     QWindow,
     QScreen,
     QAction,
@@ -259,8 +260,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # deselect treewidgetitems through overloaded QObject method
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         if (event.type() == QEvent.Type.MouseButtonPress):
-            self.categoryTreeWidget.clearSelection()
-            self.logTreeWidget.clearSelection()
+             self.categoryTreeWidget.clearSelection()
+             self.logTreeWidget.clearSelection()
 
         return super().eventFilter(obj, event)
 

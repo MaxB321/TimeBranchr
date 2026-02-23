@@ -21,6 +21,8 @@ from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QGroupBox,
     QMenuBar, QSizePolicy, QStackedWidget, QStatusBar,
     QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget)
 
+from gui.widgets.deselectable_tree import DeselectableTreeWidget
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
@@ -50,6 +52,8 @@ class Ui_MainWindow(object):
         self.actionAbout.setObjectName(u"actionAbout")
         self.actionShow_Toolbar = QAction(MainWindow)
         self.actionShow_Toolbar.setObjectName(u"actionShow_Toolbar")
+        self.actionGuide = QAction(MainWindow)
+        self.actionGuide.setObjectName(u"actionGuide")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -132,7 +136,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_7)
 
-        self.logTreeWidget = QTreeWidget(self.groupBox)
+        self.logTreeWidget = DeselectableTreeWidget(self.groupBox)
         __qtreewidgetitem = QTreeWidgetItem()
         __qtreewidgetitem.setTextAlignment(1, Qt.AlignCenter);
         self.logTreeWidget.setHeaderItem(__qtreewidgetitem)
@@ -143,7 +147,7 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.groupBox, 0, 1, 1, 1)
 
-        self.categoryTreeWidget = QTreeWidget(self.page)
+        self.categoryTreeWidget = DeselectableTreeWidget(self.page)
         font1 = QFont()
         font1.setBold(True)
         __qtreewidgetitem1 = QTreeWidgetItem()
@@ -171,8 +175,6 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QRect(0, 0, 975, 33))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
-        self.menuEdit = QMenu(self.menubar)
-        self.menuEdit.setObjectName(u"menuEdit")
         self.menuView = QMenu(self.menubar)
         self.menuView.setObjectName(u"menuView")
         self.menuHelp = QMenu(self.menubar)
@@ -185,19 +187,15 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
         self.menuFile.addAction(self.actionExport_CSV)
         self.menuFile.addAction(self.actionQuit)
-        self.menuEdit.addAction(self.actionCopy)
-        self.menuEdit.addAction(self.actionPaste)
-        self.menuEdit.addAction(self.actionUndo)
         self.menuView.addAction(self.actionDark_Mode_2)
         self.menuView.addAction(self.actionShow_Subcategory_Totals)
         self.menuView.addAction(self.actionShow_Toolbar)
-        self.menuHelp.addAction(self.actionKeyboard_Shortcuts)
+        self.menuHelp.addAction(self.actionGuide)
         self.menuHelp.addAction(self.actionAbout)
         self.menuSettings.addAction(self.actionDisplay_Name)
 
@@ -223,6 +221,7 @@ class Ui_MainWindow(object):
         self.actionKeyboard_Shortcuts.setText(QCoreApplication.translate("MainWindow", u"Keyboard Shortcuts", None))
         self.actionAbout.setText(QCoreApplication.translate("MainWindow", u"About", None))
         self.actionShow_Toolbar.setText(QCoreApplication.translate("MainWindow", u"Show Toolbar", None))
+        self.actionGuide.setText(QCoreApplication.translate("MainWindow", u"Guide", None))
         self.groupBox.setTitle("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         ___qtreewidgetitem = self.logTreeWidget.headerItem()
@@ -231,7 +230,6 @@ class Ui_MainWindow(object):
         ___qtreewidgetitem1 = self.categoryTreeWidget.headerItem()
         ___qtreewidgetitem1.setText(1, QCoreApplication.translate("MainWindow", u"Time", None));
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
-        self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menuView.setTitle(QCoreApplication.translate("MainWindow", u"View", None))
         self.menuHelp.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))
         self.menuSettings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
