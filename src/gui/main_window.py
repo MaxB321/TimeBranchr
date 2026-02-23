@@ -328,6 +328,7 @@ class MenuWidget():
         
 
         # Settings
+        self.main_window.actionDisplay_Name.triggered.connect(self.change_name_clicked)
 
 
         # Help
@@ -337,7 +338,8 @@ class MenuWidget():
     def change_name_clicked(self) -> None:
         self.main_window.change_name_dialog.init_dialog(self.main_window._user_id)
         self.main_window.change_name_dialog.exec()
-        self._user_name = self.main_window.change_name_dialog.get_new_name()
+        self.main_window._user_name = self.main_window.change_name_dialog.get_new_name()
+        self.show_username()
     
     
     def dark_mode(self) -> None:
