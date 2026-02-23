@@ -136,7 +136,13 @@ class CategoryWidget(QObject):
         header.setSectionResizeMode(0, header.ResizeMode.Stretch)
         header.setSectionResizeMode(1, header.ResizeMode.Custom)
         self.cat_tree.setColumnWidth(1, 125)
-        self.cat_tree.sortByColumn(0, Qt.SortOrder.AscendingOrder)
+        if config.isConfig():
+            if config.categories_asc:
+                self.cat_tree.sortByColumn(0, Qt.SortOrder.AscendingOrder)
+            else:
+                self.cat_tree.sortByColumn(0, Qt.SortOrder.DescendingOrder)
+        else:
+            self.cat_tree.sortByColumn(0, Qt.SortOrder.AscendingOrder)
 
 
     def is_category_selected(self) -> bool:

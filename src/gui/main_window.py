@@ -74,6 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
+
         self.timer_widget = TimerWidget(self.label)
         self.cat_widget = CategoryWidget(self.categoryTreeWidget)
         self.log_widget = LogWidget(self.logTreeWidget)
@@ -185,8 +186,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         category_id = self.cat_widget.get_category_id()
         if self.log_menu.sort_log_action.isChecked():
             self.log_widget.display_logs_newest_first(self.logTreeWidget, category_id)
+            config.set_flag("logs_asc", True)
         else:
             self.log_widget.display_logs_oldest_first(self.logTreeWidget, category_id)
+            config.set_flag("logs_asc", False)
     
 
     # MISCELLANEOUS FUNCTIONS
@@ -305,8 +308,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 class MenuWidget():
     def __init__(self, main_window: MainWindow):
         super().__init__()
-        
         self.main_window = main_window
+        self.init_appearance()
 
         # File
         self.main_window.actionQuit.triggered.connect(self.quit_menu_clicked)
@@ -315,13 +318,13 @@ class MenuWidget():
         # View 
         self.main_window.actionDark_Mode_New.triggered.connect(self.dark_mode)
         self.main_window.actionDark_Mode_New.setCheckable(True)
-        self.main_window.actionDark_Mode_New.toggle()
         self.main_window.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
         self.main_window.actionShow_Toolbar.setCheckable(True)
-        self.main_window.actionShow_Toolbar.toggle()
+        self.main_window.actionShow_Subcategory_Totals.triggered.connect(self.show_subcat_totals)
+        self.main_window.actionShow_Subcategory_Totals.setCheckable(True)
         self.main_window.actionShow_Username_in_Window_Title.triggered.connect(self.show_username)
-        self.main_window.actionShow_Toolbar.setCheckable(True)
-        self.main_window.actionShow_Toolbar.toggle()
+        self.main_window.actionShow_Username_in_Window_Title.setCheckable(True)
+        self.toggle_flags()
         
 
         # Settings
@@ -338,7 +341,28 @@ class MenuWidget():
     
     
     def dark_mode(self) -> None:
-        pass
+        flag = self.main_window.actionDark_Mode_New.isChecked()
+        config.set_flag("dark_mode", flag)
+        
+        if flag:
+            self.main_window.setPalette(DARK_WINDOW)
+        else:
+            self.main_window.setPalette(LIGHT_WINDOW)
+
+
+    def init_appearance(self) -> None:
+        if config.dark_mode:
+            self.main_window.setPalette(DARK_WINDOW)
+        else:
+            self.main_window.setPalette(LIGHT_WINDOW)
+
+        if config.show_subcat_totals:
+            pass
+
+        if config.show_username:
+            self.main_window.setWindowTitle(f"TimeBranchr - {config.get_user_name()}")
+        else:
+            self.main_window.setWindowTitle("TimeBranchr")
 
 
     def quit_menu_clicked(self) -> None:
@@ -353,8 +377,31 @@ class MenuWidget():
 
 
     def show_username(self) -> None:
-        pass
+        flag = self.main_window.actionShow_Username_in_Window_Title.isChecked()
+        config.set_flag("show_username", flag)
+        if flag:
+            self.main_window.setWindowTitle(f"TimeBranchr - {self.main_window._user_name}")
+        else:
+            self.main_window.setWindowTitle("TimeBranchr")
+
+    def show_subcat_totals(self) -> None:
+        flag = self.main_window.actionShow_Subcategory_Totals.isChecked()
+        config.set_flag("show_subcat_totals", flag)
+
+
+    def toggle_flags(self) -> None:
+        if config.dark_mode:
+            self.main_window.actionDark_Mode_New.toggle()
+        if config.show_subcat_totals:
+            self.main_window.actionShow_Subcategory_Totals.toggle()
+        if config.show_username:
+            self.main_window.actionShow_Username_in_Window_Title.toggle()
+        if config.categories_asc:
+            self.main_window.category_menu.sort_items.toggle()
+        if config.logs_asc:
+            self.main_window.log_menu.sort_log_action.toggle()
         
+        self.main_window.actionShow_Toolbar.toggle()
 
 
 def display_main_window() -> None:
@@ -370,6 +417,11 @@ def load_base_ui() -> None:
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
+DARK_WINDOW = QColor(30, 30, 30, 255)
+LIGHT_WINDOW = QColor(240, 240, 240, 255)
+DARK_TEXT = QColor(30, 30, 30, 255)
+LIGHT_TEXT = QColor(255, 255, 255, 255)
+
 
 # main window instance
 ui_loader = QUiLoader()

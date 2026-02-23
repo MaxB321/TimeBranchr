@@ -22,7 +22,6 @@ class LogMenu(QMenu):
         self.del_log_action = self.menu.addAction("Delete Log")
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
-        self.sort_log_action.toggle()
 
 
     def create_log(self, category_id: str, user_id: str, category_type: CategoryType) -> None:

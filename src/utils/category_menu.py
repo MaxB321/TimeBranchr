@@ -3,6 +3,7 @@ from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QMenu, QTreeWidget
 
 from gui.widgets.category_widget import CategoryWidget
+from utils import config
 
 
 class CategoryMenu(QMenu):
@@ -18,7 +19,6 @@ class CategoryMenu(QMenu):
         self.collapse_items: QAction = self.menu.addAction("Collapse All")
         self.sort_items: QAction = self.menu.addAction("Sort Ascending")
         self.sort_items.setCheckable(True)
-        self.sort_items.toggle()
 
         self.expand_items.triggered.connect(self.expand_category_items)
         self.collapse_items.triggered.connect(self.collapse_category_items)
@@ -36,9 +36,11 @@ class CategoryMenu(QMenu):
     def sort_category_items(self) -> None:
         if self.sort_items.isChecked():
             self.category_widget.sort_ascending = True
+            config.set_flag("categories_asc", True)
             self.category_widget.sort_display()
         else:
             self.category_widget.sort_ascending = False
+            config.set_flag("categories_asc", False)
             self.category_widget.sort_display()
 
 
