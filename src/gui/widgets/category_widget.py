@@ -12,7 +12,7 @@ from utils.category_type import CategoryType
 class CategoryWidget(QObject):
     def __init__(self, category_tree: QTreeWidget) -> None:
         super().__init__()
-        self.user_id: str = config.get_user_id()
+        self.user_id: str = ""
         self.user_categories: dict[str, str] = {}
         self.user_subcategories: dict[str, list[str]] = {}
         self.cat_tree = category_tree

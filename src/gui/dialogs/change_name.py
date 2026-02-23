@@ -40,13 +40,13 @@ class changeNameDialog(QDialog, Ui_changeNameDialog):
 
     
     def set_new_name(self) -> None:
-        text: str = self.newNameEdit.text()
-        if text.isspace() or text == "":
+        new_name: str = self.newNameEdit.text()
+        if new_name.isspace() or new_name == "":
             self.show_error_msg()
             return
         
-        config.write_config(self._user_id, text)
-        database.user_table.update_user_name(db_conn, self._user_id, text)
+        config.update_username(new_name)
+        database.user_table.update_user_name(db_conn, self._user_id, new_name)
 
         self.close()
         

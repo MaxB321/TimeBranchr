@@ -79,8 +79,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_widget = LogWidget(self.logTreeWidget)
         self.category_menu = CategoryMenu(self.categoryTreeWidget, self.cat_widget)
         self.log_menu = LogMenu(self.logTreeWidget, self.categoryTreeWidget, self.log_widget)
-        self.toolbar = ToolbarWidget()
+        self.toolbar = ToolbarWidget(self.timer_widget)
         self.addToolBar(self.toolbar)
+        self.menu_widget = MenuWidget(self)
         
         self.user_dialog = gui.dialogs.getUserID.UserDialog()
         self.change_name_dialog = gui.dialogs.change_name.changeNameDialog()
@@ -91,17 +92,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._user_logs: dict[str, list[int]] = {}
         self._user_logs_datetime: dict[str, list[datetime]] = {}
 
+        self.view_flags: dict[str, bool] = {}
+
         self.toolbar.new_category_button.triggered.connect(self.new_cat_btn_clicked)
         self.toolbar.delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
         self.toolbar.start_button.triggered.connect(self.start_btn_clicked)
         self.toolbar.pause_button.triggered.connect(self.pause_btn_clicked)
         self.toolbar.stop_button.triggered.connect(self.stop_btn_clicked)
 
-        self.actionQuit.triggered.connect(self.quit_menu_clicked)
-        self.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
-        self.actionShow_Toolbar.setCheckable(True)
-        self.actionShow_Toolbar.toggle()
-        self.actionDisplay_Name.triggered.connect(self.change_name_clicked)
+        
 
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
@@ -151,73 +150,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     
     def start_btn_clicked(self) -> None:
-        cur_item = self.categoryTreeWidget.currentItem()
-        if cur_item and cur_item.isSelected():
-            self.timer_widget.start_timer()
-            category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
-            self.log_widget.set_category_id(category_id)
-            if not cur_item.parent():
-                self.cat_widget.set_category_type(CategoryType.MainCategory)
-            else:
-                self.cat_widget.set_category_type(CategoryType.SubCategory)
+        self.toolbar.start_btn_clicked(self.cat_widget, self.log_widget)
 
 
     def stop_btn_clicked(self) -> None:
-        selected_category_id = self.cat_widget.get_category_id()
         sort_new_first: bool = self.log_menu.sort_log_action.isChecked()
-        cat_type = self.cat_widget.get_category_type()
-        
-        tracked_id: str = self.log_widget._category_id
-        tracked_item = self.cat_widget.cat_item_ref[tracked_id]
-        if self.cat_widget.is_outermost_layer(tracked_item):
-            self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, selected_category_id, self._user_id, sort_new_first, cat_type)
-            self.timer_widget.stop_timer()
-            return
-        else:
-            start_time: int = database.categories_table.get_category_time(db_conn, self.log_widget._category_id, CategoryType.SubCategory)
-            self.log_widget.add_log(self.logTreeWidget, self.timer_widget._elapsed_seconds, selected_category_id, self._user_id, sort_new_first, cat_type)
-            self.timer_widget.stop_timer()
-            end_time: int = database.categories_table.get_category_time(db_conn, self.log_widget._category_id, CategoryType.SubCategory)
-            time_diff: int = end_time - start_time
-            parent_item = tracked_item.parent()
-            parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
-
-            if self.cat_widget.is_outermost_layer(parent_item):
-                parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
-                new_time = parent_time + time_diff    
-                database.categories_table.update_parent_time(db_conn, tracked_id, parent_id, new_time)
-                self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
-            else:
-                parent_time: int = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
-                new_time: int = parent_time + time_diff
-                database.categories_table.update_parent_time(db_conn, tracked_id, parent_id, new_time)
-                self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
-
-                if self.cat_widget.is_innermost_layer(tracked_item):
-                    outermost_item = parent_item.parent()
-                    outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-                    outermost_time: int = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
-                    new_time = outermost_time + time_diff
-                    database.categories_table.update_parent_time(db_conn, parent_id, outermost_id, new_time)
-                    self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
-
-
-    # TOP MENU FUNCTIONS
-    def change_name_clicked(self) -> None:
-        self.change_name_dialog.init_dialog(self._user_id)
-        self.change_name_dialog.exec()
-        self._user_name = self.change_name_dialog.get_new_name()
-    
-    
-    def quit_menu_clicked(self) -> None:
-        sys.exit()
-
-
-    def show_toolbar_menu_clicked(self) -> None:
-        if self.actionShow_Toolbar.isChecked():
-            self.toolbar.show()
-        else:
-            self.toolbar.hide()
+        self.toolbar.stop_btn_clicked(self._user_id, self.cat_widget, self.log_widget, sort_new_first)
 
 
     # LOG CONTEXT MENU FUNCTIONS
@@ -280,6 +218,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.user_dialog.exec()
             self._user_id = self.user_dialog._user_id
             self._user_name = self.user_dialog._user_name
+            self.cat_widget.user_id = self.user_dialog._user_id
         else:
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
@@ -291,6 +230,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_logs |= database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.SubCategory)
             self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.MainCategory)
             self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.SubCategory)
+
+            self.cat_widget.user_id = config.get_user_id()
             self.cat_widget.load_categories()
             self.cat_widget.load_subcategories()
             self.load_logs()
@@ -359,6 +300,61 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
         
         self.log_widget.start_time = 0
+
+
+class MenuWidget():
+    def __init__(self, main_window: MainWindow):
+        super().__init__()
+        
+        self.main_window = main_window
+
+        # File
+        self.main_window.actionQuit.triggered.connect(self.quit_menu_clicked)
+
+
+        # View 
+        self.main_window.actionDark_Mode_New.triggered.connect(self.dark_mode)
+        self.main_window.actionDark_Mode_New.setCheckable(True)
+        self.main_window.actionDark_Mode_New.toggle()
+        self.main_window.actionShow_Toolbar.triggered.connect(self.show_toolbar_menu_clicked)
+        self.main_window.actionShow_Toolbar.setCheckable(True)
+        self.main_window.actionShow_Toolbar.toggle()
+        self.main_window.actionShow_Username_in_Window_Title.triggered.connect(self.show_username)
+        self.main_window.actionShow_Toolbar.setCheckable(True)
+        self.main_window.actionShow_Toolbar.toggle()
+        
+
+        # Settings
+
+
+        # Help
+
+
+
+    def change_name_clicked(self) -> None:
+        self.main_window.change_name_dialog.init_dialog(self.main_window._user_id)
+        self.main_window.change_name_dialog.exec()
+        self._user_name = self.main_window.change_name_dialog.get_new_name()
+    
+    
+    def dark_mode(self) -> None:
+        pass
+
+
+    def quit_menu_clicked(self) -> None:
+        sys.exit()
+
+
+    def show_toolbar_menu_clicked(self) -> None:
+        if self.main_window.actionShow_Toolbar.isChecked():
+            self.main_window.toolbar.show()
+        else:
+            self.main_window.toolbar.hide()
+
+
+    def show_username(self) -> None:
+        pass
+        
 
 
 def display_main_window() -> None:
