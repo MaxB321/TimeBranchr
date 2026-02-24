@@ -50,8 +50,10 @@ from PySide6.QtCore import (
     QObject
 )
 from PySide6.QtUiTools import QUiLoader
+from gui.dialogs.about_dialog import aboutDialog
 import gui.dialogs.getUserID
 import gui.dialogs.change_name
+from gui.dialogs.guide_dialog import guideDialog
 import gui.resources_rc
 import database.categories_table
 import database.logs_table
@@ -308,6 +310,9 @@ class MenuWidget():
         super().__init__()
         self.main_window = main_window
         self.init_appearance()
+        self.about_dialog = aboutDialog()
+        self.guide_dialog = guideDialog()
+
 
         # File
         self.main_window.actionQuit.triggered.connect(self.quit_menu_clicked)
@@ -380,11 +385,11 @@ class MenuWidget():
 
 
     def open_about(self) -> None:
-        pass
+        self.about_dialog.exec()
 
 
     def open_guide(self) -> None:
-        pass
+        self.guide_dialog.exec()
 
 
     def quit_menu_clicked(self) -> None:
@@ -434,18 +439,26 @@ class MenuWidget():
 
 
     def toggle_flags(self) -> None:
-        if config.dark_mode:
+        if config.isConfig():
+            if config.dark_mode:
+                self.main_window.actionDark_Mode_New.toggle()
+            if config.show_subcat_totals:
+                self.main_window.actionShow_Subcategory_Totals.toggle()
+            if config.show_username:
+                self.main_window.actionShow_Username_in_Window_Title.toggle()
+            if config.categories_asc:
+                self.main_window.category_menu.sort_items.toggle()
+            if config.logs_asc:
+                self.main_window.log_menu.sort_log_action.toggle()
+            
+            self.main_window.actionShow_Toolbar.toggle()
+        else:
             self.main_window.actionDark_Mode_New.toggle()
-        if config.show_subcat_totals:
             self.main_window.actionShow_Subcategory_Totals.toggle()
-        if config.show_username:
             self.main_window.actionShow_Username_in_Window_Title.toggle()
-        if config.categories_asc:
             self.main_window.category_menu.sort_items.toggle()
-        if config.logs_asc:
             self.main_window.log_menu.sort_log_action.toggle()
-        
-        self.main_window.actionShow_Toolbar.toggle()
+            self.main_window.actionShow_Toolbar.toggle()
 
 
 def display_main_window() -> None:
