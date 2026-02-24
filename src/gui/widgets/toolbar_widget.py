@@ -1,5 +1,5 @@
 from PySide6.QtGui import QAction, QContextMenuEvent, QIcon, Qt
-from PySide6.QtWidgets import QToolBar
+from PySide6.QtWidgets import QToolBar, QTreeWidget, QTreeWidgetItem
 
 import database.categories_table
 import database.categories_table
@@ -42,6 +42,45 @@ class ToolbarWidget(QToolBar):
         self.addAction(self.pause_button)
         self.addAction(self.stop_button)
     
+
+    def delete_btn_clicked(self, cat_tree: QTreeWidget, cat_widget: CategoryWidget, log_widget: LogWidget) -> None:
+        cur_item = cat_tree.currentItem()
+        if cur_item and cur_item.isSelected():
+            category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
+
+            old_logs: list[int] = log_widget._user_logs[category_id]
+            old_time: int = sum(old_logs)
+            log_widget._user_logs.pop(category_id, None)
+            parent = cur_item.parent()
+            
+            if cat_widget.is_outermost_layer():
+                cat_widget.cleanup_children_items(cur_item)
+                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.MainCategory)
+                cat_tree.takeTopLevelItem(cat_tree.indexOfTopLevelItem(cur_item))
+            else:
+                parent_id: str = parent.data(0, Qt.ItemDataRole.UserRole)
+                cat_widget.cleanup_children_items(cur_item)
+                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+                parent.removeChild(cur_item)
+                if parent.parent() is None:
+                    parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                    new_time = parent_time - old_time
+                    database.categories_table.update_parent_time(db_conn, category_id, parent_id, new_time)
+                    cat_widget.update_category_time(log_widget, CategoryType.MainCategory, parent)
+                else:
+                    parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+                    new_time = parent_time - old_time
+                    database.categories_table.update_parent_time(db_conn, category_id, parent_id, new_time)
+                    cat_widget.update_category_time(log_widget, CategoryType.SubCategory, parent)
+
+                    outermost_item = parent.parent()
+                    outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
+                    outermost_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    new_time = outermost_time - old_time
+                    database.categories_table.update_parent_time(db_conn, parent_id, outermost_id, new_time)
+                    cat_widget.update_category_time(log_widget, CategoryType.MainCategory, outermost_item)
+                
+
     
     def start_btn_clicked(self, cat_widget: CategoryWidget, log_widget: LogWidget) -> None:
         cur_item = cat_widget.cat_tree.currentItem()

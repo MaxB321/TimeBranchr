@@ -126,20 +126,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     # TOOLBAR FUNCTIONS
     def delete_cat_btn_clicked(self) -> None:
-        cur_item = self.categoryTreeWidget.currentItem()
-        if cur_item and cur_item.isSelected():
-            category_id = cur_item.data(0, Qt.ItemDataRole.UserRole)
-            self.log_widget._user_logs.pop(category_id, None)
-            parent = cur_item.parent()
-            
-            if self.cat_widget.is_outermost_layer():
-                self.cat_widget.cleanup_children_items(cur_item)
-                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.MainCategory)
-                self.categoryTreeWidget.takeTopLevelItem(self.categoryTreeWidget.indexOfTopLevelItem(cur_item))
-            else:
-                self.cat_widget.cleanup_children_items(cur_item)
-                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
-                parent.removeChild(cur_item)
+        self.toolbar.delete_btn_clicked(self.categoryTreeWidget, self.cat_widget, self.log_widget)
 
 
     def new_cat_btn_clicked(self) -> None:

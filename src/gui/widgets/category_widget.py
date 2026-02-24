@@ -95,9 +95,7 @@ class CategoryWidget(QObject):
             category_id = cur_child.data(0, Qt.ItemDataRole.UserRole)
             cur_item.removeChild(cur_child)
             database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
-
-            i += 1
-        
+            i += 1  
 
 
     def display_total_time(self, item: QTreeWidgetItem, time: int) -> None:
