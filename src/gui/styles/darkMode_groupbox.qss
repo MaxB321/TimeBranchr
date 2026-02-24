@@ -2,3 +2,8 @@ QGroupBox#groupBox {
     border: 2px solid #929292;
     border-radius: 10px;
 }
+
+QLabel#pauseLabel {
+    font-size: 14px;
+    font-weight: bold;
+}
