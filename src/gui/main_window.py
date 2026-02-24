@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlite3 import Cursor
 import sys
 from pathlib import Path
+from typing import Optional
 from uuid import uuid4
 from PySide6.QtWidgets import (
     QDialog,
@@ -60,7 +61,7 @@ from gui.widgets.toolbar_widget import ToolbarWidget
 from utils import config
 from utils import stylesheets
 from utils.category_menu import CategoryMenu
-from utils.category_type import CategoryType
+from utils.enums import CategoryType, DisplayModeType
 from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
@@ -114,9 +115,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_menu.create_log_action.triggered.connect(self.create_log)
         
         self.installEventFilter(self)
-
-        self.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "containers.qss")))
-        self.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "item_widgets.qss")))
 
         self.init_user_data()
         
@@ -314,7 +312,6 @@ class MenuWidget():
         # File
         self.main_window.actionQuit.triggered.connect(self.quit_menu_clicked)
 
-
         # View 
         self.main_window.actionDark_Mode_New.triggered.connect(self.dark_mode)
         self.main_window.actionDark_Mode_New.setCheckable(True)
@@ -325,14 +322,13 @@ class MenuWidget():
         self.main_window.actionShow_Username_in_Window_Title.triggered.connect(self.show_username)
         self.main_window.actionShow_Username_in_Window_Title.setCheckable(True)
         self.toggle_flags()
-        
 
         # Settings
         self.main_window.actionDisplay_Name.triggered.connect(self.change_name_clicked)
 
-
         # Help
-
+        self.main_window.actionGuide.triggered.connect(self.open_guide)
+        self.main_window.actionAbout.triggered.connect(self.open_about)
 
 
     def change_name_clicked(self) -> None:
@@ -342,21 +338,37 @@ class MenuWidget():
         self.show_username()
     
     
-    def dark_mode(self) -> None:
+    def dark_mode(self, display_mode: Optional[DisplayModeType] = None) -> None:
+        if display_mode:
+            if display_mode == DisplayModeType.DarkMode:
+                self.set_stylesheets(display_mode)
+                self.main_window.setPalette(DARK_WINDOW)
+                self.set_timer_color(display_mode)
+                return
+            elif display_mode == DisplayModeType.LightMode:
+                self.set_stylesheets(display_mode)
+                self.main_window.setPalette(LIGHT_WINDOW)
+                self.set_timer_color(display_mode)
+                return
+
         flag = self.main_window.actionDark_Mode_New.isChecked()
         config.set_flag("dark_mode", flag)
         
         if flag:
+            self.set_stylesheets(DisplayModeType.DarkMode)
             self.main_window.setPalette(DARK_WINDOW)
+            self.set_timer_color(DisplayModeType.DarkMode)
         else:
+            self.set_stylesheets(DisplayModeType.LightMode)
             self.main_window.setPalette(LIGHT_WINDOW)
+            self.set_timer_color(DisplayModeType.LightMode)
 
 
     def init_appearance(self) -> None:
         if config.dark_mode:
-            self.main_window.setPalette(DARK_WINDOW)
+            self.dark_mode(DisplayModeType.DarkMode)
         else:
-            self.main_window.setPalette(LIGHT_WINDOW)
+            self.dark_mode(DisplayModeType.LightMode)
 
         if config.show_subcat_totals:
             pass
@@ -367,8 +379,38 @@ class MenuWidget():
             self.main_window.setWindowTitle("TimeBranchr")
 
 
+    def open_about(self) -> None:
+        pass
+
+
+    def open_guide(self) -> None:
+        pass
+
+
     def quit_menu_clicked(self) -> None:
         sys.exit()
+
+
+    def set_stylesheets(self, display_mode: DisplayModeType) -> None:
+        if display_mode == DisplayModeType.DarkMode:
+            self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_groupbox.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_trees.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_trees.qss")))
+        else:
+            self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_groupbox.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_trees.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_trees.qss")))
+
+
+    def set_timer_color(self, display_mode: DisplayModeType) -> None:
+        if display_mode == DisplayModeType.DarkMode:
+            text_color = self.main_window.label.palette()
+            text_color.setColor(QPalette.ColorRole.WindowText, LIGHT_TEXT)
+            self.main_window.label.setPalette(text_color)
+        else:
+            text_color = self.main_window.label.palette()
+            text_color.setColor(QPalette.ColorRole.WindowText, DARK_TEXT)
+            self.main_window.label.setPalette(text_color)
 
 
     def show_toolbar_menu_clicked(self) -> None:
@@ -420,8 +462,8 @@ def load_base_ui() -> None:
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
 DARK_WINDOW = QColor(30, 30, 30, 255)
-LIGHT_WINDOW = QColor(240, 240, 240, 255)
-DARK_TEXT = QColor(30, 30, 30, 255)
+LIGHT_WINDOW = QColor(237, 237, 240, 255)
+DARK_TEXT = QColor(45, 45, 50, 255)
 LIGHT_TEXT = QColor(255, 255, 255, 255)
 
 

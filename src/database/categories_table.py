@@ -2,7 +2,7 @@ from pymysql import connect
 from pymysql.cursors import DictCursor
 from database import logs_table
 from gui.widgets.category_widget import CategoryWidget
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 
 
 def delete_category_row(db_connection, category_id: str, category_type: CategoryType) -> None:

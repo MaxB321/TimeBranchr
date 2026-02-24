@@ -1,0 +1,22 @@
+QTreeWidget#categoryTreeWidget {
+    background: #757778;
+    font-size: 16px;
+}
+
+QTreeWidget#categoryTreeWidget QHeaderView::section {
+    background-color: #464646;
+    color: white;
+    padding: 1px;
+    border: none;
+}
+
+QTreeWidget#logTreeWidget {
+    background: #757778;
+}
+
+QTreeWidget#logTreeWidget QHeaderView::section {
+    background-color: #464646;
+    color: white;
+    padding: 1px;
+    border: none;
+}

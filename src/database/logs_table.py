@@ -1,7 +1,7 @@
 from datetime import datetime
 from pymysql import connect
 
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 
 
 def cleanup_log_row(db_connection, category_id: str, category_type: CategoryType) -> None:   

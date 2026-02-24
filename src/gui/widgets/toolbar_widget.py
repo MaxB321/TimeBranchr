@@ -6,7 +6,7 @@ import database.categories_table
 from gui.widgets.category_widget import CategoryWidget
 from gui.widgets.log_widget import LogWidget
 from gui.widgets.timer_widget import TimerWidget
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 from database.db_connect import db_conn
 
 

@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from database.db_connect import db_conn
 import database.categories_table
 import database.logs_table
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 
 
 class LogWidget(QObject):

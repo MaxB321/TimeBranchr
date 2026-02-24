@@ -1,3 +1,6 @@
 QTreeWidget#categoryTreeWidget {
     font-size: 16px;
 }
+
+QTreeWidget#logTreeWidget {
+}

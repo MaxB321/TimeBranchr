@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
 from gui.dialogs.create_log import LogDialog
 from gui.widgets.log_widget import LogWidget
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 
 
 class LogMenu(QMenu):

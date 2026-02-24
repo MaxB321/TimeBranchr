@@ -6,7 +6,7 @@ from gui.widgets.log_widget import LogWidget
 from utils import config
 import database.categories_table
 from database.db_connect import db_conn
-from utils.category_type import CategoryType
+from utils.enums import CategoryType
 
 
 class CategoryWidget(QObject):
