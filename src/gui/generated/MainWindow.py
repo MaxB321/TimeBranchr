@@ -98,24 +98,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_8)
 
-        self.label = QLabel(self.groupBox)
-        self.label.setObjectName(u"label")
+        self.timerLabel = QLabel(self.groupBox)
+        self.timerLabel.setObjectName(u"timerLabel")
         font = QFont()
         font.setPointSize(40)
         font.setBold(True)
         font.setUnderline(False)
         font.setStrikeOut(False)
-        self.label.setFont(font)
-        self.label.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
+        self.timerLabel.setFont(font)
+        self.timerLabel.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
 
-        self.verticalLayout.addWidget(self.label, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.verticalLayout.addWidget(self.timerLabel, 0, Qt.AlignmentFlag.AlignHCenter)
 
-        self.frame = QFrame(self.groupBox)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.pauseLabel = QLabel(self.groupBox)
+        self.pauseLabel.setObjectName(u"pauseLabel")
 
-        self.verticalLayout.addWidget(self.frame)
+        self.verticalLayout.addWidget(self.pauseLabel, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.frame_5 = QFrame(self.groupBox)
         self.frame_5.setObjectName(u"frame_5")
@@ -123,6 +121,13 @@ class Ui_MainWindow(object):
         self.frame_5.setFrameShadow(QFrame.Shadow.Raised)
 
         self.verticalLayout.addWidget(self.frame_5)
+
+        self.frame = QFrame(self.groupBox)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+
+        self.verticalLayout.addWidget(self.frame)
 
         self.frame_6 = QFrame(self.groupBox)
         self.frame_6.setObjectName(u"frame_6")
@@ -227,7 +232,8 @@ class Ui_MainWindow(object):
         self.actionGuide.setText(QCoreApplication.translate("MainWindow", u"Guide", None))
         self.actionShow_Username_in_Window_Title.setText(QCoreApplication.translate("MainWindow", u"Show Username in Window Title", None))
         self.groupBox.setTitle("")
-        self.label.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
+        self.timerLabel.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
+        self.pauseLabel.setText(QCoreApplication.translate("MainWindow", u"Paused", None))
         ___qtreewidgetitem = self.logTreeWidget.headerItem()
         ___qtreewidgetitem.setText(1, QCoreApplication.translate("MainWindow", u"DateTime", None));
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("MainWindow", u"Logs", None));

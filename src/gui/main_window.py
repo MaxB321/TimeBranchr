@@ -78,7 +78,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setGeometry(300, 150, 1280, 720)
         self.setIconSize(QSize(25, 25))
 
-        self.timer_widget = TimerWidget(self.label)
+        self.timer_widget = TimerWidget(self.timerLabel, self.pauseLabel)
         self.cat_widget = CategoryWidget(self.categoryTreeWidget)
         self.log_widget = LogWidget(self.logTreeWidget)
         self.category_menu = CategoryMenu(self.categoryTreeWidget, self.cat_widget)
@@ -409,13 +409,13 @@ class MenuWidget():
 
     def set_timer_color(self, display_mode: DisplayModeType) -> None:
         if display_mode == DisplayModeType.DarkMode:
-            text_color = self.main_window.label.palette()
+            text_color = self.main_window.timerLabel.palette()
             text_color.setColor(QPalette.ColorRole.WindowText, LIGHT_TEXT)
-            self.main_window.label.setPalette(text_color)
+            self.main_window.timerLabel.setPalette(text_color)
         else:
-            text_color = self.main_window.label.palette()
+            text_color = self.main_window.timerLabel.palette()
             text_color.setColor(QPalette.ColorRole.WindowText, DARK_TEXT)
-            self.main_window.label.setPalette(text_color)
+            self.main_window.timerLabel.setPalette(text_color)
 
 
     def show_toolbar_menu_clicked(self) -> None:
