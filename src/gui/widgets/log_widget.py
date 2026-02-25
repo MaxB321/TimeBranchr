@@ -168,6 +168,16 @@ class LogWidget(QObject):
         self._user_log_datetime[category_id] = []
         database.categories_table.init_subcategory(db_conn, category_id, parent_id, category_name, 0, user_id)
 
+
+    def is_log_displayed(self) -> bool:
+        header = self.log_tree.headerItem()
+        header_text: str = header.text(0)
+        default_header_text: str = "Logs"
+        
+        if header_text == default_header_text:
+            return False
+        return True
+
     
     def load_logs(self, user_logs: dict[str, list[int]], user_categories: dict[str, str], user_subcategories: dict[str, list[str]], user_logs_datetime: dict[str, list[datetime]]) -> None:
         categories_with_no_logs: list[str] = self.category_with_no_logs(user_logs, user_categories, user_subcategories)

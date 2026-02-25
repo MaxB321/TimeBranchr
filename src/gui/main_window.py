@@ -102,9 +102,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.toolbar.delete_category_button.triggered.connect(self.delete_cat_btn_clicked)
         self.toolbar.start_button.triggered.connect(self.start_btn_clicked)
         self.toolbar.pause_button.triggered.connect(self.pause_btn_clicked)
-        self.toolbar.stop_button.triggered.connect(self.stop_btn_clicked)
-
-        
+        self.toolbar.stop_button.triggered.connect(self.stop_btn_clicked) 
 
         self.categoryTreeWidget.itemClicked.connect(self.update_log_view)
         self.categoryTreeWidget.itemChanged.connect(self.update_log_view)
@@ -115,6 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.log_menu.sort_log_action.triggered.connect(self.sort_logs)
         self.log_menu.del_log_action.triggered.connect(self.del_log)
         self.log_menu.create_log_action.triggered.connect(self.create_log)
+        self.log_menu.clear_view_action.triggered.connect(self.clear_log_view)
         
         self.installEventFilter(self)
 
@@ -147,6 +146,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     # LOG CONTEXT MENU FUNCTIONS
+    def clear_log_view(self) -> None:
+        self.log_widget.clear_log_view()
+    
+    
     def create_log(self) -> None:
         category_id = self.cat_widget.get_category_id()
         self.log_widget.start_time = sum(self.log_widget._user_logs[category_id])

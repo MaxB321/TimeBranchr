@@ -22,6 +22,7 @@ class LogMenu(QMenu):
         self.del_log_action = self.menu.addAction("Delete Log")
         self.sort_log_action = self.menu.addAction("Sort Logs Newest to Oldest")
         self.sort_log_action.setCheckable(True)
+        self.clear_view_action = self.menu.addAction("Clear Log View")
 
 
     def create_log(self, category_id: str, user_id: str, category_type: CategoryType) -> None:
@@ -44,13 +45,6 @@ class LogMenu(QMenu):
         self.log_widget.log_del.emit(category_id)
 
 
-    def deselect_log_item(self, log_tree: QTreeWidget) -> None:
-        if not self.is_item_selected():
-            return
-        
-        # add deselect logic here
-
-
     def is_item_selected(self) -> bool:
         cur_item = self.log_tree.currentItem()
         if cur_item and cur_item.isSelected():
@@ -66,7 +60,7 @@ class LogMenu(QMenu):
         else:  
             self.del_log_action.setVisible(True)
         
-        if not self.category_tree_widget.currentItem():
+        if not self.log_widget.is_log_displayed():
             self.create_log_action.setVisible(False)
         else:
             self.create_log_action.setVisible(True)
