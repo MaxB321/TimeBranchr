@@ -78,6 +78,9 @@ class ToolbarWidget(QToolBar):
                     new_time = outermost_time - old_time
                     database.categories_table.update_parent_time(db_conn, outermost_id, new_time)
                     cat_widget.update_category_time(log_widget, CategoryType.MainCategory, outermost_item)
+        
+        if cat_tree.topLevelItemCount() == 0:
+            log_widget.clear_log_view()
                 
 
     

@@ -52,6 +52,12 @@ class LogWidget(QObject):
                 categories_with_no_logs.append(x)
 
         return categories_with_no_logs
+    
+
+    def clear_log_view(self) -> None:
+        self.log_tree.clear()
+        header = self.log_tree.headerItem()
+        header.setText(0, "Logs")
 
 
     def create_log(self, log_tree: QTreeWidget, seconds: int, category_id: str, user_id: str, sort_new_first: bool, category_type: CategoryType):  # user-created log 

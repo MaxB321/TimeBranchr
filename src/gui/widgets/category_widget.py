@@ -127,6 +127,10 @@ class CategoryWidget(QObject):
     def get_category_type(self) -> CategoryType:
         return self._category_type
 
+    
+    def hide_subcat_total(self) -> None:
+        pass
+
 
     def init_category_tree(self) -> None:
         header = self.cat_tree.header()
@@ -260,6 +264,10 @@ class CategoryWidget(QObject):
 
     def set_category_type(self, cat_type: CategoryType) -> None:
         self._category_type = cat_type
+    
+
+    def show_subcat_total(self) -> None:
+        pass
 
 
     def sort_display(self) -> None:
