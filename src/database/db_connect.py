@@ -2,6 +2,7 @@ from typing import Final
 from dotenv import load_dotenv
 import pymysql
 import os
+from sqlalchemy import create_engine
 
 
 load_dotenv()
@@ -27,3 +28,5 @@ db_conn = pymysql.connect(
     charset=DB_CHARSET,
     cursorclass=pymysql.cursors.DictCursor
 )
+
+engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")

@@ -9,8 +9,8 @@ class guideDialog(QDialog, Ui_guideDialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Guide")
-        self.setGeometry(500, 250, 450, 350)
-        self.setFixedSize(450, 350)
+        self.setGeometry(500, 250, 550, 400)
+        self.setFixedSize(550, 400)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
         
         text: str = textwrap.dedent("""
@@ -26,6 +26,13 @@ class guideDialog(QDialog, Ui_guideDialog):
 
         You can create a log by right clicking inside of the logs widget and selecting the option from the context menu.
         If a log item is selected you will have the option to delete the log in the context menu.
+
+        "Export to CSV" under the file section will download all user related tables into separate csv files: 
+            - Categories
+            - SubCategories
+            - Category Time Logs
+            - Subcategory Time Logs
+        These files will be stored in the downloads folder.
         """)
         
         

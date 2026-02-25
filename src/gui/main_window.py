@@ -50,6 +50,7 @@ from PySide6.QtCore import (
     QObject
 )
 from PySide6.QtUiTools import QUiLoader
+from database import export_csv
 from gui.dialogs.about_dialog import aboutDialog
 import gui.dialogs.getUserID
 import gui.dialogs.change_name
@@ -306,6 +307,7 @@ class MenuWidget():
 
         # File
         self.main_window.actionQuit.triggered.connect(self.quit_menu_clicked)
+        self.main_window.actionExport_CSV.triggered.connect(export_csv.export_csv)
 
         # View 
         self.main_window.actionDark_Mode_New.triggered.connect(self.dark_mode)
