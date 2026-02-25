@@ -129,7 +129,25 @@ class CategoryWidget(QObject):
 
     
     def hide_subcat_total(self) -> None:
-        pass
+        i = 0
+        while i < self.cat_tree.topLevelItemCount():
+            outer_item: QTreeWidgetItem | None = self.cat_tree.topLevelItem(i)
+            j = 0
+            if outer_item is None:
+                break
+
+            while j < outer_item.childCount():
+                middle_item = outer_item.child(j)
+                middle_item.setText(1, "")
+                k = 0
+                j += 1
+
+                while k < middle_item.childCount():
+                    inner_item = middle_item.child(k)
+                    inner_item.setText(1, "")
+                    k += 1
+
+            i += 1
 
 
     def init_category_tree(self) -> None:
@@ -266,8 +284,30 @@ class CategoryWidget(QObject):
         self._category_type = cat_type
     
 
-    def show_subcat_total(self) -> None:
-        pass
+    def show_subcat_total(self, log_widget: LogWidget) -> None:
+        i = 0
+        while i < self.cat_tree.topLevelItemCount():
+            outer_item: QTreeWidgetItem | None = self.cat_tree.topLevelItem(i)
+            j = 0
+            if outer_item is None:
+                break
+
+            while j < outer_item.childCount():
+                middle_item = outer_item.child(j)
+                middle_id: str = middle_item.data(0, Qt.ItemDataRole.UserRole)
+                middle_time: int = database.categories_table.get_category_time(db_conn, middle_id, CategoryType.SubCategory)
+                self.display_total_time(middle_item, middle_time)
+                k = 0
+                j += 1
+
+                while k < middle_item.childCount():
+                    inner_item = middle_item.child(k)
+                    inner_id: str = inner_item.data(0, Qt.ItemDataRole.UserRole)
+                    inner_time: int = sum(log_widget._user_logs[inner_id])
+                    self.display_total_time(inner_item, inner_time)
+                    k += 1
+
+            i += 1
 
 
     def sort_display(self) -> None:

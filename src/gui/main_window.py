@@ -367,9 +367,6 @@ class MenuWidget():
         else:
             self.dark_mode(DisplayModeType.LightMode)
 
-        if config.show_subcat_totals:
-            pass
-
         if config.show_username:
             self.main_window.setWindowTitle(f"TimeBranchr - {config.get_user_name()}")
         else:
@@ -425,17 +422,20 @@ class MenuWidget():
         else:
             self.main_window.setWindowTitle("TimeBranchr")
 
+
     def show_subcat_totals(self) -> None:
         flag = self.main_window.actionShow_Subcategory_Totals.isChecked()
         config.set_flag("show_subcat_totals", flag)
+        if flag:
+            self.main_window.cat_widget.show_subcat_total(self.main_window.log_widget)
+        else:
+            self.main_window.cat_widget.hide_subcat_total()
 
 
     def toggle_flags(self) -> None:
         if config.isConfig():
             if config.dark_mode:
                 self.main_window.actionDark_Mode_New.toggle()
-            if config.show_subcat_totals:
-                self.main_window.actionShow_Subcategory_Totals.toggle()
             if config.show_username:
                 self.main_window.actionShow_Username_in_Window_Title.toggle()
             if config.categories_asc:
@@ -444,6 +444,7 @@ class MenuWidget():
                 self.main_window.log_menu.sort_log_action.toggle()
             
             self.main_window.actionShow_Toolbar.toggle()
+            self.main_window.actionShow_Subcategory_Totals.toggle()
         else:
             self.main_window.actionDark_Mode_New.toggle()
             self.main_window.actionShow_Subcategory_Totals.toggle()

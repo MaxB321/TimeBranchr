@@ -116,7 +116,6 @@ CONFIG_FILE: Path = CONFIG_PATH / "config.json"
 # FLAGS
 if isConfig():
     dark_mode: bool = get_flag("dark_mode")
-    show_subcat_totals: bool = get_flag("show_subcat_totals")
     show_username: bool = get_flag("show_username")
     categories_asc: bool = get_flag("categories_asc")
     logs_asc: bool = get_flag("logs_asc")
