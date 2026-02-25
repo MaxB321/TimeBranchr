@@ -126,7 +126,7 @@ def update_category_name(db_connection, category_id: str, category_name: str, ca
     db_connection.commit()
 
 
-def update_parent_time(db_connection, category_id: str, parent_id: str, new_time: int) -> None:
+def update_parent_time(db_connection, parent_id: str, new_time: int) -> None:
     sql_query = """
             UPDATE sub_categories
             SET total_time = (%s)

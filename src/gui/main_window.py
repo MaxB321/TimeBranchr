@@ -275,18 +275,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         time_diff = end_time - start_time
         if not self.cat_widget.is_innermost_layer():
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(db_conn, item_id, parent_id, new_time)
+            database.categories_table.update_parent_time(db_conn, parent_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
         else:
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(db_conn, item_id, parent_id, new_time)
+            database.categories_table.update_parent_time(db_conn, parent_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
 
             outermost_item = parent_item.parent()
             outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
             outermost_time = parent_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
             new_time = outermost_time + time_diff
-            database.categories_table.update_parent_time(db_conn, item_id, outermost_id, new_time)
+            database.categories_table.update_parent_time(db_conn, outermost_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
         
         self.log_widget.start_time = 0
