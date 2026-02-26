@@ -35,3 +35,9 @@ Thumbs.db
 
 # Todo 
 todo.txt
+
+# Executables
+*.exe
+*.spec
+build/
+dist/
