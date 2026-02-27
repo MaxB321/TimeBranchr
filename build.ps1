@@ -20,7 +20,7 @@ Get-ChildItem -Recurse -Include "*.ui" | ForEach-Object {
 $iconArg = if ($ICON -ne "") { "--icon `"$ICON`"" } else { "" }
 
 $cmd = "pyinstaller " +
-    "--onefile " +
+    "--onedir " +
     "--windowed " +
     "--name `"$APP_NAME`" " +
     "--collect-all PySide6 " +
