@@ -1,5 +1,5 @@
 $APP_NAME = "TimeBranchr"
-$MAIN_SCRIPT = "main.py"
+$MAIN_SCRIPT = "src\main.py"
 $ICON = ""
 
 # .qss and .ui files
@@ -7,12 +7,14 @@ $dataArgs = @()
 
 Get-ChildItem -Recurse -Include "*.qss" | ForEach-Object {
     $rel = $_.DirectoryName | Resolve-Path -Relative
-    $dataArgs += "--add-data `"$($_.FullName);$rel`""
+    $dest = $rel -replace '^\.\\src\\', ''
+    $dataArgs += "--add-data `"$($_.FullName);$dest`""
 }
 
 Get-ChildItem -Recurse -Include "*.ui" | ForEach-Object {
     $rel = $_.DirectoryName | Resolve-Path -Relative
-    $dataArgs += "--add-data `"$($_.FullName);$rel`""
+    $dest = $rel -replace '^\.\\src\\', ''
+    $dataArgs += "--add-data `"$($_.FullName);$dest`""
 }
 
 $iconArg = if ($ICON -ne "") { "--icon `"$ICON`"" } else { "" }
