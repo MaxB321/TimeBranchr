@@ -46,7 +46,7 @@ class changeNameDialog(QDialog, Ui_changeNameDialog):
             return
         
         config.update_username(new_name)
-        database.user_table.update_user_name(db_conn, self._user_id, new_name)
+        database.user_table.update_user_name(self._user_id, new_name)
 
         self.close()
         

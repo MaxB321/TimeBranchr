@@ -52,31 +52,31 @@ class ToolbarWidget(QToolBar):
             
             if cat_widget.is_outermost_layer():
                 cat_widget.cleanup_children_items(cur_item)
-                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.MainCategory)
+                database.categories_table.delete_category_row(category_id, CategoryType.MainCategory)
                 cat_tree.takeTopLevelItem(cat_tree.indexOfTopLevelItem(cur_item))
             else:
-                old_time: int = database.categories_table.get_category_time(db_conn, category_id, CategoryType.SubCategory)
+                old_time: int = database.categories_table.get_category_time(category_id, CategoryType.SubCategory)
                 parent_id: str = parent.data(0, Qt.ItemDataRole.UserRole)
                 cat_widget.cleanup_children_items(cur_item)
-                database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+                database.categories_table.delete_category_row(category_id, CategoryType.SubCategory)
                 parent.removeChild(cur_item)
 
                 if parent.parent() is None:
-                    parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                    parent_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
                     new_time = parent_time - old_time
-                    database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+                    database.categories_table.update_parent_time(parent_id, new_time)
                     cat_widget.update_category_time(log_widget, CategoryType.MainCategory, parent)
                 else:
-                    parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+                    parent_time = database.categories_table.get_category_time(parent_id, CategoryType.SubCategory)
                     new_time = parent_time - old_time
-                    database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+                    database.categories_table.update_parent_time(parent_id, new_time)
                     cat_widget.update_category_time(log_widget, CategoryType.SubCategory, parent)
 
                     outermost_item = parent.parent()
                     outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-                    outermost_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    outermost_time = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
                     new_time = outermost_time - old_time
-                    database.categories_table.update_parent_time(db_conn, outermost_id, new_time)
+                    database.categories_table.update_parent_time(outermost_id, new_time)
                     cat_widget.update_category_time(log_widget, CategoryType.MainCategory, outermost_item)
         
         if cat_tree.topLevelItemCount() == 0:
@@ -107,30 +107,30 @@ class ToolbarWidget(QToolBar):
             self.timer_widget.stop_timer()
             return
         else:
-            start_time: int = database.categories_table.get_category_time(db_conn, log_widget._category_id, CategoryType.SubCategory)
+            start_time: int = database.categories_table.get_category_time(log_widget._category_id, CategoryType.SubCategory)
             log_widget.add_log(log_widget.log_tree, self.timer_widget._elapsed_seconds, selected_category_id, user_id, sort_flag, cat_type)
             self.timer_widget.stop_timer()
-            end_time: int = database.categories_table.get_category_time(db_conn, log_widget._category_id, CategoryType.SubCategory)
+            end_time: int = database.categories_table.get_category_time(log_widget._category_id, CategoryType.SubCategory)
             time_diff: int = end_time - start_time
             parent_item = tracked_item.parent()
             parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
 
             if cat_widget.is_outermost_layer(parent_item):
-                parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                parent_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
                 new_time = parent_time + time_diff    
-                database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+                database.categories_table.update_parent_time(parent_id, new_time)
                 cat_widget.update_category_time(log_widget, CategoryType.MainCategory, parent_item)
             else:
-                parent_time: int = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+                parent_time: int = database.categories_table.get_category_time(parent_id, CategoryType.SubCategory)
                 new_time: int = parent_time + time_diff
-                database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+                database.categories_table.update_parent_time(parent_id, new_time)
                 cat_widget.update_category_time(log_widget, CategoryType.SubCategory, parent_item)
 
                 if cat_widget.is_innermost_layer(tracked_item):
                     outermost_item = parent_item.parent()
                     outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-                    outermost_time: int = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    outermost_time: int = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
                     new_time = outermost_time + time_diff
-                    database.categories_table.update_parent_time(db_conn, outermost_id, new_time)
+                    database.categories_table.update_parent_time(outermost_id, new_time)
                     cat_widget.update_category_time(log_widget, CategoryType.MainCategory, outermost_item)
 

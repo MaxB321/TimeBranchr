@@ -63,7 +63,7 @@ class UserDialog(QDialog, Ui_UserDialog):
         self._user_id = user_id
         self._user_name = user_name
         utils.config.create_config(user_id, user_name)
-        database.user_table.init_user(db_conn, user_id, user_name)
+        database.user_table.init_user(user_id, user_name)
         self.close()
     
 

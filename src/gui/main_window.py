@@ -164,9 +164,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         category_id = self.cat_widget.get_category_id()
         self.log_widget.start_time = sum(self.log_widget._user_logs[category_id])
         if self.cat_widget.is_outermost_layer():
-            self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id, CategoryType.MainCategory)
+            self.log_menu.delete_log(category_id, self.log_widget, self._user_id, CategoryType.MainCategory)
         else:
-            self.log_menu.delete_log(category_id, self.log_widget, db_conn, self._user_id, CategoryType.SubCategory)
+            self.log_menu.delete_log(category_id, self.log_widget, self._user_id, CategoryType.SubCategory)
 
 
     def sort_logs(self) -> None:
@@ -216,14 +216,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
-            self._user_categories = database.categories_table.get_user_categories(db_conn, self._user_id)
-            self._user_subcategories = database.categories_table.get_user_subcategories(db_conn, self._user_id)
+            self._user_categories = database.categories_table.get_user_categories(self._user_id)
+            self._user_subcategories = database.categories_table.get_user_subcategories(self._user_id)
             self.cat_widget.user_categories = self._user_categories
             self.cat_widget.user_subcategories = self._user_subcategories
-            self._user_logs = database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.MainCategory)
-            self._user_logs |= database.logs_table.get_user_logs(db_conn, self._user_id, CategoryType.SubCategory)
-            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.MainCategory)
-            self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(db_conn, self._user_id, CategoryType.SubCategory)
+            self._user_logs = database.logs_table.get_user_logs(self._user_id, CategoryType.MainCategory)
+            self._user_logs |= database.logs_table.get_user_logs(self._user_id, CategoryType.SubCategory)
+            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(self._user_id, CategoryType.MainCategory)
+            self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(self._user_id, CategoryType.SubCategory)
 
             self.cat_widget.user_id = config.get_user_id()
             self.cat_widget.load_categories()
@@ -271,26 +271,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         parent_item = item.parent()
         parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
         if self.cat_widget.is_outermost_layer(parent_item):
-            parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+            parent_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
         else:
-            parent_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.SubCategory)
+            parent_time = database.categories_table.get_category_time(parent_id, CategoryType.SubCategory)
 
         end_time = sum(self.log_widget._user_logs[item_id])
         time_diff = end_time - start_time
         if not self.cat_widget.is_innermost_layer():
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+            database.categories_table.update_parent_time(parent_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
         else:
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(db_conn, parent_id, new_time)
+            database.categories_table.update_parent_time(parent_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
 
             outermost_item = parent_item.parent()
             outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-            outermost_time = parent_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+            outermost_time = parent_time = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
             new_time = outermost_time + time_diff
-            database.categories_table.update_parent_time(db_conn, outermost_id, new_time)
+            database.categories_table.update_parent_time(outermost_id, new_time)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
         
         self.log_widget.start_time = 0

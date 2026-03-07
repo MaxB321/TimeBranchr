@@ -31,7 +31,7 @@ class LogWidget(QObject):
         self._user_logs[self._category_id].append(seconds)
         self._user_log_datetime[self._category_id].append(cur_date_time)
         
-        database.logs_table.init_log(db_conn, self._category_id, seconds, user_id, cur_date_time, cat_type)
+        database.logs_table.init_log(self._category_id, seconds, user_id, cur_date_time, cat_type)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, selected_category_id)
@@ -67,7 +67,7 @@ class LogWidget(QObject):
         cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[category_id].append(seconds)
         self._user_log_datetime[category_id].append(cur_date_time)
-        database.logs_table.init_log(db_conn, category_id, seconds, user_id, cur_date_time, category_type)
+        database.logs_table.init_log(category_id, seconds, user_id, cur_date_time, category_type)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, category_id)
@@ -160,13 +160,13 @@ class LogWidget(QObject):
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
-        database.categories_table.init_category(db_conn, category_id, category_name, 0, user_id)
+        database.categories_table.init_category(category_id, category_name, 0, user_id)
     
 
     def init_subcategory(self, category_id: str, parent_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
-        database.categories_table.init_subcategory(db_conn, category_id, parent_id, category_name, 0, user_id)
+        database.categories_table.init_subcategory(category_id, parent_id, category_name, 0, user_id)
 
 
     def is_log_displayed(self) -> bool:

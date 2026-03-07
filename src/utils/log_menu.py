@@ -35,12 +35,12 @@ class LogMenu(QMenu):
             self.log_widget.create_log(self.log_tree, seconds, category_id, user_id, sort_flag, category_type)
 
 
-    def delete_log(self, category_id: str, log_widget: LogWidget, db_conn, user_id: str, category_type: CategoryType) -> None:
+    def delete_log(self, category_id: str, log_widget: LogWidget, user_id: str, category_type: CategoryType) -> None:
         sort_flag: bool = self.sort_log_action.isChecked()
         item_datetime = log_widget.delete_log_item(category_id, self.log_tree, sort_flag)
         
-        log_id: int = database.logs_table.get_log_id(db_conn, user_id, item_datetime, category_type)
-        database.logs_table.user_del_log_row(db_conn, log_id, category_type)
+        log_id: int = database.logs_table.get_log_id(user_id, item_datetime, category_type)
+        database.logs_table.user_del_log_row(log_id, category_type)
         
         self.log_widget.log_del.emit(category_id)
 

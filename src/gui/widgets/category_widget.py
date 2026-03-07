@@ -89,12 +89,12 @@ class CategoryWidget(QObject):
                     innermost_child = cur_child.child(0)
                     category_id = innermost_child.data(0, Qt.ItemDataRole.UserRole)
                     cur_child.removeChild(innermost_child)
-                    database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+                    database.categories_table.delete_category_row(category_id, CategoryType.SubCategory)
                     j += 1
 
             category_id = cur_child.data(0, Qt.ItemDataRole.UserRole)
             cur_item.removeChild(cur_child)
-            database.categories_table.delete_category_row(db_conn, category_id, CategoryType.SubCategory)
+            database.categories_table.delete_category_row(category_id, CategoryType.SubCategory)
             i += 1  
 
 
@@ -219,7 +219,7 @@ class CategoryWidget(QObject):
 
             self.cat_item_ref[key] = child_item
 
-            category_time = database.categories_table.get_category_time(db_conn, key, CategoryType.MainCategory)
+            category_time = database.categories_table.get_category_time(key, CategoryType.MainCategory)
             child_item.setText(1, self.load_category_time(category_time))
 
         self.cat_tree.blockSignals(False)
@@ -245,7 +245,7 @@ class CategoryWidget(QObject):
 
             self.cat_item_ref[key] = child_item
 
-            category_time = database.categories_table.get_category_time(db_conn, key, CategoryType.SubCategory)
+            category_time = database.categories_table.get_category_time(key, CategoryType.SubCategory)
             child_item.setText(1, self.load_category_time(category_time))
         
         self.cat_tree.blockSignals(False)
@@ -259,7 +259,7 @@ class CategoryWidget(QObject):
             parent_item.addChild(val)
             category_id: str = val.data(0, Qt.ItemDataRole.UserRole)
             self.cat_item_ref[category_id] = val
-            category_time = database.categories_table.get_category_time(db_conn, category_id, CategoryType.SubCategory)
+            category_time = database.categories_table.get_category_time(category_id, CategoryType.SubCategory)
             val.setText(1, self.load_category_time(category_time))
 
         self.cat_tree.blockSignals(False)
@@ -295,7 +295,7 @@ class CategoryWidget(QObject):
             while j < outer_item.childCount():
                 middle_item = outer_item.child(j)
                 middle_id: str = middle_item.data(0, Qt.ItemDataRole.UserRole)
-                middle_time: int = database.categories_table.get_category_time(db_conn, middle_id, CategoryType.SubCategory)
+                middle_time: int = database.categories_table.get_category_time(middle_id, CategoryType.SubCategory)
                 self.display_total_time(middle_item, middle_time)
                 k = 0
                 j += 1
@@ -323,9 +323,9 @@ class CategoryWidget(QObject):
 
         cur_item_text = self.cat_tree.currentItem().text(0)
         if self.is_outermost_layer():
-            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text, CategoryType.MainCategory)
+            database.categories_table.update_category_name(self.get_category_id(), cur_item_text, CategoryType.MainCategory)
         else:
-            database.categories_table.update_category_name(db_conn, self.get_category_id(), cur_item_text, CategoryType.SubCategory)
+            database.categories_table.update_category_name(self.get_category_id(), cur_item_text, CategoryType.SubCategory)
         self.sort_display()
 
 
@@ -339,26 +339,26 @@ class CategoryWidget(QObject):
             child_item = self.cat_item_ref[category_id]
 
             if self.is_outermost_layer(child_item):
-                category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+                category_time = database.categories_table.get_category_time(category_id, cat_type)
                 self.display_total_time(child_item, category_time)
             else:
-                category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+                category_time = database.categories_table.get_category_time(category_id, cat_type)
                 self.display_total_time(child_item, category_time)
                 parent_item = child_item.parent()
                 parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
 
                 if not self.is_innermost_layer(child_item):
-                    category_time = database.categories_table.get_category_time(db_conn, parent_id, CategoryType.MainCategory)
+                    category_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
                     self.display_total_time(parent_item, category_time)
                 else:
                     outermost_item = parent_item.parent()
                     outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-                    category_time = database.categories_table.get_category_time(db_conn, outermost_id, CategoryType.MainCategory)
+                    category_time = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
                     self.display_total_time(outermost_item, category_time)
 
         else:
             category_id = item.data(0, Qt.ItemDataRole.UserRole)
-            category_time = database.categories_table.get_category_time(db_conn, category_id, cat_type)
+            category_time = database.categories_table.get_category_time(category_id, cat_type)
             self.display_total_time(item, category_time)
 
 

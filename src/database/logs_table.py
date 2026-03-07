@@ -1,10 +1,10 @@
 from datetime import datetime
 from pymysql import connect
-
+from database.db_connect import db_conn
 from utils.enums import CategoryType
 
 
-def cleanup_log_row(db_connection, category_id: str, category_type: CategoryType) -> None:   
+def cleanup_log_row(category_id: str, category_type: CategoryType) -> None:   
     if category_type == CategoryType.MainCategory:
         sql_query = """
             DELETE FROM time_logs 
@@ -16,13 +16,13 @@ def cleanup_log_row(db_connection, category_id: str, category_type: CategoryType
             WHERE category_id = (%s)
         """
 
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (category_id))
 
-    db_connection.commit()
+    db_conn.commit()
 
 
-def get_log_id(db_connection, user_id: str, date_time: datetime, category_type: CategoryType) -> int:  # will primarily be for deleting logs
+def get_log_id(user_id: str, date_time: datetime, category_type: CategoryType) -> int:  # will primarily be for deleting logs
     if category_type == CategoryType.MainCategory:
         sql_query = """
             SELECT log_id
@@ -36,16 +36,16 @@ def get_log_id(db_connection, user_id: str, date_time: datetime, category_type: 
             WHERE user_id = (%s) AND date_time = (%s)
         """
 
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (user_id, date_time))
         row = cursor.fetchone()
-
-    db_connection.commit()
+        if not row:
+            return 1
     
     return row["log_id"]
 
 
-def get_user_logs(db_connection, user_id: str, category_type: CategoryType) -> dict[str, list[int]]:  # add categoryType arg, call it twice and just append the second call results after the first in dict
+def get_user_logs(user_id: str, category_type: CategoryType) -> dict[str, list[int]]:  # add categoryType arg, call it twice and just append the second call results after the first in dict
     if category_type == CategoryType.MainCategory:
         sql_query = """
             SELECT category_id, log_time
@@ -60,7 +60,7 @@ def get_user_logs(db_connection, user_id: str, category_type: CategoryType) -> d
         """
 
     user_data: dict[str, list[int]] = {}
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
         rows = cursor.fetchall() 
         
@@ -72,7 +72,7 @@ def get_user_logs(db_connection, user_id: str, category_type: CategoryType) -> d
     return user_data
 
 
-def get_user_logs_datetime(db_connection, user_id: str, category_type: CategoryType) -> dict[str, list[datetime]]:
+def get_user_logs_datetime(user_id: str, category_type: CategoryType) -> dict[str, list[datetime]]:
     if category_type == CategoryType.MainCategory:
         sql_query = """
             SELECT category_id, date_time
@@ -87,7 +87,7 @@ def get_user_logs_datetime(db_connection, user_id: str, category_type: CategoryT
         """
 
     user_data: dict[str, list[datetime]] = {}
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (user_id))
         rows = cursor.fetchall() 
         
@@ -99,7 +99,7 @@ def get_user_logs_datetime(db_connection, user_id: str, category_type: CategoryT
     return user_data 
 
 
-def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime, category_type: CategoryType) -> None:
+def init_log(category_id: str, log_time: int, user_id: str, date_time: datetime, category_type: CategoryType) -> None:
     if category_type == CategoryType.MainCategory:
         sql_query = """
             INSERT INTO time_logs (category_id, log_time, user_id, date_time)
@@ -111,25 +111,25 @@ def init_log(db_connection, category_id: str, log_time: int, user_id: str, date_
             VALUES (%s, %s, %s, %s)
         """
 
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (category_id, log_time, user_id, date_time))
 
-    db_connection.commit()
+    db_conn.commit()
 
 
-def init_subcat_log(db_connection, category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
+def init_subcat_log(category_id: str, log_time: int, user_id: str, date_time: datetime) -> None:
     sql_query = """
         INSERT INTO subcategory_time_logs (category_id, log_time, user_id, date_time)
         VALUES (%s, %s, %s, %s)
     """
 
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (category_id, log_time, user_id, date_time))
 
-    db_connection.commit()
+    db_conn.commit()
 
 
-def user_del_log_row(db_connection, log_id: int, category_type: CategoryType) -> None:  
+def user_del_log_row(log_id: int, category_type: CategoryType) -> None:  
     if category_type == CategoryType.MainCategory:
         sql_query = """
             DELETE FROM time_logs
@@ -141,7 +141,7 @@ def user_del_log_row(db_connection, log_id: int, category_type: CategoryType) ->
             WHERE log_id = (%s)
         """
 
-    with db_connection.cursor() as cursor:
+    with db_conn.cursor() as cursor:
         cursor.execute(sql_query, (log_id))
 
-    db_connection.commit()
+    db_conn.commit()
