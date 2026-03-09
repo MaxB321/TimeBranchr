@@ -1,9 +1,11 @@
 from fastapi import FastAPI
-from sqlalchemy import text
 from database.db_connect import engine
 
 
 app_api = FastAPI()
+
+
+from api.routes import api_categories_table, api_logs_table, api_user_table
 
 
 @app_api.get("/")

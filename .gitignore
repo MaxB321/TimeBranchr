@@ -41,3 +41,8 @@ todo.txt
 *.spec
 build/
 dist/
+
+# API files
+timebranchr_api/
+api/
+routes/

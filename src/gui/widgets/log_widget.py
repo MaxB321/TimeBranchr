@@ -1,7 +1,8 @@
+import requests
 from datetime import datetime
 from PySide6.QtCore import QDateTime, QEvent, QObject, Signal, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
-from database.db_connect import db_conn
+from database.db_connect import SERVER_URL, db_conn
 import database.categories_table
 import database.logs_table
 from utils.enums import CategoryType
@@ -160,7 +161,16 @@ class LogWidget(QObject):
     def init_category(self, category_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
-        database.categories_table.init_category(category_id, category_name, 0, user_id)
+        
+        data = {
+        "category_id": category_id,
+        "category_name": category_name,
+        "time": 0,
+        "user_id": user_id
+        }
+
+        response = requests.post(f"{SERVER_URL}/init_category", json=data)
+        print(response.json())
     
 
     def init_subcategory(self, category_id: str, parent_id: str, category_name: str, user_id: str) -> None:
