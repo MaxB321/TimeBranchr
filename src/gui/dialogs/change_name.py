@@ -1,6 +1,7 @@
+import requests
 from PySide6.QtWidgets import QDialog, QFrame
 import database.user_table
-from database.db_connect import db_conn
+from database.db_connect import SERVER_URL, db_conn
 from gui.generated.ChangeName import Ui_changeNameDialog
 from utils import config
 from utils import stylesheets
@@ -46,7 +47,12 @@ class changeNameDialog(QDialog, Ui_changeNameDialog):
             return
         
         config.update_username(new_name)
-        database.user_table.update_user_name(self._user_id, new_name)
+
+        data = {
+        "user_id": self._user_id,
+        "user_name": new_name
+        }
+        requests.post(f"{SERVER_URL}/update_user_name", json=data)
 
         self.close()
         

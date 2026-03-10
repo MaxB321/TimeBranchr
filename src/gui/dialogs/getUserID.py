@@ -2,6 +2,7 @@
 DIALOG WIDGET, ONLY APPEARS ON FIRST STARTUP
 """
 
+import requests
 import sys
 from pathlib import Path
 from uuid import uuid4
@@ -13,7 +14,7 @@ from gui.generated.GetUserID import Ui_UserDialog
 import utils.config
 from utils import stylesheets
 import database.user_table
-from database.db_connect import db_conn
+from database.db_connect import SERVER_URL, db_conn
 
 class UserDialog(QDialog, Ui_UserDialog):
     def __init__(self):
@@ -63,7 +64,13 @@ class UserDialog(QDialog, Ui_UserDialog):
         self._user_id = user_id
         self._user_name = user_name
         utils.config.create_config(user_id, user_name)
-        database.user_table.init_user(user_id, user_name)
+
+        data = {
+        "user_id": user_id,
+        "user_name": user_name
+        }
+        requests.post(f"{SERVER_URL}/init_user", json=data)
+
         self.close()
     
 

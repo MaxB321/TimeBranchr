@@ -168,15 +168,21 @@ class LogWidget(QObject):
         "time": 0,
         "user_id": user_id
         }
+        requests.post(f"{SERVER_URL}/init_category", json=data)
 
-        response = requests.post(f"{SERVER_URL}/init_category", json=data)
-        print(response.json())
-    
 
     def init_subcategory(self, category_id: str, parent_id: str, category_name: str, user_id: str) -> None:
         self._user_logs[category_id] = []
         self._user_log_datetime[category_id] = []
-        database.categories_table.init_subcategory(category_id, parent_id, category_name, 0, user_id)
+
+        data = {
+        "category_id": category_id,
+        "parent_id": parent_id,
+        "category_name": category_name,
+        "time": 0,
+        "user_id": user_id
+        }
+        requests.post(f"{SERVER_URL}/init_subcategory", json=data)
 
 
     def is_log_displayed(self) -> bool:

@@ -1,6 +1,3 @@
-from pymysql import connect
-from pymysql.cursors import DictCursor
-from api.fast_api import app_api
 from database import logs_table
 from database.db_connect import db_conn
 from utils.enums import CategoryType
