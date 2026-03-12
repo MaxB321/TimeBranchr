@@ -45,7 +45,7 @@ def get_log_id(user_id: str, date_time: datetime, category_type: CategoryType) -
     return row["log_id"]
 
 
-def get_user_logs(user_id: str, category_type: CategoryType) -> dict[str, list[int]]:  # add categoryType arg, call it twice and just append the second call results after the first in dict
+def get_user_logs(user_id: str, category_type: CategoryType) -> dict[str, list[int]]:
     if category_type == CategoryType.MainCategory:
         sql_query = """
             SELECT category_id, log_time

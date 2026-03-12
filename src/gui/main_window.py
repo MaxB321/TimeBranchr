@@ -2,6 +2,7 @@
 Handles The Main GUI Window 
 """
 
+import requests
 from datetime import datetime
 from sqlite3 import Cursor
 import sys

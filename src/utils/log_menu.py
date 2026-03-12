@@ -1,7 +1,9 @@
+import requests
 from datetime import datetime
 from PySide6.QtCore import QObject, QPoint, Qt
 from PySide6.QtWidgets import QMenu, QTreeWidget
 import database.logs_table
+from database.db_connect import SERVER_URL
 from gui.dialogs.create_log import LogDialog
 from gui.widgets.log_widget import LogWidget
 from utils.enums import CategoryType
@@ -39,8 +41,20 @@ class LogMenu(QMenu):
         sort_flag: bool = self.sort_log_action.isChecked()
         item_datetime = log_widget.delete_log_item(category_id, self.log_tree, sort_flag)
         
-        log_id: int = database.logs_table.get_log_id(user_id, item_datetime, category_type)
-        database.logs_table.user_del_log_row(log_id, category_type)
+        data = {
+        "user_id": user_id,
+        "date_time": item_datetime.isoformat(),
+        "category_type": category_type.value
+        }
+        response = requests.get(f"{SERVER_URL}/get_log_id", json=data)
+        log_id: int = response.json()["log_id"]
+
+        data = {
+        "log_id": log_id,
+        "category_type": category_type.value
+        }
+        requests.post(f"{SERVER_URL}/user_del_log_row", json=data)
+
         
         self.log_widget.log_del.emit(category_id)
 

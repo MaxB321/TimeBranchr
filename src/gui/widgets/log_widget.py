@@ -32,7 +32,14 @@ class LogWidget(QObject):
         self._user_logs[self._category_id].append(seconds)
         self._user_log_datetime[self._category_id].append(cur_date_time)
         
-        database.logs_table.init_log(self._category_id, seconds, user_id, cur_date_time, cat_type)
+        data = {
+        "category_id": self._category_id,
+        "log_time": seconds,
+        "user_id": user_id,
+        "date_time": cur_date_time.isoformat(),
+        "category_type": cat_type.value
+        }
+        requests.post(f"{SERVER_URL}/init_log", json=data)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, selected_category_id)
@@ -68,7 +75,15 @@ class LogWidget(QObject):
         cur_date_time = datetime.now().replace(microsecond=0)
         self._user_logs[category_id].append(seconds)
         self._user_log_datetime[category_id].append(cur_date_time)
-        database.logs_table.init_log(category_id, seconds, user_id, cur_date_time, category_type)
+
+        data = {
+        "category_id": category_id,
+        "log_time": seconds,
+        "user_id": user_id,
+        "date_time": cur_date_time.isoformat(),
+        "category_type": category_type.value
+        }
+        requests.post(f"{SERVER_URL}/init_log", json=data)
 
         if sort_new_first:
             self.display_logs_newest_first(log_tree, category_id)
