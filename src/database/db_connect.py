@@ -31,4 +31,4 @@ db_conn = pymysql.connect(
 
 engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
 
-SERVER_URL: Final[str] = require_env("SERVER_URL")
+SERVER_URL: Final[str] = "http://194.113.195.220:8000"
