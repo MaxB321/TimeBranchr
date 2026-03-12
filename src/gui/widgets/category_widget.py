@@ -378,26 +378,52 @@ class CategoryWidget(QObject):
             child_item = self.cat_item_ref[category_id]
 
             if self.is_outermost_layer(child_item):
-                category_time = database.categories_table.get_category_time(category_id, cat_type)
+                data = {
+                "category_id": category_id,
+                "category_type": cat_type.value
+                }
+                response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+                category_time = response.json()["category_time"]
+                
                 self.display_total_time(child_item, category_time)
             else:
-                category_time = database.categories_table.get_category_time(category_id, cat_type)
+                data = {
+                "category_id": category_id,
+                "category_type": cat_type.value
+                }
+                response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+                category_time = response.json()["category_time"]
                 self.display_total_time(child_item, category_time)
                 parent_item = child_item.parent()
                 parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
 
                 if not self.is_innermost_layer(child_item):
-                    category_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
+                    data = {
+                    "category_id": parent_id,
+                    "category_type": CategoryType.MainCategory.value
+                    }
+                    response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+                    category_time = response.json()["category_time"]
                     self.display_total_time(parent_item, category_time)
                 else:
                     outermost_item = parent_item.parent()
                     outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-                    category_time = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
+                    data = {
+                    "category_id": outermost_id,
+                    "category_type": CategoryType.MainCategory.value
+                    }
+                    response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+                    category_time = response.json()["category_time"]
                     self.display_total_time(outermost_item, category_time)
 
         else:
             category_id = item.data(0, Qt.ItemDataRole.UserRole)
-            category_time = database.categories_table.get_category_time(category_id, cat_type)
+            data = {
+            "category_id": category_id,
+            "category_type": cat_type.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            category_time = response.json()["category_time"]
             self.display_total_time(item, category_time)
 
 
