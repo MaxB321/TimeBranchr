@@ -5,8 +5,7 @@ from PySide6.QtCore import QObject, Qt
 from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from gui.widgets.log_widget import LogWidget
 from utils import config
-import database.categories_table
-from database.db_connect import db_conn, SERVER_URL
+from database.db_connect import SERVER_URL
 from utils.enums import CategoryType
 
 

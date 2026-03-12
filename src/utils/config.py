@@ -119,3 +119,8 @@ if isConfig():
     show_username: bool = get_flag("show_username")
     categories_asc: bool = get_flag("categories_asc")
     logs_asc: bool = get_flag("logs_asc")
+else:
+    dark_mode = True
+    show_username = False
+    categories_asc = True
+    logs_asc = True

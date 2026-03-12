@@ -2,7 +2,6 @@ import requests
 from datetime import datetime
 from PySide6.QtCore import QObject, QPoint, Qt
 from PySide6.QtWidgets import QMenu, QTreeWidget
-import database.logs_table
 from database.db_connect import SERVER_URL
 from gui.dialogs.create_log import LogDialog
 from gui.widgets.log_widget import LogWidget

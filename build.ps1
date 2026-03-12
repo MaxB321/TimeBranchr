@@ -17,6 +17,15 @@ Get-ChildItem -Recurse -Include "*.ui" | ForEach-Object {
     $dataArgs += "--add-data `"$($_.FullName);$dest`""
 }
 
+# Exclude modules
+$excludeArgs = @(
+    "--exclude-module src.api",
+    "--exclude-module src.api.*",
+    "--exclude-module src.database.categories_table",
+    "--exclude-module src.database.logs_table",
+    "--exclude-module src.database.user_table"
+)
+
 $iconArg = if ($ICON -ne "") { "--icon `"$ICON`"" } else { "" }
 
 $cmd = "pyinstaller " +
@@ -25,6 +34,7 @@ $cmd = "pyinstaller " +
     "--name `"$APP_NAME`" " +
     "--collect-all PySide6 " +
     ($dataArgs -join " ") + " " +
+    ($excludeArgs -join " ") + " " +
     $iconArg + " " +
     "`"$MAIN_SCRIPT`""
 

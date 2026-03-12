@@ -1,14 +1,11 @@
 import requests
 from PySide6.QtGui import QAction, QContextMenuEvent, QIcon, Qt
 from PySide6.QtWidgets import QToolBar, QTreeWidget, QTreeWidgetItem
-
-import database.categories_table
-import database.categories_table
 from gui.widgets.category_widget import CategoryWidget
 from gui.widgets.log_widget import LogWidget
 from gui.widgets.timer_widget import TimerWidget
 from utils.enums import CategoryType
-from database.db_connect import db_conn, SERVER_URL
+from database.db_connect import SERVER_URL
 
 
 

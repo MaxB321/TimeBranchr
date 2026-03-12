@@ -57,8 +57,6 @@ import gui.dialogs.getUserID
 import gui.dialogs.change_name
 from gui.dialogs.guide_dialog import guideDialog
 import gui.resources_rc
-import database.categories_table
-import database.logs_table
 from gui.widgets import log_widget
 from gui.widgets.category_widget import CategoryWidget
 from gui.widgets.toolbar_widget import ToolbarWidget
@@ -70,7 +68,7 @@ from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 from gui.widgets.log_widget import LogWidget
-from database.db_connect import db_conn, SERVER_URL
+from database.db_connect import SERVER_URL
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -425,14 +423,18 @@ class MenuWidget():
 
 
     def init_appearance(self) -> None:
-        if config.dark_mode:
-            self.dark_mode(DisplayModeType.DarkMode)
-        else:
-            self.dark_mode(DisplayModeType.LightMode)
+        if config.isConfig():
+            if config.dark_mode:
+                self.dark_mode(DisplayModeType.DarkMode)
+            else:
+                self.dark_mode(DisplayModeType.LightMode)
 
-        if config.show_username:
-            self.main_window.setWindowTitle(f"TimeBranchr - {config.get_user_name()}")
+            if config.show_username:
+                self.main_window.setWindowTitle(f"TimeBranchr - {config.get_user_name()}")
+            else:
+                self.main_window.setWindowTitle("TimeBranchr")
         else:
+            self.dark_mode(DisplayModeType.DarkMode)
             self.main_window.setWindowTitle("TimeBranchr")
 
 

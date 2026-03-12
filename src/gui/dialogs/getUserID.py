@@ -13,8 +13,7 @@ from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
 import utils.config
 from utils import stylesheets
-import database.user_table
-from database.db_connect import SERVER_URL, db_conn
+from database.db_connect import SERVER_URL
 
 class UserDialog(QDialog, Ui_UserDialog):
     def __init__(self):

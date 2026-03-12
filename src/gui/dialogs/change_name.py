@@ -1,7 +1,6 @@
 import requests
 from PySide6.QtWidgets import QDialog, QFrame
-import database.user_table
-from database.db_connect import SERVER_URL, db_conn
+from database.db_connect import SERVER_URL
 from gui.generated.ChangeName import Ui_changeNameDialog
 from utils import config
 from utils import stylesheets
