@@ -6,9 +6,11 @@ from utils.enums import CategoryType
 @app_api.post("/delete_category_row")
 async def api_delete_category_row(request: Request) -> dict[str, str]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     categories_table.delete_category_row(
         data["category_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"status": "OK"}
@@ -17,9 +19,11 @@ async def api_delete_category_row(request: Request) -> dict[str, str]:
 @app_api.get("/get_category_time")
 async def api_get_category_time(request: Request) -> dict[str, int]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     category_time: int = categories_table.get_category_time(
         data["category_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"category_time": category_time}
@@ -75,10 +79,12 @@ async def api_init_subcategory(request: Request) -> dict[str, str]:
 @app_api.post("/update_category_name")
 async def api_update_category_name(request: Request) -> dict[str, str]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     categories_table.update_category_name(
         data["category_id"], 
         data["category_name"],
-        data["category_type"]
+        category_type
         )
 
     return {"status": "OK"}

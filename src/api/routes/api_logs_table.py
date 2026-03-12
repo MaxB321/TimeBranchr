@@ -7,9 +7,11 @@ from utils.enums import CategoryType
 @app_api.post("/cleanup_log_row")
 async def api_cleanup_log_row(request: Request) -> dict[str, str]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     logs_table.cleanup_log_row(
         data["category_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"status": "OK"}
@@ -18,10 +20,12 @@ async def api_cleanup_log_row(request: Request) -> dict[str, str]:
 @app_api.get("/get_log_id")
 async def api_get_log_id(request: Request) -> dict[str, int]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     log_id: int = logs_table.get_log_id(
         data["user_id"], 
         data["date_time"],
-        data["category_type"]
+        category_type
         )
 
     return {"log_id": log_id}
@@ -30,9 +34,11 @@ async def api_get_log_id(request: Request) -> dict[str, int]:
 @app_api.get("/get_user_logs")
 async def api_get_user_logs(request: Request) -> dict[str, dict[str, list[int]]]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     user_logs: dict[str, list[int]] = logs_table.get_user_logs(
         data["user_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"user_logs": user_logs}
@@ -41,9 +47,11 @@ async def api_get_user_logs(request: Request) -> dict[str, dict[str, list[int]]]
 @app_api.get("/get_user_logs_datetime")
 async def api_get_user_logs_datetime(request: Request) -> dict[str, dict[str, list[datetime]]]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     logs_datetime: dict[str, list[datetime]] = logs_table.get_user_logs_datetime(
         data["user_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"logs_datetime": logs_datetime}
@@ -81,9 +89,11 @@ async def api_init_subcat_log(request: Request) -> dict[str, str]:
 @app_api.post("/user_del_log_row")
 async def api_user_del_log_row(request: Request) -> dict[str, str]: 
     data = await request.json()
+    category_type = CategoryType(data["category_type"])
+
     logs_table.user_del_log_row(
         data["log_id"], 
-        data["category_type"]
+        category_type
         )
 
     return {"status": "OK"}

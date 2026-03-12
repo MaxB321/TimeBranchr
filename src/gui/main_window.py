@@ -70,7 +70,7 @@ from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
 from gui.widgets.timer_widget import TimerWidget
 from gui.widgets.log_widget import LogWidget
-from database.db_connect import db_conn
+from database.db_connect import db_conn, SERVER_URL
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -221,10 +221,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_subcategories = database.categories_table.get_user_subcategories(self._user_id)
             self.cat_widget.user_categories = self._user_categories
             self.cat_widget.user_subcategories = self._user_subcategories
-            self._user_logs = database.logs_table.get_user_logs(self._user_id, CategoryType.MainCategory)
-            self._user_logs |= database.logs_table.get_user_logs(self._user_id, CategoryType.SubCategory)
-            self._user_logs_datetime = database.logs_table.get_user_logs_datetime(self._user_id, CategoryType.MainCategory)
-            self._user_logs_datetime |= database.logs_table.get_user_logs_datetime(self._user_id, CategoryType.SubCategory)
+
+            data = {
+            "user_id": self._user_id,
+            "category_type": CategoryType.MainCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_logs", json=data)
+            self._user_logs = response.json()["user_logs"]
+
+            data = {
+            "user_id": self._user_id,
+            "category_type": CategoryType.SubCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_logs", json=data)
+            self._user_logs |= response.json()["user_logs"]
+
+            data = {
+            "user_id": self._user_id,
+            "category_type": CategoryType.MainCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_logs_datetime", json=data)
+            self._user_logs_datetime = response.json()["logs_datetime"]
+
+            data = {
+            "user_id": self._user_id,
+            "category_type": CategoryType.SubCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_logs_datetime", json=data)
+            self._user_logs_datetime |= response.json()["logs_datetime"]
 
             self.cat_widget.user_id = config.get_user_id()
             self.cat_widget.load_categories()
