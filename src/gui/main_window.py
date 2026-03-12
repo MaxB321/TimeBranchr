@@ -217,8 +217,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
-            self._user_categories = database.categories_table.get_user_categories(self._user_id)
-            self._user_subcategories = database.categories_table.get_user_subcategories(self._user_id)
+
+            data = {
+            "user_id": self._user_id,
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_categories", json=data)
+            self._user_categories = response.json()["user_categories"]
+            
+            data = {
+            "user_id": self._user_id,
+            }
+            response = requests.get(f"{SERVER_URL}/get_user_subcategories", json=data)
+            self._user_subcategories = response.json()["user_subcategories"]
+
             self.cat_widget.user_categories = self._user_categories
             self.cat_widget.user_subcategories = self._user_subcategories
 
@@ -296,26 +307,53 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         parent_item = item.parent()
         parent_id = parent_item.data(0, Qt.ItemDataRole.UserRole)
         if self.cat_widget.is_outermost_layer(parent_item):
-            parent_time = database.categories_table.get_category_time(parent_id, CategoryType.MainCategory)
+            data = {
+            "category_id": parent_id,
+            "category_type": CategoryType.MainCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            parent_time = response.json()["category_time"]
         else:
-            parent_time = database.categories_table.get_category_time(parent_id, CategoryType.SubCategory)
+            data = {
+            "category_id": parent_id,
+            "category_type": CategoryType.SubCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            parent_time = response.json()["category_time"]
 
         end_time = sum(self.log_widget._user_logs[item_id])
         time_diff = end_time - start_time
         if not self.cat_widget.is_innermost_layer():
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(parent_id, new_time)
+            data = {
+            "parent_id": parent_id,
+            "new_time": new_time
+            }
+            requests.post(f"{SERVER_URL}/update_parent_time", json=data)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, parent_item)
         else:
             new_time = parent_time + time_diff
-            database.categories_table.update_parent_time(parent_id, new_time)
+            data = {
+            "parent_id": parent_id,
+            "new_time": new_time
+            }
+            requests.post(f"{SERVER_URL}/update_parent_time", json=data)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.SubCategory, parent_item)
 
             outermost_item = parent_item.parent()
             outermost_id = outermost_item.data(0, Qt.ItemDataRole.UserRole)
-            outermost_time = parent_time = database.categories_table.get_category_time(outermost_id, CategoryType.MainCategory)
+            data = {
+            "category_id": outermost_id,
+            "category_type": CategoryType.MainCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            outermost_time = response.json()["category_time"]
             new_time = outermost_time + time_diff
-            database.categories_table.update_parent_time(outermost_id, new_time)
+            data = {
+            "parent_id": outermost_id,
+            "new_time": new_time
+            }
+            requests.post(f"{SERVER_URL}/update_parent_time", json=data)
             self.cat_widget.update_category_time(self.log_widget, CategoryType.MainCategory, outermost_item)
         
         self.log_widget.start_time = 0

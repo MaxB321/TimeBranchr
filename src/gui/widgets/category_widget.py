@@ -1,3 +1,4 @@
+import requests
 from typing import Optional
 from uuid import uuid4
 from PySide6.QtCore import QObject, Qt
@@ -5,7 +6,7 @@ from PySide6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from gui.widgets.log_widget import LogWidget
 from utils import config
 import database.categories_table
-from database.db_connect import db_conn
+from database.db_connect import db_conn, SERVER_URL
 from utils.enums import CategoryType
 
 
@@ -89,12 +90,20 @@ class CategoryWidget(QObject):
                     innermost_child = cur_child.child(0)
                     category_id = innermost_child.data(0, Qt.ItemDataRole.UserRole)
                     cur_child.removeChild(innermost_child)
-                    database.categories_table.delete_category_row(category_id, CategoryType.SubCategory)
+                    data = {
+                    "category_id": category_id,
+                    "category_type": CategoryType.SubCategory.value
+                    }
+                    requests.post(f"{SERVER_URL}/delete_category_row", json=data)
                     j += 1
 
             category_id = cur_child.data(0, Qt.ItemDataRole.UserRole)
             cur_item.removeChild(cur_child)
-            database.categories_table.delete_category_row(category_id, CategoryType.SubCategory)
+            data = {
+            "category_id": category_id,
+            "category_type": CategoryType.SubCategory.value
+            }
+            requests.post(f"{SERVER_URL}/delete_category_row", json=data)
             i += 1  
 
 
@@ -219,7 +228,12 @@ class CategoryWidget(QObject):
 
             self.cat_item_ref[key] = child_item
 
-            category_time = database.categories_table.get_category_time(key, CategoryType.MainCategory)
+            data = {
+            "category_id": key,
+            "category_type": CategoryType.MainCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            category_time = response.json()["category_time"]
             child_item.setText(1, self.load_category_time(category_time))
 
         self.cat_tree.blockSignals(False)
@@ -245,7 +259,12 @@ class CategoryWidget(QObject):
 
             self.cat_item_ref[key] = child_item
 
-            category_time = database.categories_table.get_category_time(key, CategoryType.SubCategory)
+            data = {
+            "category_id": key,
+            "category_type": CategoryType.SubCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            category_time = response.json()["category_time"]
             child_item.setText(1, self.load_category_time(category_time))
         
         self.cat_tree.blockSignals(False)
@@ -259,7 +278,12 @@ class CategoryWidget(QObject):
             parent_item.addChild(val)
             category_id: str = val.data(0, Qt.ItemDataRole.UserRole)
             self.cat_item_ref[category_id] = val
-            category_time = database.categories_table.get_category_time(category_id, CategoryType.SubCategory)
+            data = {
+            "category_id": category_id,
+            "category_type": CategoryType.SubCategory.value
+            }
+            response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+            category_time = response.json()["category_time"]
             val.setText(1, self.load_category_time(category_time))
 
         self.cat_tree.blockSignals(False)
@@ -295,7 +319,12 @@ class CategoryWidget(QObject):
             while j < outer_item.childCount():
                 middle_item = outer_item.child(j)
                 middle_id: str = middle_item.data(0, Qt.ItemDataRole.UserRole)
-                middle_time: int = database.categories_table.get_category_time(middle_id, CategoryType.SubCategory)
+                data = {
+                "category_id": middle_id,
+                "category_type": CategoryType.SubCategory.value
+                }
+                response = requests.get(f"{SERVER_URL}/get_category_time", json=data)
+                middle_time = response.json()["category_time"]
                 self.display_total_time(middle_item, middle_time)
                 k = 0
                 j += 1
@@ -323,9 +352,19 @@ class CategoryWidget(QObject):
 
         cur_item_text = self.cat_tree.currentItem().text(0)
         if self.is_outermost_layer():
-            database.categories_table.update_category_name(self.get_category_id(), cur_item_text, CategoryType.MainCategory)
+            data = {
+            "category_id": self.get_category_id(),
+            "category_name": cur_item_text,
+            "category_type": CategoryType.MainCategory.value
+            }
+            requests.post(f"{SERVER_URL}/update_category_name", json=data)
         else:
-            database.categories_table.update_category_name(self.get_category_id(), cur_item_text, CategoryType.SubCategory)
+            data = {
+            "category_id": self.get_category_id(),
+            "category_name": cur_item_text,
+            "category_type": CategoryType.SubCategory.value
+            }
+            requests.post(f"{SERVER_URL}/update_category_name", json=data)
         self.sort_display()
 
 
