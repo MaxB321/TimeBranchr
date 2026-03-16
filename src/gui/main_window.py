@@ -453,12 +453,34 @@ class MenuWidget():
     def set_stylesheets(self, display_mode: DisplayModeType) -> None:
         if display_mode == DisplayModeType.DarkMode:
             self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_groupbox.qss")))
-            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_trees.qss")))
-            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_trees.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+
+            palette = self.main_window.categoryTreeWidget.palette()
+            palette.setColor(QPalette.ColorRole.Base, QColor("#2e2e2e"))
+            self.main_window.categoryTreeWidget.setPalette(palette)
+            self.main_window.logTreeWidget.setPalette(palette)
+            
+            header_palette = self.main_window.categoryTreeWidget.header().palette()
+            header_palette.setColor(QPalette.ColorRole.Button, QColor("#383838"))
+            header_palette.setColor(QPalette.ColorRole.ButtonText, QColor("#ffffff"))
+            self.main_window.categoryTreeWidget.header().setPalette(header_palette)
+            self.main_window.logTreeWidget.header().setPalette(header_palette)
         else:
             self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_groupbox.qss")))
-            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_trees.qss")))
-            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_trees.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+            
+            palette = self.main_window.categoryTreeWidget.palette()
+            palette.setColor(QPalette.ColorRole.Base, QColor("#757778"))
+            self.main_window.categoryTreeWidget.setPalette(palette)
+            self.main_window.logTreeWidget.setPalette(palette)
+
+            header_palette = self.main_window.categoryTreeWidget.header().palette()
+            header_palette.setColor(QPalette.ColorRole.Button, QColor("#484848"))
+            header_palette.setColor(QPalette.ColorRole.ButtonText, QColor("#ffffff"))
+            self.main_window.categoryTreeWidget.header().setPalette(header_palette)
+            self.main_window.logTreeWidget.header().setPalette(header_palette)
 
 
     def set_timer_color(self, display_mode: DisplayModeType) -> None:
