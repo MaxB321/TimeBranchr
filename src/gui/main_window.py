@@ -453,8 +453,8 @@ class MenuWidget():
     def set_stylesheets(self, display_mode: DisplayModeType) -> None:
         if display_mode == DisplayModeType.DarkMode:
             self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "darkMode_groupbox.qss")))
-            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
-            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "tree_widgets.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "tree_widgets.qss")))
 
             palette = self.main_window.categoryTreeWidget.palette()
             palette.setColor(QPalette.ColorRole.Base, QColor("#2e2e2e"))
@@ -468,8 +468,8 @@ class MenuWidget():
             self.main_window.logTreeWidget.header().setPalette(header_palette)
         else:
             self.main_window.groupBox.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "lightMode_groupbox.qss")))
-            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
-            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "trees_font.qss")))
+            self.main_window.categoryTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "tree_widgets.qss")))
+            self.main_window.logTreeWidget.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "tree_widgets.qss")))
             
             palette = self.main_window.categoryTreeWidget.palette()
             palette.setColor(QPalette.ColorRole.Base, QColor("#757778"))
