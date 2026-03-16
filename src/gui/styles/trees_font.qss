@@ -1,4 +1,4 @@
-QTreeWidget#categoryTreeWidget {
+QTreeWidget {
     font-size: 16px;
 }
 
