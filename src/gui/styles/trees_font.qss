@@ -1,4 +1,16 @@
 QTreeWidget {
     font-size: 16px;
 }
+QTreeWidget#logTreeWidget QHeaderView::section:first {
+    padding-left: 5px;
+}
+QHeaderView::section:first {
+    border-top-left-radius: 4px;
+    border-right: 2px solid #636363;
+}
+
+
+QHeaderView::section:last {
+    border-top-right-radius: 4px;
+}
 
