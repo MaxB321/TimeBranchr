@@ -9,8 +9,8 @@ class aboutDialog(QDialog, Ui_aboutDialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("About")
-        self.setGeometry(500, 250, 450, 350)
-        self.setFixedSize(450, 350)
+        self.setGeometry(500, 250, 500, 350)
+        self.setFixedSize(500, 350)
         self.setPalette(colors.DARK_WINDOW)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
 

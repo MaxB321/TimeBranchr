@@ -20,7 +20,7 @@ class seeGuideDialog(QDialog, Ui_seeGuideDialog):
         text: str = textwrap.dedent("""
         See the Guide and About section under 
         the Help Menu for details about how 
-        the app works...
+        the app works.
         """)
 
         self.label.setText(text.strip())

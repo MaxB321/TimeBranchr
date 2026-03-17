@@ -15,25 +15,43 @@ class guideDialog(QDialog, Ui_guideDialog):
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
         
         text: str = textwrap.dedent("""
+        How to make category:
+            1) Make sure no other category is selected.
+            2) Click the New Category Button in the toolbar.
+
         How to make subcategory:
-            1) Click on item to select it
-            2) After item is selected, click new category button in the toolbar
-            3) You can have up to 3 layers. See about section for example.
+            1) Click on item to select it.
+            2) After item is selected, click new category button in the toolbar.
+            3) You can have up to 3 layers. See the About section for an example.
         
         The Parent category's time is the sum of the child item's time along with its own.
-            - you can turn off the display for sub item's time in the view menu
+            - You can turn off the display for the sub item's time in the view menu.
 
-        Deleting a category with sub items will delete both the selected category and all of its sub items.
+        Deleting a category with sub items will delete both the selected category and all of its sub items. Be Careful!
 
-        You can create a log by right clicking inside of the logs widget and selecting the option from the context menu.
-        If a log item is selected you will have the option to delete the log in the context menu.
+        Context Menus:
+            - You can open a context menu by simply right clicking. There are context 
+              menus for the following:
+                - Categories Section
+                - Logs Section
 
-        "Export to CSV" under the file section will download all user related tables into separate csv files: 
-            - Categories
-            - SubCategories
-            - Category Time Logs
-            - Subcategory Time Logs
-        These files will be stored in the downloads folder.
+        Categories Context Menu Features:
+            - Collapse All
+            - Expand All
+            - Sort Ascending/Descending
+
+        Logs Context Menu Features:
+            - Create Log (need to see Logs - "Category Name" for this to appear)
+            - Delete Log (need to have log selected for this to appear)
+            - Sort Logs Newest to Oldest / Oldest to Newest
+            - Clear Log View
+
+        "Export to CSV" under the File section will download all user related tables into a zip file inside your system's downloads folder.
+        This zip file will contain the following CSV files.
+            - Categories.csv
+            - SubCategories.csv
+            - Category_Time_Logs.csv
+            - Subcategory_Time_Logs.csv
         """)
         
         
