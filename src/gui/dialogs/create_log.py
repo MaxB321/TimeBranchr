@@ -3,7 +3,7 @@ from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtGui import QCloseEvent, QEnterEvent, QKeyEvent
 from PySide6.QtWidgets import QDialog
 from gui.generated.CreateLog import Ui_LogDialog
-from utils import stylesheets
+from utils import colors, stylesheets
 
 
 class LogDialog(QDialog, Ui_LogDialog):
@@ -11,6 +11,7 @@ class LogDialog(QDialog, Ui_LogDialog):
         super().__init__()
         self.setupUi(self)
         self.setGeometry(700, 225, 450, 500)
+        self.setPalette(colors.DARK_WINDOW)
         self.label_h.setGeometry(20, 20, 75, 50)
         self.label_m.setGeometry(20, 80, 75, 50)
         self.label_s.setGeometry(20, 140, 80, 50)

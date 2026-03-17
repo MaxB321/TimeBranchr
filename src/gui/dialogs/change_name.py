@@ -2,7 +2,7 @@ import requests
 from PySide6.QtWidgets import QDialog, QFrame
 from database.db_connect import SERVER_URL
 from gui.generated.ChangeName import Ui_changeNameDialog
-from utils import config
+from utils import colors, config
 from utils import stylesheets
 
 
@@ -13,6 +13,7 @@ class changeNameDialog(QDialog, Ui_changeNameDialog):
         self.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "change_name.qss")))
         self.setGeometry(500, 275, 400, 450)
         self.setFixedSize(400, 450)
+        self.setPalette(colors.DARK_WINDOW)
         self.oldNameLabel.setGeometry(25, 50, 150, 35)
         self.oldName.setGeometry(130, 51, 150, 35)
         self.newNameLabel.setGeometry(25, 125, 175, 35)

@@ -1,7 +1,7 @@
 import textwrap
 from PySide6.QtWidgets import QDialog
 from gui.generated.guideDialog import Ui_guideDialog
-from utils import stylesheets
+from utils import colors, stylesheets
 
 
 class guideDialog(QDialog, Ui_guideDialog):
@@ -11,6 +11,7 @@ class guideDialog(QDialog, Ui_guideDialog):
         self.setWindowTitle("Guide")
         self.setGeometry(500, 250, 550, 400)
         self.setFixedSize(550, 400)
+        self.setPalette(colors.DARK_WINDOW)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
         
         text: str = textwrap.dedent("""

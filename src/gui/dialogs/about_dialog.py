@@ -1,7 +1,7 @@
 import textwrap
 from PySide6.QtWidgets import QDialog
 from gui.generated.aboutDialog import Ui_aboutDialog
-from utils import stylesheets
+from utils import colors, stylesheets
 
 
 class aboutDialog(QDialog, Ui_aboutDialog):
@@ -11,6 +11,7 @@ class aboutDialog(QDialog, Ui_aboutDialog):
         self.setWindowTitle("About")
         self.setGeometry(500, 250, 450, 350)
         self.setFixedSize(450, 350)
+        self.setPalette(colors.DARK_WINDOW)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
 
         text = textwrap.dedent("""

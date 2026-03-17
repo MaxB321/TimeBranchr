@@ -12,7 +12,7 @@ from PySide6.QtWidgets import QApplication, QDialog
 from gui.generated import MainWindow
 from gui.generated.GetUserID import Ui_UserDialog
 import utils.config
-from utils import stylesheets
+from utils import colors, stylesheets
 from database.db_connect import SERVER_URL
 
 class UserDialog(QDialog, Ui_UserDialog):
@@ -23,6 +23,7 @@ class UserDialog(QDialog, Ui_UserDialog):
         self._user_name: str = ""
         self.setGeometry(650, 275, 720, 300)
         self.setFixedSize(720, 300)
+        self.setPalette(colors.DARK_WINDOW)
         self.prompt.setGeometry(100, 2, 500, 125)
         self.lineEdit.setGeometry(200, 100, 300, 25)
         self.errorLabel.setGeometry(290, 145, 300, 50)

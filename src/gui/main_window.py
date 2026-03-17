@@ -56,6 +56,7 @@ from gui.dialogs.about_dialog import aboutDialog
 import gui.dialogs.getUserID
 import gui.dialogs.change_name
 from gui.dialogs.guide_dialog import guideDialog
+from gui.dialogs.see_guide_dialog import seeGuideDialog
 import gui.resources_rc
 from gui.widgets import log_widget
 from gui.widgets.category_widget import CategoryWidget
@@ -63,6 +64,7 @@ from gui.widgets.toolbar_widget import ToolbarWidget
 from utils import config
 from utils import stylesheets
 from utils.category_menu import CategoryMenu
+from utils import colors
 from utils.enums import CategoryType, DisplayModeType
 from utils.log_menu import LogMenu
 from gui.generated.MainWindow import Ui_MainWindow
@@ -212,6 +214,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._user_id = self.user_dialog._user_id
             self._user_name = self.user_dialog._user_name
             self.cat_widget.user_id = self.user_dialog._user_id
+            
+            seeGuideDialog().exec()
         else:
             self._user_id = config.get_user_id()
             self._user_name = config.get_user_name()
@@ -400,12 +404,12 @@ class MenuWidget():
         if display_mode:
             if display_mode == DisplayModeType.DarkMode:
                 self.set_stylesheets(display_mode)
-                self.main_window.setPalette(DARK_WINDOW)
+                self.main_window.setPalette(colors.DARK_WINDOW)
                 self.set_timer_color(display_mode)
                 return
             elif display_mode == DisplayModeType.LightMode:
                 self.set_stylesheets(display_mode)
-                self.main_window.setPalette(LIGHT_WINDOW)
+                self.main_window.setPalette(colors.LIGHT_WINDOW)
                 self.set_timer_color(display_mode)
                 return
 
@@ -414,11 +418,11 @@ class MenuWidget():
         
         if flag:
             self.set_stylesheets(DisplayModeType.DarkMode)
-            self.main_window.setPalette(DARK_WINDOW)
+            self.main_window.setPalette(colors.DARK_WINDOW)
             self.set_timer_color(DisplayModeType.DarkMode)
         else:
             self.set_stylesheets(DisplayModeType.LightMode)
-            self.main_window.setPalette(LIGHT_WINDOW)
+            self.main_window.setPalette(colors.LIGHT_WINDOW)
             self.set_timer_color(DisplayModeType.LightMode)
 
 
@@ -486,11 +490,11 @@ class MenuWidget():
     def set_timer_color(self, display_mode: DisplayModeType) -> None:
         if display_mode == DisplayModeType.DarkMode:
             text_color = self.main_window.timerLabel.palette()
-            text_color.setColor(QPalette.ColorRole.WindowText, LIGHT_TEXT)
+            text_color.setColor(QPalette.ColorRole.WindowText, colors.LIGHT_TEXT)
             self.main_window.timerLabel.setPalette(text_color)
         else:
             text_color = self.main_window.timerLabel.palette()
-            text_color.setColor(QPalette.ColorRole.WindowText, DARK_TEXT)
+            text_color.setColor(QPalette.ColorRole.WindowText, colors.DARK_TEXT)
             self.main_window.timerLabel.setPalette(text_color)
 
 
@@ -554,10 +558,7 @@ def load_base_ui() -> None:
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
-DARK_WINDOW = QColor(30, 30, 30, 255)
-LIGHT_WINDOW = QColor(237, 237, 240, 255)
-DARK_TEXT = QColor(45, 45, 50, 255)
-LIGHT_TEXT = QColor(255, 255, 255, 255)
+
 
 
 # main window instance
