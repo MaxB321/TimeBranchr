@@ -1,4 +1,5 @@
 import textwrap
+from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QDialog
 from gui.generated.aboutDialog import Ui_aboutDialog
 from utils import colors, stylesheets
@@ -13,6 +14,9 @@ class aboutDialog(QDialog, Ui_aboutDialog):
         self.setFixedSize(500, 350)
         self.setPalette(colors.DARK_WINDOW)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))
+        palette = self.textBrowser.palette()
+        palette.setColor(QPalette.ColorRole.Base, QColor("#2e2e2e"))
+        self.textBrowser.setPalette(palette)
 
         text = textwrap.dedent("""
             Welcome to TimeBranchr!
