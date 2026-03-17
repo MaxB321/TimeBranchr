@@ -44,7 +44,9 @@ from PySide6.QtGui import (
     QPalette
 )
 from PySide6.QtCore import (
+    QDir,
     QEvent,
+    QLockFile,
     QPoint,
     Qt,
     QSize,
@@ -547,6 +549,7 @@ class MenuWidget():
 
 
 def display_main_window() -> None:
+    test_lock(LOCK)
     main_window.show()
     app.exec()
 
@@ -558,8 +561,14 @@ def load_base_ui() -> None:
     app.exec()
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
+def test_lock(lock: QLockFile) -> None:
+    if not lock.tryLock(100):  # if lock exists, exit 
+        sys.exit()
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Base Project Path
+LOCK_PATH = QDir.temp().absoluteFilePath("TimeBranchr.lock")
+LOCK = QLockFile(LOCK_PATH)
 
 
 # main window instance
