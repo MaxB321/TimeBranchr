@@ -21,7 +21,6 @@ class UserDialog(QDialog, Ui_UserDialog):
         self.setupUi(self)
         self._user_id: str = ""
         self._user_name: str = ""
-        self.setGeometry(650, 275, 720, 300)
         self.setFixedSize(720, 300)
         self.setPalette(colors.DARK_WINDOW)
         self.prompt.setGeometry(100, 2, 500, 125)

@@ -11,7 +11,6 @@ class changeNameDialog(QDialog, Ui_changeNameDialog):
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "change_name.qss")))
-        self.setGeometry(500, 275, 400, 450)
         self.setFixedSize(400, 450)
         self.setPalette(colors.DARK_WINDOW)
         self.oldNameLabel.setGeometry(25, 50, 150, 35)

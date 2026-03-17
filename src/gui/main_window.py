@@ -77,7 +77,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setGeometry(300, 150, 1280, 720)
+        self.resize(1280, 720)
+
         self.setIconSize(QSize(25, 25))
 
         self.timer_widget = TimerWidget(self.timerLabel, self.pauseLabel)

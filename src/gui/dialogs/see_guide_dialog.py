@@ -10,10 +10,9 @@ class seeGuideDialog(QDialog, Ui_seeGuideDialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Guide/About")
-        self.setGeometry(500, 250, 350, 200)
         self.setFixedSize(350, 200)
         self.setPalette(colors.DARK_WINDOW)
-        self.label.setGeometry(10, 5, 335, 110)
+        self.label.setGeometry(8, 3, 335, 110)
 
         self.label.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "see_guide_font.qss")))
 

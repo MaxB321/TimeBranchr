@@ -10,7 +10,6 @@ class guideDialog(QDialog, Ui_guideDialog):
         super().__init__()
         self.setupUi(self)
         self.setWindowTitle("Guide")
-        self.setGeometry(500, 250, 550, 400)
         self.setFixedSize(550, 400)
         self.setPalette(colors.DARK_WINDOW)
         self.textBrowser.setStyleSheet(stylesheets.load_stylesheet(str(stylesheets.STYLES_DIR / "text_dialogs.qss")))

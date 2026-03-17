@@ -10,7 +10,7 @@ class LogDialog(QDialog, Ui_LogDialog):
     def __init__(self) -> None:
         super().__init__()
         self.setupUi(self)
-        self.setGeometry(700, 225, 450, 500)
+        self.setFixedSize(450, 500)
         self.setPalette(colors.DARK_WINDOW)
         self.label_h.setGeometry(20, 20, 75, 50)
         self.label_m.setGeometry(20, 80, 75, 50)
@@ -20,7 +20,6 @@ class LogDialog(QDialog, Ui_LogDialog):
         self.lineEdit_s.setGeometry(110, 155, 100, 25)
         self.ok_btn.setGeometry(310, 455, 60, 30)
         self.cancel_btn.setGeometry(375, 455, 60, 30)
-        self.setFixedSize(450, 500)
         
         self.hours: int = 0
         self.minutes: int = 0
