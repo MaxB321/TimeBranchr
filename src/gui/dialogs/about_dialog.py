@@ -22,7 +22,7 @@ class aboutDialog(QDialog, Ui_aboutDialog):
 
             This app is a simple Time Tracker.
 
-            Users can create new categories (studying, reading, exercise, etc.) to track time for.
+            Users can create new categories to track time for personal activities such as studying, reading, or exercise.
 
             Each category can have a sub-category.
                 - For example, studying can have a sub-category of computer science.

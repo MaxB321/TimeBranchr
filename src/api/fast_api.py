@@ -19,7 +19,7 @@ app_api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app_api.add_middleware(SlowAPIMiddleware)
 
 
-from api.routes import api_categories_table, api_logs_table, api_user_table
+from api.routes import api_categories_table, api_logs_table, api_user_table, api_export_csv
 
 
 @app_api.get("/")
